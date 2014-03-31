@@ -17,7 +17,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: d3tempo_development
+  database: sciview_development
   pool: 5
 #  username: d3tempo
 #  password:
@@ -46,7 +46,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: d3tempo_test
+  database: sciview_test
   pool: 5
 #  username: d3tempo
 #  password:
@@ -54,7 +54,7 @@ test:
 production:
   adapter: postgresql
   encoding: unicode
-  database: d3tempo_production
+  database: sciview_production
   pool: 5
 #  username: d3tempo
 #  password:

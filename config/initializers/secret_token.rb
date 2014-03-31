@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-D3tempo::Application.config.secret_key_base = 'beac2ff69ea810c07647a2bd8124148725e6de115d5d5f42d11cdcd3bcae3d3ed9664cdc63e4eb9b3bbc5d3756f56ef6556d9281d40d1683411d0eed45702f4e'
+SciView::Application.config.secret_key_base = 'beac2ff69ea810c07647a2bd8124148725e6de115d5d5f42d11cdcd3bcae3d3ed9664cdc63e4eb9b3bbc5d3756f56ef6556d9281d40d1683411d0eed45702f4e'

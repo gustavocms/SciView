@@ -1,4 +1,4 @@
-D3tempo::Application.routes.draw do
+SciView::Application.routes.draw do
   get "d3/index"
   #get "welcome/index"
   resources :posts

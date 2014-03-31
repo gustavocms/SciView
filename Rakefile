@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-D3tempo::Application.load_tasks
+SciView::Application.load_tasks

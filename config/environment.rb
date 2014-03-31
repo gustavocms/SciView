@@ -2,4 +2,4 @@
 require File.expand_path('../application', __FILE__)
 
 # Initialize the Rails application.
-D3tempo::Application.initialize!
+SciView::Application.initialize!
