@@ -48,4 +48,5 @@ gem 'tempodb'
 
 group :development, :test do
   gem 'dotenv-rails'
+  gem 'awesome_print'
 end
