@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default, :development)
+
+class DataGen < Thor
+  desc "generate_dataset KEY", "Generate a test dataset for a given key"
+  option :count, :required => true, :type => :numeric
+  option :start_time
+  option :end_time
+  option :force, :alias => 'f'
+  def generate_dataset(key)
+    count = options[:count]
+    start_time = Chronic.parse(options[:start_time]) if options[:start_time]
+    start_time ||= Time.now
+
+    end_time = Chronic.parse(options[:end_time]) if options[:end_time]
+    end_time ||= start_time + (0.001 * count)
+    client = tempodb_connect
+
+    series = client.get_series(key: key)
+    if !series.empty?
+      if options[:force]
+        client.delete_series(key: key)
+      else
+        say "Series for key \"#{key}\" already exists. (Use --force to overwrite)", :red
+        return
+      end
+    end
+
+    say "Creating #{count} data points starting at #{start_time}..."
+    series = client.create_series(key)
+    interval = (end_time.to_f - start_time.to_f) / count
+    data = Range.new(start_time, end_time).step(interval).map { |t|
+      TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
+    }
+
+    client.write_key(series.key, data)
+  end
+
+  private
+
+  def tempodb_connect
+    TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+  end
+end
+
+DataGen.start(ARGV)
+
+# vim:ft=ruby
