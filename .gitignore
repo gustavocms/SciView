@@ -16,5 +16,4 @@
 /tmp
 .idea
 .gitignore
-.env
 log

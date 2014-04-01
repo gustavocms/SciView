@@ -45,3 +45,7 @@ end
 # gem 'debugger', group: [:development, :test]
 
 gem 'tempodb'
+
+group :development, :test do
+  gem 'dotenv-rails'
+end
