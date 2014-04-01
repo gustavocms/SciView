@@ -67,22 +67,37 @@ task :create_sin_series do
 
     duration = 60 * 10 # 10 minutes
     NUM_OF_SINES = 10
-
     Math::PI * 2
     for i in 0..duration
-      value = Math.sin( Math::PI * duration * NUM_OF_SINES * i )
+      value = Math.sin( Math::PI / duration * NUM_OF_SINES * i )
       data << TempoDB::DataPoint.new(Time.at(time_base + i), value)
 
     end
-    puts data
     client.write_key(series1.key, data)
+  else
+    puts "already exists, need to run rake delete_series"
   end
 
 end
 
 
+desc 'deletes a tempodb series'
+task :delete_series, :key do |t, args|
+
+  client = TempoDB::Client.new(TEMPODB_API_KEY, TEMPODB_API_SECRET)
+  key = args[:key]
+  if key.blank?
+    abort("Aborting: Key was blank!")
+  end
+  puts "Deleting: #{key}"
+  summary = client.delete_series(key: key)
+  puts "Summary: #{summary.inspect}"
+
+end
+
+
 desc 'reads series and sample data for tempodb using random numbers'
-task :read_random_series, :key do |t, args|
+task :read_series, :key do |t, args|
 
   client = TempoDB::Client.new(TEMPODB_API_KEY, TEMPODB_API_SECRET)
   key = args[:key] || 'my-random-key'
@@ -96,13 +111,15 @@ task :read_random_series, :key do |t, args|
   keys = [key]
 
   #More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
-  returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
+  #returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
+  returned_data = client.read(start, stop, :keys => keys, :interval => "raw")
   data = returned_data[0].data
   data.each { |d|
-    puts "#{d.ts}\t\t%.2f" % d.value
+    puts "#{d.ts}\t\t%.5f" % d.value
   }
 
 end
+
 
 
 
