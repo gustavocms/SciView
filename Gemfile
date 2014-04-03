@@ -44,11 +44,23 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'chronic'
+gem 'foreman'
 gem 'tempodb'
 gem 'thor'
-gem 'chronic'
+
+group :development do
+  gem 'guard'
+  gem 'guard-minitest'
+  gem 'guard-rubocop'
+  gem 'terminal-notifier-guard'
+end
 
 group :development, :test do
-  gem 'dotenv-rails'
   gem 'awesome_print'
+  gem 'dotenv-rails'
+end
+
+group :test do
+  gem 'minitest-spec-rails'
 end

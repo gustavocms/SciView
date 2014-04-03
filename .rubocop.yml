@@ -1,0 +1,14 @@
+AllCops:
+  Include:
+    - Rakefile
+    - config.ru
+  Exclude:
+    - db/**
+    - config/**
+    - script/**
+
+LineLength:
+  Max: 90
+
+ClassAndModuleChildren:
+  Enabled: false
