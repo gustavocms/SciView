@@ -26,3 +26,10 @@ Things you may want to cover:
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
+
+
+When TempoDB has been setup through Heroku, you can open the TempoDB web console via:
+<tt>heroku addons:open tempodb -a $HEROKU_APP_NAME</tt>
+
+If you're logged into the FISI TempoDB web console, you can see a sine wave here:
+https://tempo-db.com/database/a68ffbe8f6fe4fb3bbda2782002680f0/series/2552055117f247c095d165dabb3720c7/?start=2014-03-31T07%3A00%3A00.000Z&end=2014-04-05T06%3A59%3A59.000Z&interval=PT1S&function=
