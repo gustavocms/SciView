@@ -1,0 +1,64 @@
+<div id="chart" class='with-3d-shadow with-transitions'>
+  <svg style="height: 500px;"></svg>
+</div>
+
+<script>
+    nv.addGraph(function() {
+        var chart = nv.models.lineWithFocusChart();
+
+        // chart.transitionDuration(500);
+        chart.xAxis
+                .tickFormat(d3.format(',f'));
+        chart.x2Axis
+                .tickFormat(d3.format(',f'));
+
+        chart.yAxis
+                .tickFormat(d3.format(',.2f'));
+        chart.y2Axis
+                .tickFormat(d3.format(',.2f'));
+
+        d3.select('#chart svg')
+                .datum(testData2())
+                .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+    });
+
+
+
+    function testData() {
+        return stream_layers(3,128,.1).map(function(data, i) {
+            return {
+                key: 'Stream' + i,
+                values: data
+            };
+        });
+    }
+
+    function testData2() {
+        var arr = [];
+        for(var i=0; i<400; i++)
+        {
+            arr.push( { x: i, y: i / (2.0 * Math.random() ) });
+        }
+
+//        arr.push( { x: 1, y: 0.2 });
+//        arr.push( { x: 2, y: 0.3 });
+//        arr.push( { x: 3, y: 0.5 });
+//        arr.push( { x: 4, y: 0.6 });
+//        arr.push( { x: 5, y: 0.7 });
+
+
+        var dataSet = [];
+        var o1 = {
+            key: "My Test",
+            values: arr
+        };
+        dataSet.push(o1);
+
+        return dataSet;
+    }
+
+</script>

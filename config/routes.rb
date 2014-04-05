@@ -1,5 +1,6 @@
 SciView::Application.routes.draw do
   get "d3/index"
+  get "d3/gf_style"
   #get "welcome/index"
   resources :posts
   root 'welcome#index'
