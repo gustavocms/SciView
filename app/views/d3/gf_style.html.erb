@@ -7,10 +7,33 @@
         var chart = nv.models.lineWithFocusChart();
 
         // chart.transitionDuration(500);
+//        chart.xAxis
+//                .tickFormat(d3.format(',f'));
+//        chart.x2Axis
+//                .tickFormat(d3.format(',f'));
+
+
+          //D3 Time Formatting: https://github.com/mbostock/d3/wiki/Time-Formatting
+
+//        var formatString = '%d-%m-%y';
+//        var formatString = '%H:%M:%S:%L';
+
+        var formatString = '%-I:%M:%S:%L%p';
+
         chart.xAxis
-                .tickFormat(d3.format(',f'));
+                .tickFormat(function(d) {
+                    return d3.time.format(formatString)(new Date(d))
+                });
+
         chart.x2Axis
-                .tickFormat(d3.format(',f'));
+                .tickFormat(function(d) {
+                    return d3.time.format(formatString)(new Date(d))
+                });
+
+
+        //Not sure if setting the time scale is necessary ...
+        // perhaps because Date objects become milliseconds?
+//        chart.xScale = d3.time.scale();
 
         chart.yAxis
                 .tickFormat(d3.format(',.2f'));
@@ -18,7 +41,7 @@
                 .tickFormat(d3.format(',.2f'));
 
         d3.select('#chart svg')
-                .datum(testData2())
+                .datum(testData3())
                 .call(chart);
 
         nv.utils.windowResize(chart.update);
@@ -37,6 +60,7 @@
         });
     }
 
+    //Ints
     function testData2() {
         var arr = [];
         for(var i=0; i<400; i++)
@@ -49,6 +73,39 @@
 //        arr.push( { x: 3, y: 0.5 });
 //        arr.push( { x: 4, y: 0.6 });
 //        arr.push( { x: 5, y: 0.7 });
+
+
+        var dataSet = [];
+        var o1 = {
+            key: "My Test",
+            values: arr
+        };
+        dataSet.push(o1);
+
+        return dataSet;
+    }
+
+    //X-Axis: Dates down to the millisecond
+    //Y-Axis: random increasing line
+    //Gets noticeable lag when I have 4000 data points
+    function testData3() {
+        var arr = [];
+        var m = moment();
+
+        var d = new Date();
+
+        for(var i=0; i<1000; i++)
+        {
+//            d.setMilliseconds(d.getMilliseconds() + (100000 * Math.random() + 5)); // irregular samples
+
+//            d.setMilliseconds(d.getMilliseconds() + 1); // sample every millisecond
+            d.setMilliseconds(d.getMilliseconds() + i*i); // each sample gets farther apart -- showcases time scale
+            arr.push(
+                { //x: m.add('days', 1).toDate(),
+                  x: new Date(d.getTime()),
+                  y: i + (1000.0 * Math.random() ) }
+            );
+        }
 
 
         var dataSet = [];
