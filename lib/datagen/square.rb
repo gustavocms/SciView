@@ -5,11 +5,7 @@ module DataGen
   class Square < Periodic
     def raw_value_at(t)
       i = (t % @period) / @period
-      if i < 0.5
-        0.5 * @amplitude
-      else
-        -0.5 * @amplitude
-      end
+      (i < 0.5 ? 0.5 : -0.5) * @amplitude
     end
   end
 end
