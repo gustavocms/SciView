@@ -1,3 +1,5 @@
+require_relative 'sum'
+
 module DataGen
   # Base class for data generators. Contains attributes and helper functions that are used
   # by all generators.
@@ -28,7 +30,7 @@ module DataGen
     end
 
     def +(other)
-      Sum.new(self, other)
+      DataGen::Sum.new(self, other)
     end
   end
 end

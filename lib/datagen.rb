@@ -1,0 +1,6 @@
+require_relative 'datagen/line'
+require_relative 'datagen/normal'
+require_relative 'datagen/power'
+require_relative 'datagen/sin'
+require_relative 'datagen/square'
+require_relative 'datagen/time_series'

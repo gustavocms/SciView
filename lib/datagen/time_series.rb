@@ -36,7 +36,7 @@ module DataGen
 
       # Values for internal tracking
       @gap_len = 0
-      @t = start_time
+      @t = 0
     end
 
     def frequency=(new_freq)
@@ -53,7 +53,7 @@ module DataGen
 
     def each
       set_dt
-      while @start_time + @t <= @end_time
+      while (@start_time + @t) <= @end_time
         if @gap_len > 0
           # We're currently in a gap, see if we extend it or not
           @gap_len = extend_gap ? @gap_len + 1 : 0

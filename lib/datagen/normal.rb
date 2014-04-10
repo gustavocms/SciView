@@ -6,8 +6,9 @@ module DataGen
     attr_accessor :value, # Value of the data at the mean (not accounting for any offset)
                   :stddev # Standard deviation of the normal distribution
 
-    def initialize(value: 1, stddev: 1)
-      @vaule  = value
+    def initialize(value: 1, stddev: 1, **kwargs)
+      super(kwargs)
+      @value  = value
       @stddev = stddev
     end
 

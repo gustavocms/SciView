@@ -2,7 +2,7 @@ require_relative 'base'
 
 module DataGen
   # Represents the summation of multiple generators
-  class Sum < Base
+  class Sum
     def initialize(*gens)
       @generators = gens
     end
