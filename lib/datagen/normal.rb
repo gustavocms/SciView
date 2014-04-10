@@ -8,8 +8,8 @@ module DataGen
 
     def initialize(value: 1, stddev: 1, **kwargs)
       super(kwargs)
-      @value  = value
-      @stddev = stddev
+      @value  = value.to_f
+      @stddev = stddev.to_f
     end
 
     def raw_value_at(t)
