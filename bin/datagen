@@ -4,8 +4,10 @@ require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default, :development)
 
+require_relative '../lib/datagen'
+
 # A CLI tool for generating sample datasets
-class DataGen < Thor
+class DataGenCLI < Thor
   desc 'create KEY', 'Generate a test dataset for a given key'
   option :count, required: true, type: :numeric
   option :start_time
@@ -18,7 +20,7 @@ class DataGen < Thor
     end_time = Chronic.parse(options[:end_time]) || start_time + (0.001 * count)
     client = TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
 
-    check_existing_set
+    check_existing_set(client, key, options)
 
     say "Creating #{count} data points starting at #{start_time}..."
     series = client.create_series(key)
@@ -27,9 +29,33 @@ class DataGen < Thor
     client.write_key(series.key, data)
   end
 
+  desc 'sample1 KEY', 'Generate the first sample dataset described in SCIV-4'
+  option :start_time
+  def sample1(key)
+    start_time = Chronic.parse(options[:start_time]) || Time.now
+    end_time = start_time + (30 * 60)
+
+    spike_up = DataGen::Normal.new(value: 100, stddev: 15 * 60, delay: 10 * 60)
+    spike_down = DataGen::Normal.new(value: -100, stddev: 15 * 60, delay: 20 * 60)
+    baseline = DataGen::Line.new(offset: 10, tolerance: 1)
+    series = DataGen::TimeSeries.new(baseline + spike_up + spike_down,
+                                     start_time: start_time, end_time: end_time)
+    series.frequency = 10
+
+    client = TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+    check_existing_set(client, key, force: true)
+
+    db_series = client.create_series(key)
+    data = series.map { |t, v| TempoDB::DataPoint.new(t, v) }
+    data.each_slice(1_000).each do |d|
+      $stderr.puts "Writing #{d.length} data points."
+      client.write_key(db_series.key, d)
+    end
+  end
+
   private
 
-  def check_existing_set(client, options)
+  def check_existing_set(client, key, options)
     unless client.get_series(key: key).empty?
       if options[:force]
         client.delete_series(key: key)
@@ -48,6 +74,6 @@ class DataGen < Thor
   end
 end
 
-DataGen.start(ARGV)
+DataGenCLI.start(ARGV)
 
 # vim:ft=ruby
