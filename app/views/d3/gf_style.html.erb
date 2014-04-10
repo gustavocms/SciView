@@ -1,13 +1,15 @@
-<button onclick="addMyGraph(testData1)">3 Series</button>
-<button onclick="addMyGraph(testData2)">Random with high peaks</button>
-<button onclick="addMyGraph(testData3)">Random with inconsistent sample frequencies</button>
-<button onclick="addMyGraph(testData4)">JSON date parsing</button>
+<button onclick="addMyGraph(testData1())">3 Series</button>
+<button onclick="addMyGraph(testData2())">Random with high peaks</button>
+<button onclick="addMyGraph(testData3())">Random with inconsistent sample frequencies</button>
+<button onclick="addMyGraph(testData4())">JSON date parsing</button>
+<button onclick="addMyGraph(testData5($('#tempodb-series-key').val()))">TempoDB webservice</button>
+<input id="tempodb-series-key" type="text" value="my-random-key" />
 <div id="chart" class='with-3d-shadow with-transitions'>
   <svg style="height: 500px;"></svg>
 </div>
 
 <script>
-  function addMyGraph(testDataFunc)
+  function addMyGraph(dataSet)
   {
       nv.addGraph(function() {
           var chart = nv.models.lineWithFocusChart();
@@ -47,7 +49,7 @@
                   .tickFormat(d3.format(',.2f'));
 
           d3.select('#chart svg')
-                  .datum(testDataFunc())
+                  .datum(dataSet)
                   .call(chart);
 
           nv.utils.windowResize(chart.update);
@@ -139,6 +141,35 @@
 
         return dataSet;
     }
+
+  function testData5(key) {
+      var dataSet = [];
+      var tempoURI = '/data/' + key;
+      $.ajax({
+          url: tempoURI,
+          async: false,
+          success: function(data) {
+              console.log(data);
+              var jsonObj=data;
+              var arrayWithDateObjs = [];
+
+              var arrayWithStringObjs = jsonObj[0].values;
+              var arrayLength = arrayWithStringObjs.length;
+              for (var i = 0; i < arrayLength; i++) {
+                  arrayWithDateObjs.push({x: new Date(arrayWithStringObjs[i].ts), y: arrayWithStringObjs[i].value});
+              }
+
+
+              var o1 = {
+                  key: jsonObj[0].key,
+                  values: arrayWithDateObjs
+              };
+              dataSet.push(o1);
+          }
+      });
+      return dataSet;
+  }
+
 
 
 
