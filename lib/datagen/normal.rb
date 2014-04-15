@@ -13,8 +13,9 @@ module DataGen
     end
 
     def raw_value_at(t)
-      # We'll use the `delay` attribute as the normal mean
-      exponent = - (t - @delay)**2 / (2 * @stddev**2)
+      # Delay already adjusts the X position of the distribution, so setting the `delay`
+      # vaule effectively sets the mean of the distribution.
+      exponent = - t**2 / (2 * @stddev**2)
       factor = @value / (@stddev * Math.sqrt(2 * Math::PI))
 
       factor * Math.exp(exponent)

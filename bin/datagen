@@ -30,9 +30,8 @@ class DataGenCLI < Thor
   end
 
   desc 'sample1 KEY', 'Generate the first sample dataset described in SCIV-4'
-  option :start_time
   def sample1(key)
-    start_time = Chronic.parse(options[:start_time]) || Time.now
+    start_time = Time.now
     end_time = start_time + (30 * 60)
 
     spike_up = DataGen::Normal.new(value: 1_000, stddev: 15, delay: 10 * 60)
@@ -48,7 +47,7 @@ class DataGenCLI < Thor
     db_series = client.create_series(key)
     data = series.map { |t, v| TempoDB::DataPoint.new(t, v) }
     data.each_slice(1_000).each do |d|
-      $stderr.puts "Writing #{d.length} data points."
+      say "Writing #{d.length} data points."
       client.write_key(db_series.key, d)
     end
   end

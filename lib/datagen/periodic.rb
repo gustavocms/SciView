@@ -7,7 +7,7 @@ module DataGen
                   :amplitude # Peak-to-trough distance for wave-like functions
 
     def initialize(period: 1, amplitude: 1, **kwargs)
-      super(kwargs)
+      super(**kwargs)
       @period    = period
       @amplitude = amplitude
     end

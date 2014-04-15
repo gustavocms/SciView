@@ -43,12 +43,14 @@ module DataGen
       warn('WARNING: `time_points` was already set.\n' + CONFLICT_MSG) if @time_points
       @frequency = new_freq
       @time_points = nil
+      @frequency
     end
 
     def time_points=(num_time_points)
       warn('WARNING: `frequency` was already set.\n' + CONFLICT_MSG) if @frequency
       @time_points = num_time_points
       @frequency = nil
+      @time_points
     end
 
     def each
@@ -63,7 +65,12 @@ module DataGen
         end
 
         # Don't return anything for this `@t` if we're in a gap
-        yield @start_time + @t, @generator.value_at(@t) unless @gap_len > 0
+        if @gap_len == 0
+          val = @generator.value_at(@t)
+
+          # The Ruby TempoDB library doesn't handle Infinity/NaN currently:
+          yield @start_time + @t, @generator.value_at(@t) if val.finite?
+        end
 
         @t += @dt
       end

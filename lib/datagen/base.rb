@@ -17,8 +17,10 @@ module DataGen
     end
 
     def adjust_value(val)
+      return val unless val.finite?
       tolerance_range = -@tolerance..@tolerance
-      percent_error = -(@pct_error * val)..(@pct_error * val)
+      percent = ((@pct_error / 100) * val).abs
+      percent_error = -percent..percent
       val +
         @offset +
         Random.rand(tolerance_range) +

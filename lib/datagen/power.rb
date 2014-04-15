@@ -6,7 +6,8 @@ module DataGen
     attr_accessor :power, # The power to raise `t` to
                   :scale  # A scaling constant applied to the power function
 
-    def initialize(power: 2, scale: 1)
+    def initialize(power: 2, scale: 1, **kwargs)
+      super(**kwargs)
       @power = power
       @scale = scale
     end
