@@ -52,6 +52,41 @@ class DataGenCLI < Thor
     end
   end
 
+  desc 'sample2 KEY', 'Generate the second sample dataset described in SCIV-4'
+  def sample2(key)
+    start_time = Time.now
+    end_time = start_time + (30 * 60)
+
+    position = DataGen::Power.new(power: 1.5) +
+      DataGen::Sin.new(period: 600, amplitude: 10)
+    velocity = DataGen::Power.new(power: 0.5, scale: 1.5) +
+      DataGen::Sin.new(period: 600, delay: 150, amplitude: 10)
+    acceleration = DataGen::Power.new(power: -0.5, scale: 0.75) +
+      DataGen::Sin.new(period: 600, delay: 300, amplitude: 10)
+    pos_series = DataGen::TimeSeries.new(position, start_time: start_time,
+                                         end_time: end_time)
+    vel_series = DataGen::TimeSeries.new(velocity, start_time: start_time,
+                                         end_time: end_time)
+    acc_series = DataGen::TimeSeries.new(acceleration, start_time: start_time,
+                                         end_time: end_time)
+    pos_series.frequency = vel_series.frequency = acc_series.frequency = 1
+
+    client = TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+
+    [[pos_series, {name: "Position", frequency: "1 Hz"}, %w|sample red|],
+     [vel_series, {name: "Velocity", frequency: "1 Hz"}, %w|sample blue|],
+     [acc_series, {name: "Acceleration", frequency: "1 Hz"}, %w|sample green|]]
+      .each do |(data, attrs, tags)|
+      sub_series_key = "#{key}.#{attrs[:name]}"
+      check_existing_set(client, sub_series_key, force: true)
+      sub_series = client.create_series(sub_series_key)
+      sub_series.attributes = attrs
+      sub_series.tags = tags
+      client.update_series(sub_series)
+      say "Writing data for key: #{sub_series_key}"
+      client.write_key(sub_series_key, data.map { |t, v| TempoDB::DataPoint.new(t, v) })
+    end
+  end
   private
 
   def check_existing_set(client, key, options)
