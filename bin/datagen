@@ -87,6 +87,37 @@ class DataGenCLI < Thor
       client.write_key(sub_series_key, data.map { |t, v| TempoDB::DataPoint.new(t, v) })
     end
   end
+
+  desc 'sample3 KEY', 'Generate the third sample dataset described in SCIV-4'
+  def sample3(key)
+    # Three series that are from different gauges all capturing the same data... but there
+    # is a 1% error rate and some data is missing from each gauge. Include tags/attributes
+    # for easy identification.
+    start_time = Time.now
+    end_time = start_time + (30 * 60)
+    gen = DataGen::Square.new(period: 500, pct_error: 1) +
+      DataGen::Sin.new(period: 300, pct_error: 1) +
+      DataGen::Line.new(slope: 0.004, pct_error: 1, offset: 5)
+
+    ser1 = DataGen::TimeSeries.new(gen, start_time: start_time, end_time: end_time,
+                                   gap_freq: 0.02, gap_size: 50)
+    ser2 = DataGen::TimeSeries.new(gen, start_time: start_time, end_time: end_time,
+                                   gap_freq: 0.01, gap_size: 100)
+    ser3 = DataGen::TimeSeries.new(gen, start_time: start_time, end_time: end_time,
+                                   gap_freq: 0.10, gap_size: 10)
+    ser1.frequency = ser2.frequency = ser3.frequency = 3
+
+    client = TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+
+    [ser1, ser2, ser3].each.with_index do |data, idx|
+      sub_series_key = "#{key}.#{idx}"
+      check_existing_set(client, sub_series_key, force: true)
+      say "Writing data series ##{idx + 1}."
+      client.write_key(sub_series_key, data.map { |t, v| TempoDB::DataPoint.new(t, v) })
+    end
+  end
+
+
   private
 
   def check_existing_set(client, key, options)
