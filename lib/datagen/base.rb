@@ -12,14 +12,14 @@ module DataGen
     def initialize(offset: 0, delay: 0, tolerance: 0, pct_error: 0)
       @offset    = offset
       @delay     = delay
-      @tolerance = tolerance
-      @pct_error = pct_error
+      @tolerance = tolerance.to_f
+      @pct_error = pct_error.to_f
     end
 
     def adjust_value(val)
       return val unless val.finite?
       tolerance_range = -@tolerance..@tolerance
-      percent = ((@pct_error / 100) * val).abs
+      percent = ((@pct_error / 100.0) * val).abs
       percent_error = -percent..percent
       val +
         @offset +

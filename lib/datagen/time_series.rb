@@ -65,12 +65,7 @@ module DataGen
         end
 
         # Don't return anything for this `@t` if we're in a gap
-        if @gap_len == 0
-          val = @generator.value_at(@t)
-
-          # The Ruby TempoDB library doesn't handle Infinity/NaN currently:
-          yield @start_time + @t, @generator.value_at(@t) if val.finite?
-        end
+        yield @start_time + @t, @generator.value_at(@t) if @gap_len == 0
 
         @t += @dt
       end
