@@ -84,7 +84,10 @@ module DataGen
 
     def extend_gap
       # Simple Poisson distribution with expectation value `@gap_size`
-      prob = (@gap_size**@gap_len * Math.exp(-@gap_size)) / @gap_len.downto(1).inject(:*)
+      sum = @gap_len.downto(1)
+                    .map { |i| @gap_size**i / i.downto(1).inject(:*) }
+                    .inject(:+)
+      prob = 1.0 - (Math.exp(-@gap_size) * sum)
       rand < prob
     end
   end
