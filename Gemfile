@@ -51,8 +51,10 @@ gem 'thor'
 
 group :development do
   gem 'guard'
+  gem 'guard-bundler'
   gem 'guard-minitest'
   gem 'guard-rubocop'
+  gem 'guard-jshint-on-rails'
   gem 'terminal-notifier-guard'
 end
 

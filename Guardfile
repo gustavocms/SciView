@@ -1,5 +1,6 @@
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
+# vim:ft=ruby
 
 group :test_then_check, halt_on_fail: true do
   guard :minitest do
@@ -15,6 +16,12 @@ group :test_then_check, halt_on_fail: true do
     watch(%r{.+\.rb$})
     watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
   end
+
+  guard 'jshint-on-rails' do
+    watch(%r{^app/assets/javascripts/.*\.js$})
+  end
 end
 
-# vim:ft=ruby
+guard :bundler do
+  watch('Gemfile')
+end
