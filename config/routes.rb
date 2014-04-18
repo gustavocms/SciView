@@ -1,6 +1,6 @@
 SciView::Application.routes.draw do
   get "d3/index"
-  get 'data/:key' => 'data#show'
+  get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
   get 'series/list' => 'data#listSeries'
   get "d3/gf_style"
   #get "welcome/index"

@@ -14,24 +14,6 @@
   <svg style="height: 500px;"></svg>
 </div>
 
-<style>
-    #project-label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 1em;
-    }
-    #project-icon {
-        float: left;
-        height: 32px;
-        width: 32px;
-    }
-    #project-description {
-        margin: 0;
-        padding: 0;
-    }
-</style>
-
-
 
 <script>
     //TODO: make this asynchronous
@@ -49,7 +31,10 @@
     }
 
     function addMyJSONGraph(){
-        addMyGraph(testData5($('#tempodb-series-key').val()))
+
+        var key = encodeURIComponent($('#tempodb-series-key').val());
+        var dataSet = testData5(key);
+        addMyGraph(dataSet);
     }
 //    var seriesList = [
 //        {"id": "a3d10d42d2874a699a05b4f82c7499f1",  "key": "100-00000", "name": "", "attributes": {}, "tags": []},
@@ -240,6 +225,7 @@
   function testData5(key) {
       var dataSet = [];
       var tempoURI = '/data/' + key;
+      console.log(tempoURI);
       //TODO: make this async
       $.ajax({
           url: tempoURI,

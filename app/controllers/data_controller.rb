@@ -1,9 +1,7 @@
 class DataController < ApplicationController
   def show
     client = get_tempodb_client
-    @key = params[:key]
-    # key = args[:key] || 'my-random-key'
-    key = @key
+    key = URI.decode(params[:key])
 
     #Choose arbitrarily early time for first in the series
     start = Time.utc(1999, 1, 1)
@@ -17,9 +15,9 @@ class DataController < ApplicationController
     #returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
     returned_data = client.read(start, stop, :keys => keys, :interval => "raw")
     data = returned_data[0].data
-    data.each { |d|
-      puts "#{d.ts}\t\t%.5f" % d.value
-    }
+    # data.each { |d|
+    #   puts "#{d.ts}\t\t%.5f" % d.value
+    # }
     p_array = []
     p = Payload.new(key, data)
     p_array << p
