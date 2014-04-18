@@ -2,12 +2,13 @@ namespace :data do
 
   desc 'lists all series in TempoDB (or at least the first 5000)'
   task :list_series do
-    client = TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+    client = get_tempodb_client
     series_list = client.get_series()
     puts series_list
     puts series_list.count
 
   end
+
   desc 'creates new series and sample data for tempodb'
   task :create_series do
     client = get_tempodb_client
