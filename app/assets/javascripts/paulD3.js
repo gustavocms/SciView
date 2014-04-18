@@ -14,6 +14,7 @@
 // about supported directives.
 //
 //= require jquery.js
+//= require jquery.ui.all
 //= require d3.v3
 //= require nv.d3.js
 //= require stream_layers

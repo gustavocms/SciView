@@ -1,12 +1,107 @@
-<button onclick="addMyGraph(testData1())">3 Series</button>
-<button onclick="addMyGraph(testData2())">Random with high peaks</button>
-<button onclick="addMyGraph(testData3())">Random with inconsistent sample frequencies</button>
-<button onclick="addMyGraph(testData4())">JSON date parsing</button>
-<button onclick="addMyGraph(testData5($('#tempodb-series-key').val()))">TempoDB webservice</button>
-<input id="tempodb-series-key" type="text" value="my-random-key" />
+<button onclick="addMyGraph(testData1());">3 Series</button>
+<button onclick="addMyGraph(testData2());">Random with high peaks</button>
+<button onclick="addMyGraph(testData3());">Random with inconsistent sample frequencies</button>
+<button onclick="addMyGraph(testData4());">JSON date parsing</button>
+<button onclick="addMyJSONGraph();">TempoDB webservice</button>
+
+
+<input id="tempodb-series-key" type="text" value="my-sine-key" />
+<!--<input id="tempodb-series-key" type="text" />-->
+<p id="series-name"></p>
+<p id="series-attributes"></p>
+<p id="series-tags"></p>
 <div id="chart" class='with-3d-shadow with-transitions'>
   <svg style="height: 500px;"></svg>
 </div>
+
+<style>
+    #project-label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 1em;
+    }
+    #project-icon {
+        float: left;
+        height: 32px;
+        width: 32px;
+    }
+    #project-description {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+
+
+<script>
+    //TODO: make this asynchronous
+    function getSeriesList() {
+        var dataSet = [];
+        var tempoURI = '/series/list';
+        $.ajax({
+            url: tempoURI,
+            async: false,
+            success: function(data) {
+                dataSet = data;
+            }
+        });
+        return dataSet;
+    }
+
+    function addMyJSONGraph(){
+        addMyGraph(testData5($('#tempodb-series-key').val()))
+    }
+//    var seriesList = [
+//        {"id": "a3d10d42d2874a699a05b4f82c7499f1",  "key": "100-00000", "name": "", "attributes": {}, "tags": []},
+//        {"id": "9a9014aa2ea1400eaf33ca60ba2e692c",  "key": "gen-sample", "name": "", "attributes": {}, "tags": []},
+//        {"id": "2b7fde06e20a492db5915cfe15eb829d",  "key": "gen-sample1", "name": "", "attributes": {}, "tags": []},
+//        {"id": "88918c008ae544d29bb4b5b31204da57",  "key": "gen-sample2.Acceleration", "name": "", "attributes": {"name": "Acceleration", "frequency": "1 Hz"}, "tags": ["green", "sample"]},
+//        {"id": "90d2f967270140d9a846191cb6fd05c5",  "key": "gen-sample2.Position", "name": "", "attributes": {"name": "Position", "frequency": "1 Hz"}, "tags": ["red", "sample"]},
+//        {"id": "8b01f61a71724d1b914e6b76f50547cf",  "key": "gen-sample2.Velocity", "name": "", "attributes": {"name": "Velocity", "frequency": "1 Hz"}, "tags": ["blue", "sample"]},
+//        {"id": "f30e9f2812f548e7a37b2e420dc7ac0f",  "key": "gen-series3.0", "name": "", "attributes": {}, "tags": ["gen-series3"]},
+//        {"id": "1cde0da242d347b4837fef265281f73d",  "key": "gen-series3.1", "name": "", "attributes": {}, "tags": ["gen-series3"]},
+//        {"id": "99a6c71557694457ab8ccd1a00dc828e",  "key": "gen-series3.2", "name": "", "attributes": {}, "tags": ["gen-series3"]},
+//        {"id": "eb03ac0e68bf47d0b0c005aad1a16174",  "key": "my-custom-key", "name": "", "attributes": {}, "tags": []},
+//        {"id": "5d2648a02423416e8a9f51d4eada498f",  "key": "my-random-key", "name": "", "attributes": {}, "tags": []},
+//        {"id": "2552055117f247c095d165dabb3720c7",  "key": "my-sine-key", "name": "", "attributes": {}, "tags": []}
+//    ];
+    var seriesList = getSeriesList();
+
+    $(function() {
+        $("#tempodb-series-key").autocomplete({
+            minLength: 0,
+
+            source: function (request, response) {
+                var term = request.term,
+                    matcher = new RegExp($.ui.autocomplete.escapeRegex(term), "i");
+
+                response($.grep(seriesList, function (item) {
+                    return matcher.test(item.key + item.tags.join(', '));
+                }));
+            },
+            focus: function( event, ui ) {
+                $( "#tempodb-series-key" ).val( ui.item.key);
+                return false;
+            },
+            select: function( event, ui ) {
+                $( "#tempodb-series-key" ).val( ui.item.key);
+                $( "#series-name" ).html("Name: " + ui.item.name);
+                $( "#series-tags" ).html("Tags: " + ui.item.tags.join(', '));
+                $( "#series-attributes" ).html("Attributes: " + JSON.stringify(ui.item.attributes));
+                addMyJSONGraph();
+                return false;
+            }
+
+        })
+        .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+                    .append( "<a>" + item.key + "<p style='font-size: small; padding: 0; margin: 0'>Tags:" + item.tags.join(', ') + "</p></a>" )
+                    .appendTo( ul );
+        };
+
+    });
+</script>
+
 
 <script>
   function addMyGraph(dataSet)
@@ -145,6 +240,7 @@
   function testData5(key) {
       var dataSet = [];
       var tempoURI = '/data/' + key;
+      //TODO: make this async
       $.ajax({
           url: tempoURI,
           async: false,
@@ -169,9 +265,6 @@
       });
       return dataSet;
   }
-
-
-
 
 
 </script>
