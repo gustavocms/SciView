@@ -53,6 +53,8 @@ gem 'foreman'
 gem 'tempodb'
 gem 'thor'
 
+gem 'semantic-ui-sass'
+
 group :development do
   gem 'guard'
   gem 'guard-minitest'
