@@ -1,4 +1,5 @@
 SciView::Application.routes.draw do
+  devise_for :users
   get "d3/index"
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
   get 'series/list' => 'data#listSeries'

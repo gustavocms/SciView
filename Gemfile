@@ -46,6 +46,8 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'devise'
+
 gem 'chronic'
 gem 'foreman'
 gem 'tempodb'
