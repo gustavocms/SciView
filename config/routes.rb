@@ -2,7 +2,7 @@ SciView::Application.routes.draw do
   devise_for :users
   get "d3/index"
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
-  get 'series/list' => 'data#listSeries'
+  get 'series/list' => 'data#list_series'
   get "d3/gf_style"
   #get "welcome/index"
   resources :posts

@@ -25,7 +25,7 @@ class DataController < ApplicationController
     render :json => p_array
   end
 
-  def listSeries
+  def list_series
     client = get_tempodb_client
     series_list = client.get_series()
     render :json => series_list
