@@ -12,3 +12,7 @@
  *= require_tree .
  *= require jquery.ui.all
  */
+
+body {
+  font-family: "Open Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
+}
