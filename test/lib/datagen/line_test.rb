@@ -1,4 +1,4 @@
-require_relative '../../test_helper'
+require 'test_helper'
 require 'datagen/line'
 
 describe DataGen::Line do
