@@ -61,6 +61,7 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-minitest'
   gem 'guard-rubocop'
+  gem 'guard-rails'
   gem 'guard-jshint-on-rails'
   gem 'terminal-notifier-guard'
 end
