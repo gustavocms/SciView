@@ -201,6 +201,7 @@ namespace :data do
     "#{key_base}-%05d" % i
   end
 
+  # @return [TempoDB::Client]
   def get_tempodb_client
     TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
 

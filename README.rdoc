@@ -29,7 +29,32 @@ Please feel free to use a different markup language if you do not plan to run
 
 
 When TempoDB has been setup through Heroku, you can open the TempoDB web console via:
+
 <tt>heroku addons:open tempodb -a $HEROKU_APP_NAME</tt>
 
 If you're logged into the FISI TempoDB web console, you can see a sine wave here:
 https://tempo-db.com/database/a68ffbe8f6fe4fb3bbda2782002680f0/series/2552055117f247c095d165dabb3720c7/?start=2014-03-31T07%3A00%3A00.000Z&end=2014-04-05T06%3A59%3A59.000Z&interval=PT1S&function=
+
+== Data generation examples
+
+Get help from tool
+
+<tt>bin/datagen</tt>
+
+Create 10 data points in test-key
+
+<tt>bin/datagen create test-key --count=10</tt>
+
+Create 300,000 data points in test-key (delete and overwrite whatever exists)
+
+<tt>bin/datagen create test-key --count=300000 --force</tt>
+
+Append 300,000 data points to test-key (do not overwrite whatever exists)
+
+<tt>bin/datagen create test-key --count=300000 --append</tt>
+
+Append 1,000,000 data points to test-key (do not overwrite whatever exists) and log output to a file
+
+<tt>bin/datagen create test-key --count=1000000 --append >> ./log/test-key.log</tt>
+
+<tt>tail -f ./log/test-key.log</tt>
