@@ -3,3 +3,10 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 @import url(nv.d3.css);
+
+.ui.menu {
+  .graph_button.item,
+  .series_key.item {
+    font-size: 0.8rem;
+  }
+}
