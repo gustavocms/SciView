@@ -17,7 +17,7 @@ group 'test_then_check', halt_on_fail: true do
     watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
   end
 
-  guard 'jshint-on-rails' do
+  guard 'jshint-on-rails', config_path: '.jshintrc' do
     watch(%r{^app/assets/javascripts/.*\.js$})
   end
 end
