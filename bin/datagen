@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+require 'parallel'
 require 'bundler/setup'
 Bundler.require(:default, :development)
 
@@ -23,31 +24,51 @@ class DataGenCLI < Thor
 
     operation_start_time = Time.now
 
-    start_time = Chronic.parse(options[:start_time]) || Time.now
-    end_time = Chronic.parse(options[:end_time]) || start_time + (0.001 * count)
+    data_start_time = Chronic.parse(options[:start_time]) || Time.now
+    data_end_time = Chronic.parse(options[:end_time]) || data_start_time + (0.001 * count)
     client = get_tempodb_client
 
     series = check_existing_set(client, key, options)
     initial_count = get_series_count(client, series.key)
     puts "Total data points in key: #{initial_count}"
 
-    say "Creating #{count} data points starting at #{start_time}..."
+    say "Creating #{count + 1} data points starting at #{data_start_time}..."
 
-    data = generate_data(start_time, end_time, count)
+    data = generate_data(data_start_time, data_end_time, count)
 
-    data.each_slice(1_000).each do |d|
+    batch_size = 2000
+    processes = 1
+    threads = 4
+    data_array = []
+    data.each_slice(batch_size) { |d| data_array << d}
+
+    upload_time_start = Time.now
+    Parallel.each(data_array, in_processes: processes, in_threads: threads) do |d|
       say "#{Time.now} -  Writing #{d.length} data points."
-      client.write_key(series.key, d)
+      client_p = get_tempodb_client
+      client_p.write_key(key, d)
     end
+    upload_time_end = Time.now
+    # data.each_slice(1_000).each do |d|
+    #   say "#{Time.now} -  Writing #{d.length} data points."
+    #   client.write_key(series.key, d)
+    # end
+
 
     operation_end_time = Time.now
-    duration = operation_end_time - operation_start_time
+    operation_duration = operation_end_time - operation_start_time
+    upload_duration = upload_time_end - upload_time_start
 
     puts
+    puts "start\tbatch\tprocs\tthreads"
+    puts "#{upload_time_start}\t#{batch_size}\t#{processes}\t#{threads}"
     puts "Data points inserted: #{data.length}"
-    puts "Insertion duration: #{duration} seconds"
-    puts "Throughput: #{(data.length / duration).floor} data points/seconds"
+    puts "Operation duration: #{operation_duration} seconds"
+    puts "Upload duration: #{upload_duration} seconds"
+    puts "Throughput: #{(data.length / upload_duration).floor} data points/seconds"
     puts "Initial data points in key: #{initial_count}"
+
+    query_durations = []
 
     polling_start_time = Time.now
     loop do
@@ -55,6 +76,7 @@ class DataGenCLI < Thor
       latest_count = get_series_count(client, series.key)
       query_end_time = Time.now
       query_duration = query_end_time - query_start_time
+      query_durations << query_duration
       puts "Total data points in key: #{latest_count}"
       puts "Query duration: #{query_duration.round(3)} seconds -- #{(query_end_time - polling_start_time).round(2)} total seconds"
 
@@ -63,6 +85,24 @@ class DataGenCLI < Thor
       say "TempoDB has not caught up (missing #{initial_count + data.length - latest_count}) -- Waiting 1.0 seconds to retry", :yellow
       sleep(1.0)
     end
+
+    query_min = query_durations.min
+    query_max = query_durations.max
+    query_total = query_durations.inject(:+)
+    query_count = query_durations.length
+    query_avg = query_total.to_f / query_count # to_f so we don't get an integer result
+    query_durations_sorted = query_durations.sort
+    query_median = query_count % 2 == 1 ? query_durations_sorted[query_count/2] : (query_durations_sorted[query_count/2 - 1] + query_durations_sorted[query_count/2]).to_f / 2
+
+
+
+    puts
+    puts "start\tbatch\tprocs\tthreads"
+    puts "#{upload_time_start}\t#{batch_size}\t#{processes}\t#{threads}"
+
+    puts
+    puts "min\tmax\tavg\tmedian\ttotal\tcount"
+    puts "#{query_min.round(3)}\t#{query_max.round(3)}\t#{query_avg.round(3)}\t#{query_median.round(3)}\t#{query_total.round(3)}\t#{query_count}"
 
   end
 

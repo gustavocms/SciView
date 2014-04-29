@@ -57,6 +57,8 @@ gem 'thor'
 
 gem 'semantic-ui-sass'
 
+gem 'parallel'
+
 group :development do
   gem 'guard'
   gem 'guard-bundler'
