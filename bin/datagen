@@ -97,11 +97,12 @@ class DataGenCLI < Thor
 
 
     puts
-    puts "start\tbatch\tprocs\tthreads"
-    puts "#{upload_time_start}\t#{batch_size}\t#{processes}\t#{threads}"
+    puts "batch\tprocs\tthreads\tstart"
+    puts "#{batch_size}\t#{processes}\t#{threads}\t#{upload_time_start}"
 
     puts
     puts "min\tmax\tavg\tmedian\ttotal\tcount"
+
     puts "#{query_min.round(3)}\t#{query_max.round(3)}\t#{query_avg.round(3)}\t#{query_median.round(3)}\t#{query_total.round(3)}\t#{query_count}"
 
   end
