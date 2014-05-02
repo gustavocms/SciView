@@ -1,0 +1,20 @@
+<div class="ui three column row">
+  <div class="column"></div>
+  <div class="column">
+    <h2 class="ui header">Please choose a dataset to view:</h2>
+    <div class="ui form segment">
+      <%= form_for :chart do |f| %>
+        <div class="field">
+          <%= f.label :dataset %>
+          <div class="ui input">
+            <%= f.text_field :dataset, placeholder: "Series Key" %>
+          </div>
+        </div>
+        <div>
+          <%= f.submit "Graph it!", class: "ui submit button", id: "view_chart" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="column"></div>
+</div>

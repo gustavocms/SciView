@@ -21,3 +21,5 @@
 
 en:
   hello: "Hello world"
+  chart:
+    dataset: "Data Set"
