@@ -9,7 +9,7 @@ class Dataset
     end
   end
 
-  attr_accessor :start, :stop
+  attr_accessor :start, :stop, :count
 
   def initialize(series_name)
     @client = TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
@@ -21,7 +21,16 @@ class Dataset
   end
 
   def as_json(opts = {})
+    opts[:keys] = [@key]
+
+    if count
+      opts[:interval] = "#{((@stop - @start) / 60.0) / count}min"
+      opts[:function] = 'mean'
+    else
+      opts[:interval] = 'raw'
+    end
+
     [{ key: @key,
-       values: @client.read(@start, @stop, keys: [@key], interval: 'raw').first.data }]
+       values: @client.read(@start, @stop, opts).first.data }]
   end
 end
