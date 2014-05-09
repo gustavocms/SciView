@@ -17,3 +17,10 @@
 .idea
 .gitignore
 log
+!/bin
+/bin/*
+!/bin/close
+!/bin/rails
+!/bin/rake
+!/bin/spring
+vendor/.bundle/
