@@ -368,6 +368,58 @@ $(document).ready(function() {
                 });
             }
 
+            var pendingChartUpdate = null,
+                pendingUpdateRequest = null;
+
+            function updateChart() {
+                if (pendingUpdateRequest) {
+                    pendingUpdateRequest.abort();
+                }
+
+                brushExtent = brush.empty() ? null : brush.extent();
+                var extent = brush.empty() ? x2.domain() : brush.extent(),
+                    startTime = new Date(extent[0]).toISOString(),
+                    stopTime = new Date(extent[1]).toISOString(),
+                    startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
+
+                pendingUpdateRequest = $.ajax({
+                    url: $("#chart").data("source-url") + "?count=960" + startStopQuery,
+                    success: function(data) {
+                        pendingUpdateRequest = null;
+                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap'),
+                            values = data[0].values.map(function(elem) {
+                                return {x: new Date(elem.ts),
+                                        y: elem.value};
+                            }),
+                            chartData = [{ key: data[0].key,
+                                           values: values }];
+
+                        // Update Main (Focus)
+                        focusLinesWrap
+                            .datum(
+                                chartData
+                                    .filter(function(d) { return !d.disabled; })
+                                    .map(function(d,i) {
+                                        return {
+                                            key: d.key,
+                                            values: d.values.filter(function(d,i) {
+                                                return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
+                                            })
+                                        };
+                                    })
+                            );
+
+                        focusLinesWrap.transition().duration(transitionDuration).call(lines);
+                    }
+                });
+            }
+
+            function queueChartUpdate() {
+                if (pendingChartUpdate) {
+                    window.clearTimeout(pendingChartUpdate);
+                }
+                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(); }, 500);
+            }
 
             function onBrush() {
                 brushExtent = brush.empty() ? null : brush.extent();
@@ -380,42 +432,10 @@ $(document).ready(function() {
 
                 dispatch.brush({extent: extent, brush: brush});
 
-                console.log("Updated focus area.");
-                console.log("extent[0]: " + new Date(extent[0]).toISOString());
-
                 var focusLinesWrap = g.select('.nv-focus .nv-linesWrap');
-
-                var startTime = new Date(extent[0]).toISOString(),
-                    stopTime = new Date(extent[1]).toISOString(),
-                    startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
-
-                $.ajax({
-                    url: $("#chart").data("source-url") + "?count=960" + startStopQuery,
-                    success: function(data) {
-                        var values = data[0].values.map(function(elem) {
-                                return {x: new Date(elem.ts),
-                                        y: elem.value};
-                            }),
-                            chartData = [{ key: data[0].key,
-                                           values: values }];
-                        // Update Main (Focus)
-                        focusLinesWrap
-                    .datum(chartData
-                        .filter(function(d) { return !d.disabled; })
-                        .map(function(d,i) {
-                            return {
-                                key: d.key,
-                            values: d.values.filter(function(d,i) {
-                                return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
-                            })
-                            };
-                        })
-                        );
                 focusLinesWrap.transition().duration(transitionDuration).call(lines);
 
-
-                    }
-                });
+                queueChartUpdate();
 
                 updateBrushBG();
 
