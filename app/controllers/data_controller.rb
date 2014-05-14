@@ -13,8 +13,13 @@ class DataController < ApplicationController
 
     #More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
     #returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
-    returned_data = client.read(start, stop, :keys => keys, :interval => "raw")
-    data = returned_data[0].data
+
+    response = client.read_data(key, start, stop, interval: "raw")
+    data = []
+    response.each { |d| data << d}
+
+    # returned_data = client.read(start, stop, :keys => keys, :interval => "raw")
+    # data = returned_data[0].data
     # data.each { |d|
     #   puts "#{d.ts}\t\t%.5f" % d.value
     # }
@@ -43,6 +48,6 @@ class DataController < ApplicationController
 
   private
   def get_tempodb_client
-    TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+    TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
   end
 end

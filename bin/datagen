@@ -204,35 +204,35 @@ class DataGenCLI < Thor
   # @param [Symbol] options
   # @return [TempoDB::Series]
   def check_existing_set(client, key, options)
-
+    does_not_exist = true
     begin
       series = client.get_series(key)
+      does_not_exist = false
     rescue TempoDB::TempoDBClientError => msg
-      series = client.create_series(key)
+      put msg.to_s
     end
 
-    # type: TempoDB::Series
 
-
-    # if series.blank?
-    #   series = client.create_series(key)
-    # else
-    if options[:force]
-      say "Series for key \"#{key}\" already exists. --force was used so all data for this key has been deleted", :yellow
-      client.delete_series(key: key)
+    if does_not_exist
       series = client.create_series(key)
-
-    elsif options[:append]
-      say "Series for key \"#{key}\" already exists. --append was used so data will be added to existing series", :yellow
-      # series is already set
-      # series = series.first
-
     else
-      say "Series for key \"#{key}\" already exists. (Use --force to overwrite or --append to add new data to existing series)", :red
-      abort
-      return nil
+      if options[:force]
+        say "Series for key \"#{key}\" already exists. --force was used so all data for this key has been deleted", :yellow
+        client.delete_series(key: key)
+        series = client.create_series(key)
+
+      elsif options[:append]
+        say "Series for key \"#{key}\" already exists. --append was used so data will be added to existing series", :yellow
+        # series is already set
+        # series = series.first
+
+      else
+        say "Series for key \"#{key}\" already exists. (Use --force to overwrite or --append to add new data to existing series)", :red
+        abort
+        return nil
+      end
     end
-    # end
+
     return series
   end
 
