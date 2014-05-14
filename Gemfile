@@ -52,7 +52,11 @@ gem 'cancancan'
 
 gem 'chronic'
 gem 'foreman'
-gem 'tempodb'
+# gem 'tempodb'
+
+gem 'tempodb', git: "https://github.com/tempodb/tempodb-ruby.git", branch: "v1.0"
+
+
 gem 'thor'
 
 gem 'semantic-ui-sass'

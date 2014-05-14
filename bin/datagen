@@ -46,7 +46,7 @@ class DataGenCLI < Thor
     Parallel.each(data_array, in_processes: processes, in_threads: threads) do |d|
       say "#{Time.now} -  Writing #{d.length} data points."
       client_p = get_tempodb_client
-      client_p.write_key(key, d)
+      client_p.write_data(key, d)
     end
     upload_time_end = Time.now
     # data.each_slice(1_000).each do |d|
@@ -205,28 +205,34 @@ class DataGenCLI < Thor
   # @return [TempoDB::Series]
   def check_existing_set(client, key, options)
 
-    # This returns an array of series
-    series = client.get_series(key: key)
-
-    if series.empty?
+    begin
+      series = client.get_series(key)
+    rescue TempoDB::TempoDBClientError => msg
       series = client.create_series(key)
-    else
-      if options[:force]
-        say "Series for key \"#{key}\" already exists. --force was used so all data for this key has been deleted", :yellow
-        client.delete_series(key: key)
-        series = client.create_series(key)
-
-      elsif options[:append]
-        say "Series for key \"#{key}\" already exists. --append was used so data will be added to existing series", :yellow
-        # series is already set
-        series = series.first
-
-      else
-        say "Series for key \"#{key}\" already exists. (Use --force to overwrite or --append to add new data to existing series)", :red
-        abort
-        return nil
-      end
     end
+
+    # type: TempoDB::Series
+
+
+    # if series.blank?
+    #   series = client.create_series(key)
+    # else
+    if options[:force]
+      say "Series for key \"#{key}\" already exists. --force was used so all data for this key has been deleted", :yellow
+      client.delete_series(key: key)
+      series = client.create_series(key)
+
+    elsif options[:append]
+      say "Series for key \"#{key}\" already exists. --append was used so data will be added to existing series", :yellow
+      # series is already set
+      # series = series.first
+
+    else
+      say "Series for key \"#{key}\" already exists. (Use --force to overwrite or --append to add new data to existing series)", :red
+      abort
+      return nil
+    end
+    # end
     return series
   end
 
@@ -240,7 +246,8 @@ class DataGenCLI < Thor
 
   # @return [TempoDB::Client]
   def get_tempodb_client
-    TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+    # TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+    TempoDB::Client.new('fisi', 'a68ffbe8f6fe4fb3bbda2782002680f0', '3fe37f49b1bb4ae481dec13932c9bb92')
   end
 
   # @param [TempoDB::Client] client
@@ -252,12 +259,27 @@ class DataGenCLI < Thor
     #Choose arbitrarily late time for last in the series
     query_end = Time.utc(2020, 1, 1)
 
-    keys = [key]
+    # keys = [key]
 
     #More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
-    returned_data = client.read(query_start, query_end, :keys => keys, :interval => "year", :function => "count")
+    # returned_data = client.read_data(key, query_start, query_end, options={rollup_function: 'count', rollup_period: '1year'})
 
-    returned_data[0].summary.count
+    # returned_data = client.read_data(key, query_start, query_end, :rollup_function => 'count', :rollup_period => '1year')
+
+    response = client.get_summary(key, query_start, query_end)
+
+    # returned_data = client.read(query_start, query_end, :keys => keys, :interval => "year", :function => "count")
+
+    # count = 0
+    # returned_data.each do |datapoint|
+    #   puts "#{datapoint.ts}: #{datapoint.value}"
+    #   count += datapoint.value
+    # end
+
+    # puts "Finished!"
+
+    # returned_data[0].summary.count
+    response.summary['count'] || 0
   end
 
 end
