@@ -13,7 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
-//= require turbolinks
 //= require d3.v3
 //= require nv.d3.js
 //= require stream_layers
