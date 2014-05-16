@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'parallel'
 require 'bundler/setup'
+require 'csv'
 Bundler.require(:default, :development)
 
 require_relative '../lib/datagen'
@@ -209,7 +210,7 @@ class DataGenCLI < Thor
       series = client.get_series(key)
       does_not_exist = false
     rescue TempoDB::TempoDBClientError => msg
-      put msg.to_s
+      puts msg.to_s
     end
 
 
@@ -239,9 +240,19 @@ class DataGenCLI < Thor
   # @return [Range]
   def generate_data(start_time, end_time, count)
     interval = (end_time.to_f - start_time.to_f) / count
+
+
+    # CSV.open("myfile.csv", "w") do |csv|
+    #   Range.new(start_time, end_time).step(interval).map do |t|
+    #     TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
+    #     csv << [Time.at(t).utc.to_datetime.rfc3339(3), rand(100)]
+    #   end
+    # end
+
     Range.new(start_time, end_time).step(interval).map do |t|
       TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
     end
+
   end
 
   # @return [TempoDB::Client]
