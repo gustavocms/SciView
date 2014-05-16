@@ -1,8 +1,10 @@
 class DatasetsController < ApplicationController
   respond_to :json
 
+  # return a list of available series
   def index
-    respond_with Dataset.all(params[:id])
+    # respond_with Dataset.all(params[:id])
+    respond_with Dataset.all
   end
 
   def show
