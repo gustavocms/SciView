@@ -1,7 +1,7 @@
 class Dataset
   class<<self
-    def all
-      get_tempodb_client.get_series
+    def all(series_key)
+      get_tempodb_client.get_series(series_key)
     end
 
     def for_series(name)
@@ -35,7 +35,8 @@ class Dataset
     [{ key: @key, values: get_data_array(@client, @key, @start, @stop, opts)}]
   end
 
-
+  private
+  # @return TempoDB::Client
   def get_tempodb_client
     TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
   end

@@ -2,7 +2,7 @@ class DatasetsController < ApplicationController
   respond_to :json
 
   def index
-    respond_with Dataset.all
+    respond_with Dataset.all(params[:id])
   end
 
   def show
