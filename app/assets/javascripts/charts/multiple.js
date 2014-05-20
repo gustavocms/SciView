@@ -372,6 +372,7 @@
                 pendingUpdateRequest = null;
 
             function updateChart() {
+              return false;
                 if (pendingUpdateRequest) {
                     pendingUpdateRequest.abort();
                 }
@@ -611,34 +612,39 @@
       $.ajax({
         url: $(el).data("source-url"),
         success: function(data) {
-            var values, chartData, formatString;
-
-            values = data[0].values.map(function(elem) {
+          var formatString;
+          var chartData = []
+          $.each(data, function(i, series_data){
+            var values;
+            values = series_data.values.map(function(elem) {
                 return {x: new Date(elem.ts),
                         y: elem.value};
             });
+            chartData.push( { key: series_data.key,
+                           values: values } );
 
-            chartData = [{ key: data[0].key,
-                           values: values }];
-            nv.addGraph(function() {
-                formatString = '%-I:%M:%S:%L%p';
+          });
 
-                chart.xAxis.tickFormat(function(d) {
-                    return d3.time.format(formatString)(new Date(d));
-                });
+          console.log(chartData)
 
-                chart.x2Axis.tickFormat(function(d) {
-                    return d3.time.format(formatString)(new Date(d));
-                });
+          nv.addGraph(function() {
+              formatString = '%-I:%M:%S:%L%p';
 
-                chart.yAxis.tickFormat(d3.format(',.2f'));
-                chart.y2Axis.tickFormat(d3.format(',.2f'));
-                console.log(id +' svg')
-                d3.select(id +' svg').datum(chartData).call(chart);
+              chart.xAxis.tickFormat(function(d) {
+                  return d3.time.format(formatString)(new Date(d));
+              });
 
-                nv.utils.windowResize(chart.update);
+              chart.x2Axis.tickFormat(function(d) {
+                  return d3.time.format(formatString)(new Date(d));
+              });
 
-                return chart;
+              chart.yAxis.tickFormat(d3.format(',.2f'));
+              chart.y2Axis.tickFormat(d3.format(',.2f'));
+              d3.select(id +' svg').datum(chartData).call(chart);
+
+              nv.utils.windowResize(chart.update);
+
+              return chart;
             });
           }
         });

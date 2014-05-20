@@ -5,7 +5,11 @@ SciView::Application.routes.draw do
       get :multiple
     end
   end
-  resources :datasets, only: [:index, :show]
+  resources :datasets, only: [:index, :show] do
+    collection do
+      get :multiple
+    end
+  end
 
   devise_for :users
   get "d3/index"

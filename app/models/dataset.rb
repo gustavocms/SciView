@@ -2,6 +2,26 @@ class Dataset
   include Concerns::Tempo
   class<<self
 
+    def multiple_series(start, stop, series)
+      start ||= Time.utc(1999, 1, 1)
+      stop ||= Time.utc(2020, 1, 1)
+      series_names = series.values
+      cursor = get_tempodb_client.read_multi(start, stop, keys: series_names)
+      return_hash = {}
+      
+      series_names.each do |sn|
+        return_hash.merge!(sn.to_s => {key: sn.to_s, values: []})
+      end
+
+      cursor.each do |datapoint|
+        j = datapoint.as_json
+        serie = return_hash[j['value'].keys[0]]
+        serie[:values] << { value: j['value'].values[0], ts: j['ts'] }
+      end 
+      
+      return_hash
+    end
+
     def all
       client = get_tempodb_client
       cursor = client.list_series()

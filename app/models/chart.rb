@@ -2,11 +2,10 @@ class Chart
   attr_accessor :name, :dataset_url
 
   def self.for_datasets(datasets)
-    [].tap do |charts|
-      datasets.each do |_, dataset|
-        charts << for_dataset(dataset)
-      end
-    end
+    chart = new
+    chart.name = "Chart for #{datasets.values.join(',')}"
+    chart.dataset_url = Rails.application.routes.url_helpers.multiple_datasets_path(datasets)
+    chart
   end
 
   def self.for_dataset(dataset)

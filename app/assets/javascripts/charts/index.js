@@ -46,7 +46,7 @@ $(document).ready(function() {
         var url = "/charts/multiple?"
         $(".chart_dataset").each(function function_name (i, el) {
           var obj = {};
-          obj["series_" + i] = $(el).val();
+          obj["series_" + (i + 1)] = $(el).val();
           series.push($.param(obj));
         });
         window.location = url + series.join('&')
