@@ -1,9 +1,9 @@
 class Dataset
+  include Concerns::Tempo
   class<<self
 
     def all
-      # get_tempodb_client.get_series
-      client = TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+      client = get_tempodb_client
       cursor = client.list_series()
       return_array = []
       cursor.each do |series|
@@ -45,10 +45,6 @@ class Dataset
   end
 
   private
-  # @return TempoDB::Client
-  def get_tempodb_client
-    TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
-  end
 
   # @param client [TempoDB::Client]
   def get_data_array(client, key, start, stop, opts)
