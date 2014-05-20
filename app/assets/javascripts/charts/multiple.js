@@ -625,8 +625,6 @@
 
           });
 
-          console.log(chartData)
-
           nv.addGraph(function() {
               formatString = '%-I:%M:%S:%L%p';
 
