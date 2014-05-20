@@ -1,7 +1,16 @@
 class Dataset
   class<<self
+
     def all
-      get_tempodb_client.get_series
+      # get_tempodb_client.get_series
+      client = TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+      cursor = client.list_series()
+      return_array = []
+      cursor.each do |series|
+        return_array << series
+      end
+
+      return_array.to_json
     end
 
     def for_series(name)
@@ -35,7 +44,8 @@ class Dataset
     [{ key: @key, values: get_data_array(@client, @key, @start, @stop, opts)}]
   end
 
-
+  private
+  # @return TempoDB::Client
   def get_tempodb_client
     TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
   end

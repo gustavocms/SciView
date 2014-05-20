@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'parallel'
 require 'bundler/setup'
+require 'csv'
 Bundler.require(:default, :development)
 
 require_relative '../lib/datagen'
@@ -20,15 +21,20 @@ class DataGenCLI < Thor
 
   def create(key)
     count = options[:count]
-    count = count > 1 ? count - 1 : count # fix for off by one error
+    count = count > 1 ? count - 1 : count # "fix" for off by one error
 
     operation_start_time = Time.now
 
+    # Start generated dataset right now
     data_start_time = Chronic.parse(options[:start_time]) || Time.now
+
+    # add a millisecond per data point
     data_end_time = Chronic.parse(options[:end_time]) || data_start_time + (0.001 * count)
     client = get_tempodb_client
 
+    # See if this key already exists in TempoDB
     series = check_existing_set(client, key, options)
+
     initial_count = get_series_count(client, series.key)
     puts "Total data points in key: #{initial_count}"
 
@@ -205,11 +211,12 @@ class DataGenCLI < Thor
   # @return [TempoDB::Series]
   def check_existing_set(client, key, options)
     does_not_exist = true
+
     begin
       series = client.get_series(key)
       does_not_exist = false
     rescue TempoDB::TempoDBClientError => msg
-      put msg.to_s
+      puts msg.to_s
     end
 
 
@@ -224,7 +231,6 @@ class DataGenCLI < Thor
       elsif options[:append]
         say "Series for key \"#{key}\" already exists. --append was used so data will be added to existing series", :yellow
         # series is already set
-        # series = series.first
 
       else
         say "Series for key \"#{key}\" already exists. (Use --force to overwrite or --append to add new data to existing series)", :red
@@ -239,9 +245,19 @@ class DataGenCLI < Thor
   # @return [Range]
   def generate_data(start_time, end_time, count)
     interval = (end_time.to_f - start_time.to_f) / count
+
+
+    # CSV.open("myfile.csv", "w") do |csv|
+    #   Range.new(start_time, end_time).step(interval).map do |t|
+    #     TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
+    #     csv << [Time.at(t).utc.to_datetime.rfc3339(3), rand(100)]
+    #   end
+    # end
+
     Range.new(start_time, end_time).step(interval).map do |t|
       TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
     end
+
   end
 
   # @return [TempoDB::Client]
