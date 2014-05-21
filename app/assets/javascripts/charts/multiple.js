@@ -372,7 +372,6 @@
                 pendingUpdateRequest = null;
 
             function updateChart() {
-              return false;
                 if (pendingUpdateRequest) {
                     pendingUpdateRequest.abort();
                 }
@@ -384,16 +383,27 @@
                     startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
 
                 pendingUpdateRequest = $.ajax({
-                    url: $(".chart").data("source-url") + "?count=960" + startStopQuery,
+                    url: $(".chart").data("source-url") + "&count=960" + startStopQuery,
                     success: function(data) {
+                        var chartData;
                         pendingUpdateRequest = null;
-                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap'),
-                            values = data[0].values.map(function(elem) {
-                                return {x: new Date(elem.ts),
-                                        y: elem.value};
-                            }),
-                            chartData = [{ key: data[0].key,
-                                           values: values }];
+
+                        chartData = [];
+
+                        $.each(data, function(i, series_data){
+                          var values;
+                          values = series_data.values.map(function(elem) {
+                              return {x: new Date(elem.ts),
+                                      y: elem.value};
+                          });
+                          chartData.push( { key: series_data.key,
+                                         values: values } );
+
+                        });
+                        console.log(chartData)
+                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
+                        
+  
 
                         // Update Main (Focus)
                         focusLinesWrap
