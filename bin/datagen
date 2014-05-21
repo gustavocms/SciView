@@ -11,6 +11,8 @@ require_relative '../lib/datagen'
 # A CLI tool for generating sample datasets
 class DataGenCLI < Thor
 
+  NUM_OF_SINES = 10
+
   desc 'create KEY', 'Generate a test dataset for a given key'
   option :count, required: true, type: :numeric
   option :start_time
@@ -30,6 +32,8 @@ class DataGenCLI < Thor
 
     # add a millisecond per data point
     data_end_time = Chronic.parse(options[:end_time]) || data_start_time + (0.001 * count)
+
+    graph_type = options[:type]
     client = get_tempodb_client
 
     # See if this key already exists in TempoDB
@@ -40,26 +44,12 @@ class DataGenCLI < Thor
 
     say "Creating #{count + 1} data points starting at #{data_start_time}..."
 
-    data = generate_data(data_start_time, data_end_time, count)
+    data = generate_data(data_start_time, data_end_time, count, graph_type: graph_type)
 
     batch_size = 2000
     processes = 1
     threads = 4
-    data_array = []
-    data.each_slice(batch_size) { |d| data_array << d}
-
-    upload_time_start = Time.now
-    Parallel.each(data_array, in_processes: processes, in_threads: threads) do |d|
-      say "#{Time.now} -  Writing #{d.length} data points."
-      client_p = get_tempodb_client
-      client_p.write_data(key, d)
-    end
-    upload_time_end = Time.now
-    # data.each_slice(1_000).each do |d|
-    #   say "#{Time.now} -  Writing #{d.length} data points."
-    #   client.write_key(series.key, d)
-    # end
-
+    upload_time_start, upload_time_end = write_in_parallel(data, key, batch_size: batch_size, processes: processes, threads: threads)
 
     operation_end_time = Time.now
     operation_duration = operation_end_time - operation_start_time
@@ -77,6 +67,8 @@ class DataGenCLI < Thor
     query_durations = []
 
     polling_start_time = Time.now
+
+    # Continually query the newly created TempoDB series until all data points have shown up
     loop do
       query_start_time = Time.now
       latest_count = get_series_count(client, series.key)
@@ -130,10 +122,13 @@ class DataGenCLI < Thor
 
     # db_series = client.create_series(key)
     data = series.map { |t, v| TempoDB::DataPoint.new(t, v) }
-    data.each_slice(1_000).each do |d|
-      say "Writing #{d.length} data points."
-      client.write_key(db_series.key, d)
-    end
+    write_in_parallel(data, db_series.key)
+
+
+    # data.each_slice(1_000).each do |d|
+    #   say "Writing #{d.length} data points."
+    #   client.write_key(db_series.key, d)
+    # end
   end
 
   desc 'sample2 KEY', 'Generate the second sample dataset described in SCIV-4'
@@ -216,7 +211,9 @@ class DataGenCLI < Thor
       series = client.get_series(key)
       does_not_exist = false
     rescue TempoDB::TempoDBClientError => msg
-      puts msg.to_s
+      if msg.to_s != "Error: 403 Forbidden" # 403 Forbidden means key doesn't exist
+        puts msg.to_s
+      end
     end
 
 
@@ -243,7 +240,8 @@ class DataGenCLI < Thor
   end
 
   # @return [Range]
-  def generate_data(start_time, end_time, count)
+  def generate_data(start_time, end_time, count, graph_type: 'random')
+    duration = end_time - start_time
     interval = (end_time.to_f - start_time.to_f) / count
 
 
@@ -254,8 +252,17 @@ class DataGenCLI < Thor
     #   end
     # end
 
+
     Range.new(start_time, end_time).step(interval).map do |t|
-      TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
+      case graph_type
+        when 'sin'
+          value = Math.sin( Math::PI / duration * NUM_OF_SINES * t )
+        else
+          value = rand(100)
+      end
+      # value = random(100) # TempoDB::DataPoint.new(Time.at(t).utc, rand(100))
+
+      TempoDB::DataPoint.new(Time.at(t).utc, value)
     end
 
   end
@@ -275,28 +282,33 @@ class DataGenCLI < Thor
     #Choose arbitrarily late time for last in the series
     query_end = Time.utc(2020, 1, 1)
 
-    # keys = [key]
-
     #More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
-    # returned_data = client.read_data(key, query_start, query_end, options={rollup_function: 'count', rollup_period: '1year'})
-
-    # returned_data = client.read_data(key, query_start, query_end, :rollup_function => 'count', :rollup_period => '1year')
-
     response = client.get_summary(key, query_start, query_end)
 
-    # returned_data = client.read(query_start, query_end, :keys => keys, :interval => "year", :function => "count")
-
-    # count = 0
-    # returned_data.each do |datapoint|
-    #   puts "#{datapoint.ts}: #{datapoint.value}"
-    #   count += datapoint.value
-    # end
-
-    # puts "Finished!"
-
-    # returned_data[0].summary.count
     response.summary['count'] || 0
   end
+
+  # @param data [Range]
+  # @param key [String]
+  def write_in_parallel(data, key, batch_size: 2000, processes: 1, threads: 4)
+
+    data_array = []
+    data.each_slice(batch_size) { |d| data_array << d}
+
+    upload_time_start = Time.now
+
+    Parallel.each(data_array, in_processes: processes, in_threads: threads) do |d|
+      say "#{Time.now} -  Writing #{d.length} data points."
+      client_p = get_tempodb_client
+      client_p.write_data(key, d)
+    end
+
+    upload_time_end = Time.now
+
+    return upload_time_start, upload_time_end
+
+  end
+
 
 end
 
