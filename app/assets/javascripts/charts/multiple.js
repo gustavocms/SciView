@@ -136,6 +136,7 @@
             //------------------------------------------------------------
             // Setup containers and skeleton of chart
 
+            
             var wrap = container.selectAll('g.nv-wrap.nv-lineWithFocusChart').data([data]);
             var gEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-lineWithFocusChart').append('g');
             var g = wrap.select('g');
@@ -371,7 +372,8 @@
             var pendingChartUpdate = null,
                 pendingUpdateRequest = null;
 
-            function updateChart() {
+            function updateChart(disabled_serie) {
+                console.log(disabled_serie)
                 if (pendingUpdateRequest) {
                     pendingUpdateRequest.abort();
                 }
@@ -381,7 +383,6 @@
                     startTime = new Date(extent[0]).toISOString(),
                     stopTime = new Date(extent[1]).toISOString(),
                     startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
-
 
                 pendingUpdateRequest = $.ajax({
                     url: $(".chart").data("source-url") + "&count=960" + startStopQuery,
@@ -397,8 +398,11 @@
                               return {x: new Date(elem.ts),
                                       y: elem.value};
                           });
-                          chartData.push( { key: series_data.key,
-                                         values: values } );
+                          if (!disabled_serie.match(series_data.key)) {
+                            chartData.push( { key: series_data.key,
+                                              values: values } );                            
+                          };
+                          
 
                         });
                         var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
@@ -426,10 +430,12 @@
             }
 
             function queueChartUpdate() {
+                var disabled_serie = d3.select('.nv-series.disabled').empty() ? '' : d3.select('.nv-series.disabled').text()
+
                 if (pendingChartUpdate) {
                     window.clearTimeout(pendingChartUpdate);
                 }
-                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(); }, 500);
+                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(disabled_serie); }, 500);
             }
 
             function onBrush() {
@@ -634,7 +640,6 @@
                            values: values } );
 
           });
-
           nv.addGraph(function() {
               formatString = '%-I:%M:%S:%L%p';
 
