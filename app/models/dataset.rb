@@ -2,11 +2,18 @@ class Dataset
   include Concerns::Tempo
   class<<self
 
-    def multiple_series(start, stop, series)
+    def multiple_series(start, stop, series, count=nil)
       start ||= Time.utc(1999, 1, 1)
       stop ||= Time.utc(2020, 1, 1)
+      
       series_names = series.values
-      cursor = get_tempodb_client.read_multi(start, stop, keys: series_names)
+      
+      options = {}
+      
+      options.merge!(keys: series_names)
+      options.merge!(count: count) if count
+      cursor = get_tempodb_client.read_multi(start, stop, options)
+
       return_hash = {}
       
       series_names.each do |sn|

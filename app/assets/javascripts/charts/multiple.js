@@ -382,6 +382,7 @@
                     stopTime = new Date(extent[1]).toISOString(),
                     startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
 
+
                 pendingUpdateRequest = $.ajax({
                     url: $(".chart").data("source-url") + "&count=960" + startStopQuery,
                     success: function(data) {
@@ -400,7 +401,6 @@
                                          values: values } );
 
                         });
-                        console.log(chartData)
                         var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
                         
   
