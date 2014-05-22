@@ -373,7 +373,6 @@
                 pendingUpdateRequest = null;
 
             function updateChart(disabled_serie) {
-                console.log(disabled_serie)
                 if (pendingUpdateRequest) {
                     pendingUpdateRequest.abort();
                 }
@@ -401,6 +400,9 @@
                           if (!disabled_serie.match(series_data.key)) {
                             chartData.push( { key: series_data.key,
                                               values: values } );                            
+                          } else {
+                            chartData.push( { key: series_data.key,
+                                              values: [] } );                              
                           };
                           
 
