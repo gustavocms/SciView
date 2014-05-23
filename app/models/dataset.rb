@@ -30,13 +30,9 @@ class Dataset
 
 
   def as_json(opts = {})
-    # opts[:keys] = [@key]
-
     if count
-      opts[:interval] = "#{((@stop - @start) / 60.0) / count}min"
-      opts[:function] = 'mean'
-    else
-      opts[:interval] = 'raw'
+      opts[:rollup_period] = "PT#{"%.2f" % ((@stop - @start) / count)}S"
+      opts[:rollup_function] = 'mean'
     end
 
     [{ key: @key, values: @client.read_data(@key, @start, @stop, opts)}]
