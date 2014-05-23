@@ -2,26 +2,25 @@ class Dataset
   class<<self
 
     def all
-      # get_tempodb_client.get_series
-      client = TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
-      cursor = client.list_series()
-      return_array = []
-      cursor.each do |series|
-        return_array << series
-      end
-
-      return_array.to_json
+      tempodb_client.list_series
     end
 
     def for_series(name)
       new(name)
+    end
+
+    # @return TempoDB::Client
+    def tempodb_client
+      @tempodb_client ||= TempoDB::Client.new(ENV['TEMPODB_API_ID'],
+                                              ENV['TEMPODB_API_KEY'],
+                                              ENV['TEMPODB_API_SECRET'])
     end
   end
 
   attr_accessor :start, :stop, :count
 
   def initialize(series_name)
-    @client = get_tempodb_client
+    @client = Dataset.tempodb_client
     @key = URI.decode(series_name)
 
     # Choose arbitrary time for start and stop by default
@@ -40,22 +39,6 @@ class Dataset
       opts[:interval] = 'raw'
     end
 
-    # [{ key: @key, values: @client.read(@start, @stop, opts).first.data }]
-    [{ key: @key, values: get_data_array(@client, @key, @start, @stop, opts)}]
+    [{ key: @key, values: @client.read_data(@key, @start, @stop, opts)}]
   end
-
-  private
-  # @return TempoDB::Client
-  def get_tempodb_client
-    TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
-  end
-
-  # @param client [TempoDB::Client]
-  def get_data_array(client, key, start, stop, opts)
-    response = client.read_data(key, start, stop, opts)
-    data = []
-    response.each { |d| data << d}
-    data
-  end
-
 end
