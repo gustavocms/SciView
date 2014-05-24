@@ -285,6 +285,15 @@ $(document).ready(function() {
 
             onBrush();
 
+
+            var noZoomButton = d3.select('#chart').append('button')
+            .text("no zoom")
+            .on('click', function() {
+                brushExtent = null;
+                onBrush();
+                updateBrushBG();
+            });
+
             //------------------------------------------------------------
 
 
