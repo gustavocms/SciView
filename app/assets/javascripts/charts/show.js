@@ -292,7 +292,10 @@ $(document).ready(function() {
             // Un-zoom the top graph
             function clearBrush() {
                 brush.clear();
+                console.log(gBrush.selectAll(".resize"));
+                gBrush.selectAll(".resize").style("display", "none");
                 skipTransitionsFor(onBrush)();
+                window.brush = brush;
             }
 
             var noZoomButton = d3.select('#chart').append('button')
