@@ -144,7 +144,9 @@ $(document).ready(function() {
 
             var focusEnter = gEnter.append('g').attr('class', 'nv-focus');
 
-            // Invisible target to unzoom the top graph (svg group click events are not supported).
+            // Invisible target to unzoom the top graph
+            // (ideally, focusEnter would be used as the target, but 
+            // click events are not supported on svg groups).
             // The rectangle fills the extents of the top graph.
             focusEnter.append('rect')
                 .attr('class', 'clearBrushTarget')
