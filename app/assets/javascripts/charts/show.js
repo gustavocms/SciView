@@ -143,6 +143,20 @@ $(document).ready(function() {
             gEnter.append('g').attr('class', 'nv-legendWrap');
 
             var focusEnter = gEnter.append('g').attr('class', 'nv-focus');
+
+            // Invisible target to unzoom the top graph (svg group click events are not supported).
+            // The rectangle fills the extents of the top graph.
+            focusEnter.append('rect')
+                .attr('class', 'clearBrushTarget')
+                .style('fill', 'white')
+                .style('opacity', 0)
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', availableWidth)
+                .attr('height', availableHeight1)
+                .on('click', function(){ console.log('target clicked'); clearBrush(); });
+
+
             focusEnter.append('g').attr('class', 'nv-x nv-axis');
             focusEnter.append('g').attr('class', 'nv-y nv-axis');
             focusEnter.append('g').attr('class', 'nv-linesWrap');
