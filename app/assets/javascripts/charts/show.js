@@ -154,7 +154,7 @@ $(document).ready(function() {
                 .attr('y', 0)
                 .attr('width', availableWidth)
                 .attr('height', availableHeight1)
-                .on('click', function(){ console.log('target clicked'); clearBrush(); });
+                .on('click', clearBrush);
 
 
             focusEnter.append('g').attr('class', 'nv-x nv-axis');
@@ -306,7 +306,10 @@ $(document).ready(function() {
             // Un-zoom the top graph
             function clearBrush() {
                 brush.clear();
+                // make handles invisible
                 gBrush.selectAll(".resize").style("display", "none");
+                // reset extents rectangle (re-enables drag-to-select behavior)
+                gBrush.select('rect.extent').attr('width', 0);
                 skipTransitionsFor(onBrush)();
             }
 
