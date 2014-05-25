@@ -245,16 +245,20 @@ $(document).ready(function() {
 
             //------------------------------------------------------------
             // Setup Brush
+            
+            //When brushing, turn off transitions because chart needs to change immediately.
+            function skipTransitionsFor(someFunction) {
+                return function(){
+                    var oldTransition = chart.transitionDuration();
+                    chart.transitionDuration(0);
+                    someFunction();
+                    chart.transitionDuration(oldTransition);
+                };
+            };
 
             brush
             .x(x2)
-            .on('brush', function() {
-                //When brushing, turn off transitions because chart needs to change immediately.
-                var oldTransition = chart.transitionDuration();
-                chart.transitionDuration(0);
-                onBrush();
-                chart.transitionDuration(oldTransition);
-            });
+            .on('brush', skipTransitionsFor(onBrush));
 
             if (brushExtent) brush.extent(brushExtent);
 
@@ -285,14 +289,15 @@ $(document).ready(function() {
 
             onBrush();
 
+            // Un-zoom the top graph
+            function clearBrush() {
+                brush.clear();
+                skipTransitionsFor(onBrush)();
+            }
 
             var noZoomButton = d3.select('#chart').append('button')
             .text("no zoom")
-            .on('click', function() {
-                brushExtent = null;
-                onBrush();
-                updateBrushBG();
-            });
+            .on('click', clearBrush);
 
             //------------------------------------------------------------
 
