@@ -313,10 +313,6 @@ $(document).ready(function() {
                 skipTransitionsFor(onBrush)();
             }
 
-            var noZoomButton = d3.select('#chart').append('button')
-            .text("no zoom")
-            .on('click', clearBrush);
-
             //------------------------------------------------------------
 
 
