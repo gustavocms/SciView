@@ -153,12 +153,15 @@ $(document).ready(function() {
             var focusTarget = focusEnter.append('rect')
                 .attr('class', 'focusTarget')
                 .style('fill', 'white')
-                .style('opacity', 0)
+                .style('opacity', 0.5)
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', availableWidth)
                 .attr('height', availableHeight1)
-                .on('click', clearBrush);
+                .on('click', function(){
+                    if (d3.event.defaultPrevented) return;
+                    clearBrush();
+                });
 
 
             focusEnter.append('g').attr('class', 'nv-x nv-axis');
@@ -355,18 +358,31 @@ $(document).ready(function() {
             .on("dragend", dragended);
 
             function dragstarted() {
-                console.log('dragstarted');
+                d3.event.sourceEvent.stopPropagation();
             };
 
-            function dragged() {
-                console.log('dragged');
+            function dragged(){
+                console.log(portionShown())
+                var extent_rectangle = gBrush.select('.extent');
+                var dx = d3.event.dx;
+                var current_x = parseInt(extent_rectangle.attr('x'));
+                extent_rectangle.attr('stroke', 'red');
+                extent_rectangle.attr('x', current_x + (dx * portionShown()));
             };
 
             function dragended() {
-                console.log('dragended');
             };
 
+            function portionShown() {
+                var x2d    = x2.domain();
+                var extent = brush.empty() ? x2 : brush.extent();
+                return (extent[1] - extent[0]) / (x2d[1] - x2d[0]);
+            };
+
+            function portionDragged(dx) { return dx / availableWidth; }
+
             focusTarget.call(drag);
+            focusTarget.attr('stroke', 'red');
 
 
 
