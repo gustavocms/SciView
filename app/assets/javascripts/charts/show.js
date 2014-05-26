@@ -148,8 +148,10 @@ $(document).ready(function() {
             // (ideally, focusEnter would be used as the target, but 
             // click events are not supported on svg groups).
             // The rectangle fills the extents of the top graph.
-            focusEnter.append('rect')
-                .attr('class', 'clearBrushTarget')
+            //
+            console.log(drag);
+            var focusTarget = focusEnter.append('rect')
+                .attr('class', 'focusTarget')
                 .style('fill', 'white')
                 .style('opacity', 0)
                 .attr('x', 0)
@@ -344,6 +346,28 @@ $(document).ready(function() {
             .attr('transform', 'translate(0,' + y2.range()[0] + ')');
 
             //------------------------------------------------------------
+
+            // drag-to-pan behavior
+            var drag = d3.behavior.drag()
+            .origin(function(d){ return d; })
+            .on("dragstart", dragstarted)
+            .on("drag", dragged)
+            .on("dragend", dragended);
+
+            function dragstarted() {
+                console.log('dragstarted');
+            };
+
+            function dragged() {
+                console.log('dragged');
+            };
+
+            function dragended() {
+                console.log('dragended');
+            };
+
+            focusTarget.call(drag);
+
 
 
             //============================================================
