@@ -1,5 +1,12 @@
 $(document).ready(function() {
-    $("#chart_dataset").autocomplete({
+    $('#add_more_data_sets').click(function(e){
+      e.preventDefault()
+      var clone = $('.field:first').clone();
+      $(clone).find('.chart_dataset').val('')
+      $(clone).insertAfter($('.field:last'))
+    });
+
+    $(".chart_dataset").autocomplete({
         minLength: 0,
 
         source: function(request, response) {
@@ -35,6 +42,13 @@ $(document).ready(function() {
 
     $("#view_chart").click(function(e) {
         e.preventDefault();
-        window.location = "/charts/" + $("#chart_dataset").val();
+        var series = []
+        var url = "/charts/multiple?"
+        $(".chart_dataset").each(function function_name (i, el) {
+          var obj = {};
+          obj["series_" + (i + 1)] = $(el).val();
+          series.push($.param(obj));
+        });
+        window.location = url + series.join('&')
     })
 });
