@@ -1,7 +1,15 @@
 SciView::Application.routes.draw do
 
-  resources :charts, only: [:index, :show]
-  resources :datasets, only: [:index, :show]
+  resources :charts, only: [:index, :show] do
+    collection do
+      get :multiple
+    end
+  end
+  resources :datasets, only: [:index, :show] do
+    collection do
+      get :multiple
+    end
+  end
 
   devise_for :users
   get "d3/index"

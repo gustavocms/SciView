@@ -7,11 +7,12 @@
         <div class="field">
           <%= f.label :dataset %>
           <div class="ui input">
-            <%= f.text_field :dataset, placeholder: "Series Key" %>
+            <%= f.text_field :dataset, placeholder: "Series Key", class: 'chart_dataset' %>
           </div>
         </div>
-        <div>
+        <div class="row">
           <%= f.submit "Graph it!", class: "ui submit button", id: "view_chart" %>
+          <%= link_to "More Datasets", '', class: "ui submit button", id: "add_more_data_sets" %>
         </div>
       <% end %>
     </div>

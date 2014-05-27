@@ -26,7 +26,6 @@ $(document).ready(function() {
             url: tempoURI,
             async: false,
             success: function(data) {
-                console.log(data);
                 var jsonObj=data;
                 var arrayWithDateObjs = [];
 

@@ -1,9 +1,36 @@
 class Dataset
+  include Concerns::Tempo
   class<<self
 
+    def multiple_series(start, stop, series, count=nil)
+      start ||= Time.utc(1999, 1, 1)
+      stop ||= Time.utc(2020, 1, 1)
+      
+      series_names = series.values
+      
+      options = {}
+      
+      options.merge!(keys: series_names)
+      options.merge!(count: count) if count
+      cursor = get_tempodb_client.read_multi(start, stop, options)
+
+      return_hash = {}
+      
+      series_names.each do |sn|
+        return_hash.merge!(sn.to_s => {key: sn.to_s, values: []})
+      end
+
+      cursor.each do |datapoint|
+        j = datapoint.as_json
+        serie = return_hash[j['value'].keys[0]]
+        serie[:values] << { value: j['value'].values[0], ts: j['ts'] }
+      end 
+      
+      return_hash
+    end
+
     def all
-      # get_tempodb_client.get_series
-      client = TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+      client = get_tempodb_client
       cursor = client.list_series()
       return_array = []
       cursor.each do |series|
@@ -45,10 +72,6 @@ class Dataset
   end
 
   private
-  # @return TempoDB::Client
-  def get_tempodb_client
-    TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
-  end
 
   # @param client [TempoDB::Client]
   def get_data_array(client, key, start, stop, opts)
