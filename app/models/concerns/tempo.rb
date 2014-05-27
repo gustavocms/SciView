@@ -3,7 +3,7 @@ module Concerns
     extend ActiveSupport::Concern
 
     included do
-      self.extend Concerns::Tempo
+      extend Concerns::Tempo
     end
 
     private
@@ -13,6 +13,5 @@ module Concerns
                                               ENV['TEMPODB_API_KEY'],
                                               ENV['TEMPODB_API_SECRET'])
     end
-
   end
 end

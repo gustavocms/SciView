@@ -5,7 +5,8 @@ class ChartsController < ApplicationController
   end
 
   def multiple
-    @charts = Chart.for_datasets(params.select { |k,v| k.to_s =~ /series/ && v.present? })
+    series_params = params.select { |k, v| k.to_s =~ /series/ && v.present? }
+    @charts = Chart.for_datasets(series_params)
   end
 
   def show

@@ -1,27 +1,23 @@
 class Dataset
   include Concerns::Tempo
   class<<self
-
     def all
       tempodb_client.list_series
     end
 
-    def multiple_series(start, stop, series, count=nil)
+    def multiple_series(start, stop, series, count = nil)
       start ||= Time.utc(1999, 1, 1)
       stop ||= Time.utc(2020, 1, 1)
 
       series_names = series.values
 
-      options = {}
-
-      options.merge!(keys: series_names)
-      options.merge!(count: count) if count
-      cursor = get_tempodb_client.read_multi(start, stop, options)
+      options = { keys: series_names }
+      options[:count] = count if count
+      cursor = tempodb_client.read_multi(start, stop, options)
 
       return_hash = {}
-
       series_names.each do |sn|
-        return_hash.merge!(sn.to_s => {key: sn.to_s, values: []})
+        return_hash.merge!(sn.to_s => { key: sn.to_s, values: [] })
       end
 
       cursor.each do |datapoint|
@@ -51,13 +47,12 @@ class Dataset
     @stop = @client.single_value(@key, ts: future, direction: 'before').data.ts
   end
 
-
   def as_json(opts = {})
     if count
-      opts[:rollup_period] = "PT#{"%.2f" % ((@stop - @start) / count)}S"
+      opts[:rollup_period] = "PT#{'%.2f'.format((@stop - @start) / count)}S"
       opts[:rollup_function] = 'mean'
     end
 
-    [{ key: @key, values: tempodb_client.read_data(@key, @start, @stop, opts)}]
+    [{ key: @key, values: tempodb_client.read_data(@key, @start, @stop, opts) }]
   end
 end

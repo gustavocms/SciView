@@ -2,7 +2,7 @@ namespace :data do
 
   desc 'lists all series in TempoDB (or at least the first 5000)'
   task :list_series do
-    client = get_tempodb_client
+    client = tempodb_client
     series_list = client.get_series()
     puts series_list
     puts series_list.count
@@ -11,7 +11,7 @@ namespace :data do
 
   desc 'creates new series and sample data for tempodb'
   task :create_series do
-    client = get_tempodb_client
+    client = tempodb_client
 
     key = 'my-custom-key'
     create_series(client, key)
@@ -20,7 +20,7 @@ namespace :data do
 
   desc 'Creates a bunch of tempodb series'
   task :create_multiple_series, :key_base, :count do |t, args|
-    client = get_tempodb_client
+    client = tempodb_client
     count = args[:count].to_i
     key_base = args[:key_base]
 
@@ -46,7 +46,7 @@ namespace :data do
 
   desc 'creates series and sample data for tempodb using random numbers'
   task :create_random_series do
-    client = get_tempodb_client
+    client = tempodb_client
 
     key = 'my-random-key'
     series1 = client.get_series(key: key)
@@ -71,7 +71,7 @@ namespace :data do
 
   desc 'creates series and sample data for tempodb to look like a sin wave'
   task :create_sin_series do
-    client = get_tempodb_client
+    client = tempodb_client
 
     key = 'my-sine-key'
     series1 = client.get_series(key: key)
@@ -100,7 +100,7 @@ namespace :data do
   desc 'deletes a tempodb series'
   task :delete_series, :key do |t, args|
 
-    client = get_tempodb_client
+    client = tempodb_client
     key = args[:key]
     delete_series(client, key)
 
@@ -109,7 +109,7 @@ namespace :data do
   desc 'deletes multiple tempodb series'
   task :delete_multiple_series, :key_base, :count do |t, args|
 
-    client = get_tempodb_client
+    client = tempodb_client
     count = args[:count].to_i
     key_base = args[:key_base]
 
@@ -137,7 +137,7 @@ namespace :data do
   desc 'reads series and sample data for tempodb using random numbers'
   task :read_series, :key do |t, args|
 
-    client = get_tempodb_client
+    client = tempodb_client
     key = args[:key] || 'my-random-key'
 
     #Choose arbitrarily early time for first in the series
@@ -202,11 +202,7 @@ namespace :data do
   end
 
   # @return [TempoDB::Client]
-  def get_tempodb_client
+  def tempodb_client
     TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
-
   end
-
-
-
 end

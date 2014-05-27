@@ -18,12 +18,17 @@ module DataGen
     attr_accessor :start_time, # Time-like object for the first data point
                   :end_time,   # Time-like object for the last data point
 
-    # Gaps in the data do not affect the `frequency` specified, or will reduce the total
-    # number of data points generated if `time_points` was specified
-                  :gap_freq,   # The probability, for each time point, that a data point
-                               # might be missing
-                  :gap_size    # The average size of a gap in the data, distributed along
-                               # a Poisson distribution
+                  # Gaps in the data do not affect the `frequency` specified, or will
+                  # reduce the total number of data points generated if `time_points` was
+                  # specified
+
+                  # The probability, for each time point, that a data point might be
+                  # missing
+                  :gap_freq,
+
+                  # The average size of a gap in the data, distributed along a Poisson
+                  # distribution
+                  :gap_size
 
     include Enumerable
 
