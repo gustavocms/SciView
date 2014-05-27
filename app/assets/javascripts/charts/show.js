@@ -149,7 +149,6 @@ $(document).ready(function() {
             // click events are not supported on svg groups).
             // The rectangle fills the extents of the top graph.
             //
-            console.log(drag);
             var focusTarget = focusEnter.append('rect')
                 .attr('class', 'focusTarget')
                 .style('fill', 'white')
@@ -353,25 +352,35 @@ $(document).ready(function() {
             // drag-to-pan behavior
             var drag = d3.behavior.drag()
             .origin(function(d){ return d; })
-            .on("dragstart", dragstarted)
+            .on("dragstart", dragStart)
             .on("drag", dragged)
-            .on("dragend", dragended);
+            .on("dragend", dragEnd);
 
-            function dragstarted() {
+            function dragStart() { 
                 d3.event.sourceEvent.stopPropagation();
+                gBrush.select('.extent').attr('stroke', 'red');
             };
 
             function dragged(){
-                console.log(portionShown())
-                var extent_rectangle = gBrush.select('.extent');
-                var dx = d3.event.dx;
-                var current_x = parseInt(extent_rectangle.attr('x'));
-                extent_rectangle.attr('stroke', 'red');
-                extent_rectangle.attr('x', current_x + (dx * portionShown()));
+                var extent_rectangle = gBrush.select('.extent'),
+                    dx               = d3.event.dx,
+                    current_x        = parseInt(extent_rectangle.attr('x'));
+                extent_rectangle.attr('x', current_x - (dx * portionShown()));
             };
 
-            function dragended() {
+            function dragEnd(){
+                // swap domain and range
+                var _x2            = d3.scale.linear()
+                                    .domain(x2.range())
+                                    .range(x2.domain()),
+                    current_extent = brush.extent(),
+                    new_x          = _x2(gBrush.select('rect.extent').attr('x')),
+                    offset         = new_x - current_extent[0];
+
+                brush.extent([new_x, current_extent[1] + offset]);
+                skipTransitionsFor(onBrush)();
             };
+
 
             function portionShown() {
                 var x2d    = x2.domain();
