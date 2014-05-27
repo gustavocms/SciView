@@ -152,7 +152,7 @@ $(document).ready(function() {
             var focusTarget = focusEnter.append('rect')
                 .attr('class', 'focusTarget')
                 .style('fill', 'white')
-                .style('opacity', 0.5)
+                .style('opacity', 0)
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', availableWidth)
