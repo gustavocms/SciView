@@ -8,8 +8,10 @@ module Concerns
 
     private
 
-    def get_tempodb_client
-      TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+    def tempodb_client
+      @tempodb_client ||= TempoDB::Client.new(ENV['TEMPODB_API_ID'],
+                                              ENV['TEMPODB_API_KEY'],
+                                              ENV['TEMPODB_API_SECRET'])
     end
 
   end

@@ -380,10 +380,11 @@ $(document).ready(function() {
                 var extent = brush.empty() ? x2.domain() : brush.extent(),
                     startTime = new Date(extent[0]).toISOString(),
                     stopTime = new Date(extent[1]).toISOString(),
+                    chartWidth = $('.nv-focus .nv-linesWrap .nv-line')[0].getBBox().width,
                     startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
 
                 pendingUpdateRequest = $.ajax({
-                    url: $("#chart").data("source-url") + "?count=960" + startStopQuery,
+                    url: $("#chart").data("source-url") + "?count=" + chartWidth + startStopQuery,
                     success: function(data) {
                         pendingUpdateRequest = null;
                         var focusLinesWrap = g.select('.nv-focus .nv-linesWrap'),
@@ -607,7 +608,7 @@ $(document).ready(function() {
 
 
     $.ajax({
-        url: $("#chart").data("source-url"),
+        url: $("#chart").data("source-url")+"?count=960",
         success: function(data) {
             var values, chartData, formatString;
 
