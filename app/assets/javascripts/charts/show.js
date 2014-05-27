@@ -463,33 +463,42 @@ $(document).ready(function() {
                     url: $("#chart").data("source-url") + "?count=960" + startStopQuery,
                     success: function(data) {
                         pendingUpdateRequest = null;
-                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap'),
-                            values = data[0].values.map(function(elem) {
+                        var values = data[0].values.map(function(elem) {
                                 return {x: new Date(elem.ts),
                                         y: elem.value};
                             }),
+
                             chartData = [{ key: data[0].key,
                                            values: values }];
 
                         // Update Main (Focus)
-                        focusLinesWrap
-                            .datum(
-                                chartData
-                                    .filter(function(d) { return !d.disabled; })
-                                    .map(function(d,i) {
-                                        return {
-                                            key: d.key,
-                                            values: d.values.filter(function(d,i) {
-                                                return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
-                                            })
-                                        };
-                                    })
-                            );
-
-                        focusLinesWrap.transition().duration(transitionDuration).call(lines);
+                        updateFocusChart(chartData, values, extent);
                     }
                 });
             }
+
+            // TODO: persist chartData, values, extent, etc. for smooth panning
+            function updateFocusChart(chartData, values, extent) {
+                focusLinesWrap()
+                    .datum(
+                        chartData
+                          .filter(function(d) { return !d.disabled; })
+                            .map(function(d,i) {
+                                return {
+                                    key: d.key,
+                                    values: d.values.filter(function(d,i) {
+                                        return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
+                                    })
+                                };
+                            })
+                    ).transition().duration(transitionDuration).call(lines);
+
+            };
+
+            function focusLinesWrap() {
+                return g.select('.nv-focus .nv-linesWrap');
+            };
+
 
             function queueChartUpdate() {
                 if (pendingChartUpdate) {
