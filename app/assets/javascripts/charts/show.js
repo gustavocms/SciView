@@ -379,8 +379,6 @@ $(document).ready(function() {
                 return (extent[1] - extent[0]) / (x2d[1] - x2d[0]);
             };
 
-            function portionDragged(dx) { return dx / availableWidth; }
-
             focusTarget.call(drag);
             focusTarget.attr('stroke', 'red');
 
