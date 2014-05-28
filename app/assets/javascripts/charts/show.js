@@ -143,6 +143,22 @@ $(document).ready(function() {
             gEnter.append('g').attr('class', 'nv-legendWrap');
 
             var focusEnter = gEnter.append('g').attr('class', 'nv-focus');
+
+            // Invisible target to unzoom the top graph
+            // (ideally, focusEnter would be used as the target, but 
+            // click events are not supported on svg groups).
+            // The rectangle fills the extents of the top graph.
+            focusEnter.append('rect')
+                .attr('class', 'clearBrushTarget')
+                .style('fill', 'white')
+                .style('opacity', 0)
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', availableWidth)
+                .attr('height', availableHeight1)
+                .on('click', clearBrush);
+
+
             focusEnter.append('g').attr('class', 'nv-x nv-axis');
             focusEnter.append('g').attr('class', 'nv-y nv-axis');
             focusEnter.append('g').attr('class', 'nv-linesWrap');
@@ -245,16 +261,20 @@ $(document).ready(function() {
 
             //------------------------------------------------------------
             // Setup Brush
+            
+            //When brushing, turn off transitions because chart needs to change immediately.
+            function skipTransitionsFor(someFunction) {
+                return function(){
+                    var oldTransition = chart.transitionDuration();
+                    chart.transitionDuration(0);
+                    someFunction();
+                    chart.transitionDuration(oldTransition);
+                };
+            };
 
             brush
             .x(x2)
-            .on('brush', function() {
-                //When brushing, turn off transitions because chart needs to change immediately.
-                var oldTransition = chart.transitionDuration();
-                chart.transitionDuration(0);
-                onBrush();
-                chart.transitionDuration(oldTransition);
-            });
+            .on('brush', skipTransitionsFor(onBrush));
 
             if (brushExtent) brush.extent(brushExtent);
 
@@ -284,6 +304,16 @@ $(document).ready(function() {
             gBrush.selectAll('.resize').append('path').attr('d', resizePath);
 
             onBrush();
+
+            // Un-zoom the top graph
+            function clearBrush() {
+                brush.clear();
+                // make handles invisible
+                gBrush.selectAll(".resize").style("display", "none");
+                // reset extents rectangle (re-enables drag-to-select behavior)
+                gBrush.select('rect.extent').attr('width', 0);
+                skipTransitionsFor(onBrush)();
+            }
 
             //------------------------------------------------------------
 

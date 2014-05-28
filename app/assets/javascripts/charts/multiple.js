@@ -148,6 +148,16 @@
             focusEnter.append('g').attr('class', 'nv-y nv-axis');
             focusEnter.append('g').attr('class', 'nv-linesWrap');
 
+            focusEnter.append('rect')
+                .attr('class', 'clearBrushTarget')
+                .style('fill', 'white')
+                .style('opacity', 0)
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', availableWidth)
+                .attr('height', availableHeight1)
+                .on('click', clearBrush);
+
             var contextEnter = gEnter.append('g').attr('class', 'nv-context');
             contextEnter.append('g').attr('class', 'nv-x nv-axis');
             contextEnter.append('g').attr('class', 'nv-y nv-axis');
@@ -246,16 +256,20 @@
 
             //------------------------------------------------------------
             // Setup Brush
+            
+            //When brushing, turn off transitions because chart needs to change immediately.
+            function skipTransitionsFor(someFunction) {
+                return function(){
+                    var oldTransition = chart.transitionDuration();
+                    chart.transitionDuration(0);
+                    someFunction();
+                    chart.transitionDuration(oldTransition);
+                };
+            };
 
             brush
             .x(x2)
-            .on('brush', function() {
-                //When brushing, turn off transitions because chart needs to change immediately.
-                var oldTransition = chart.transitionDuration();
-                chart.transitionDuration(0);
-                onBrush();
-                chart.transitionDuration(oldTransition);
-            });
+            .on('brush', skipTransitionsFor(onBrush));
 
             if (brushExtent) brush.extent(brushExtent);
 
@@ -285,6 +299,13 @@
             gBrush.selectAll('.resize').append('path').attr('d', resizePath);
 
             onBrush();
+
+            function clearBrush() {
+              brush.clear();
+              gBrush.selectAll(".resize").style("display", "none");
+              gBrush.select('rect.extent').attr('width', 0);
+              skipTransitionsFor(onBrush)();
+            }
 
             //------------------------------------------------------------
 
