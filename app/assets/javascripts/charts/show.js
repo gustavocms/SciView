@@ -362,12 +362,14 @@ $(document).ready(function() {
             .on("drag", dragged)
             .on("dragend", dragEnd);
 
+
             function dragStart() { 
                 d3.event.sourceEvent.stopPropagation();
                 gBrush.select('.extent').attr('stroke', 'red');
             };
 
             function dragged(){
+                if (brush.empty()) return;
                 var extent_rectangle = gBrush.select('.extent'),
                     dx               = d3.event.dx,
                     current_x        = parseFloat(extent_rectangle.attr('x'));

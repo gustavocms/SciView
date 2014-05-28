@@ -363,7 +363,7 @@
             };
 
             function dragged(){
-                console.log(d3.event)
+                if (brush.empty()) return;
                 var extent_rectangle = gBrush.select('.extent'),
                     dx               = d3.event.dx,
                     current_x        = parseFloat(extent_rectangle.attr('x'));
