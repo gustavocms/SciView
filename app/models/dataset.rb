@@ -16,7 +16,7 @@ class Dataset
 
       options.merge!(keys: series_names)
       options.merge!(count: count) if count
-      cursor = get_tempodb_client.read_multi(start, stop, options)
+      cursor = tempodb_client.read_multi(start, stop, options)
 
       return_hash = {}
 
