@@ -1,4 +1,4 @@
-$(document).ready(function() {
+  $(document).ready(function() {
     //============================================================
     // Adapted from NVD3's "lineWithFocusChart"
     //------------------------------------------------------------
@@ -136,6 +136,7 @@ $(document).ready(function() {
             //------------------------------------------------------------
             // Setup containers and skeleton of chart
 
+            
             var wrap = container.selectAll('g.nv-wrap.nv-lineWithFocusChart').data([data]);
             var gEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-lineWithFocusChart').append('g');
             var g = wrap.select('g');
@@ -143,29 +144,19 @@ $(document).ready(function() {
             gEnter.append('g').attr('class', 'nv-legendWrap');
 
             var focusEnter = gEnter.append('g').attr('class', 'nv-focus');
+            focusEnter.append('g').attr('class', 'nv-x nv-axis');
+            focusEnter.append('g').attr('class', 'nv-y nv-axis');
+            focusEnter.append('g').attr('class', 'nv-linesWrap');
 
-            // Invisible target to unzoom the top graph
-            // (ideally, focusEnter would be used as the target, but 
-            // click events are not supported on svg groups).
-            // The rectangle fills the extents of the top graph.
-            //
-            var focusTarget = focusEnter.append('rect')
-                .attr('class', 'focusTarget')
+            focusEnter.append('rect')
+                .attr('class', 'clearBrushTarget')
                 .style('fill', 'white')
                 .style('opacity', 0)
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', availableWidth)
                 .attr('height', availableHeight1)
-                .on('click', function(){
-                    if (d3.event.defaultPrevented) return;
-                    clearBrush();
-                });
-
-
-            focusEnter.append('g').attr('class', 'nv-x nv-axis');
-            focusEnter.append('g').attr('class', 'nv-y nv-axis');
-            focusEnter.append('g').attr('class', 'nv-linesWrap');
+                .on('click', clearBrush);
 
             var contextEnter = gEnter.append('g').attr('class', 'nv-context');
             contextEnter.append('g').attr('class', 'nv-x nv-axis');
@@ -309,14 +300,11 @@ $(document).ready(function() {
 
             onBrush();
 
-            // Un-zoom the top graph
             function clearBrush() {
-                brush.clear();
-                // make handles invisible
-                gBrush.selectAll(".resize").style("display", "none");
-                // reset extents rectangle (re-enables drag-to-select behavior)
-                gBrush.select('rect.extent').attr('width', 0);
-                skipTransitionsFor(onBrush)();
+              brush.clear();
+              gBrush.selectAll(".resize").style("display", "none");
+              gBrush.select('rect.extent').attr('width', 0);
+              skipTransitionsFor(onBrush)();
             }
 
             //------------------------------------------------------------
@@ -348,49 +336,6 @@ $(document).ready(function() {
             .attr('transform', 'translate(0,' + y2.range()[0] + ')');
 
             //------------------------------------------------------------
-
-            // drag-to-pan behavior
-            var drag = d3.behavior.drag()
-            .origin(function(d){ return d; })
-            .on("dragstart", dragStart)
-            .on("drag", dragged)
-            .on("dragend", dragEnd);
-
-            function dragStart() { 
-                d3.event.sourceEvent.stopPropagation();
-                gBrush.select('.extent').attr('stroke', 'red');
-            };
-
-            function dragged(){
-                var extent_rectangle = gBrush.select('.extent'),
-                    dx               = d3.event.dx,
-                    current_x        = parseInt(extent_rectangle.attr('x'));
-                extent_rectangle.attr('x', current_x - (dx * portionShown()));
-            };
-
-            function dragEnd(){
-                // swap domain and range
-                var _x2            = d3.scale.linear()
-                                    .domain(x2.range())
-                                    .range(x2.domain()),
-                    current_extent = brush.extent(),
-                    new_x          = _x2(gBrush.select('rect.extent').attr('x')),
-                    offset         = new_x - current_extent[0];
-
-                brush.extent([new_x, current_extent[1] + offset]);
-                skipTransitionsFor(onBrush)();
-            };
-
-
-            function portionShown() {
-                var x2d    = x2.domain();
-                var extent = brush.empty() ? x2 : brush.extent();
-                return (extent[1] - extent[0]) / (x2d[1] - x2d[0]);
-            };
-
-            focusTarget.call(drag);
-            focusTarget.attr('stroke', 'red');
-
 
 
             //============================================================
@@ -448,7 +393,7 @@ $(document).ready(function() {
             var pendingChartUpdate = null,
                 pendingUpdateRequest = null;
 
-            function updateChart() {
+            function updateChart(disabled_serie) {
                 if (pendingUpdateRequest) {
                     pendingUpdateRequest.abort();
                 }
@@ -457,55 +402,63 @@ $(document).ready(function() {
                 var extent = brush.empty() ? x2.domain() : brush.extent(),
                     startTime = new Date(extent[0]).toISOString(),
                     stopTime = new Date(extent[1]).toISOString(),
-                    chartWidth = $('.nv-focus .nv-linesWrap .nv-line')[0].getBBox().width,
                     startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
 
                 pendingUpdateRequest = $.ajax({
-                    url: $("#chart").data("source-url") + "?count=" + chartWidth + startStopQuery,
+                    url: $(".chart").data("source-url") + "&count=960" + startStopQuery,
                     success: function(data) {
+                        var chartData;
                         pendingUpdateRequest = null;
-                        var values = data[0].values.map(function(elem) {
-                                return {x: new Date(elem.ts),
-                                        y: elem.value};
-                            }),
 
-                            chartData = [{ key: data[0].key,
-                                           values: values }];
+                        chartData = [];
+
+                        $.each(data, function(i, series_data){
+                          var values;
+                          values = series_data.values.map(function(elem) {
+                              return {x: new Date(elem.ts),
+                                      y: elem.value};
+                          });
+                          if (!disabled_serie.match(series_data.key)) {
+                            chartData.push( { key: series_data.key,
+                                              values: values } );                            
+                          } else {
+                            chartData.push( { key: series_data.key,
+                                              values: [] } );                              
+                          };
+                          
+
+                        });
+                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
+                        
+  
 
                         // Update Main (Focus)
-                        updateFocusChart(chartData, values, extent);
+                        focusLinesWrap
+                            .datum(
+                                chartData
+                                    .filter(function(d) { return !d.disabled; })
+                                    .map(function(d,i) {
+                                        return {
+                                            key: d.key,
+                                            values: d.values.filter(function(d,i) {
+                                                return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
+                                            })
+                                        };
+                                    })
+                            );
+
+                        focusLinesWrap.transition().duration(transitionDuration).call(lines);
                     }
                 });
             }
 
-            // TODO: persist chartData, values, extent, etc. for smooth panning
-            function updateFocusChart(chartData, values, extent) {
-                focusLinesWrap()
-                    .datum(
-                        chartData
-                          .filter(function(d) { return !d.disabled; })
-                            .map(function(d,i) {
-                                return {
-                                    key: d.key,
-                                    values: d.values.filter(function(d,i) {
-                                        return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
-                                    })
-                                };
-                            })
-                    ).transition().duration(transitionDuration).call(lines);
-
-            };
-
-            function focusLinesWrap() {
-                return g.select('.nv-focus .nv-linesWrap');
-            };
-
-
             function queueChartUpdate() {
+                var disabled_serie = d3.select('.nv-series.disabled').empty() ? '' : d3.select('.nv-series.disabled').text()
+
                 if (pendingChartUpdate) {
                     window.clearTimeout(pendingChartUpdate);
                 }
-                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(); }, 500);
+                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(disabled_serie); }, 500);
             }
 
             function onBrush() {
@@ -693,37 +646,44 @@ $(document).ready(function() {
     };
 
 
-    $.ajax({
-        url: $("#chart").data("source-url")+"?count=960",
+    $('.chart').each(function(i,el){   
+      var id = "#"+ $(el).prop('id')
+      $.ajax({
+        url: $(el).data("source-url"),
         success: function(data) {
-            var values, chartData, formatString;
-
-            values = data[0].values.map(function(elem) {
+          var formatString;
+          var chartData = []
+          $.each(data, function(i, series_data){
+            var values;
+            values = series_data.values.map(function(elem) {
                 return {x: new Date(elem.ts),
                         y: elem.value};
             });
+            chartData.push( { key: series_data.key,
+                           values: values } );
 
-            chartData = [{ key: data[0].key,
-                           values: values }];
-            nv.addGraph(function() {
-                formatString = '%-I:%M:%S:%L%p';
+          });
+          nv.addGraph(function() {
+              formatString = '%-I:%M:%S:%L%p';
 
-                chart.xAxis.tickFormat(function(d) {
-                    return d3.time.format(formatString)(new Date(d));
-                });
+              chart.xAxis.tickFormat(function(d) {
+                  return d3.time.format(formatString)(new Date(d));
+              });
 
-                chart.x2Axis.tickFormat(function(d) {
-                    return d3.time.format(formatString)(new Date(d));
-                });
+              chart.x2Axis.tickFormat(function(d) {
+                  return d3.time.format(formatString)(new Date(d));
+              });
 
-                chart.yAxis.tickFormat(d3.format(',.2f'));
-                chart.y2Axis.tickFormat(d3.format(',.2f'));
-                d3.select('#chart svg').datum(chartData).call(chart);
+              chart.yAxis.tickFormat(d3.format(',.2f'));
+              chart.y2Axis.tickFormat(d3.format(',.2f'));
+              d3.select(id +' svg').datum(chartData).call(chart);
 
-                nv.utils.windowResize(chart.update);
+              nv.utils.windowResize(chart.update);
 
-                return chart;
+              return chart;
             });
-        }
+          }
+        });
     });
-});
+
+  });

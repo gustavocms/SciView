@@ -4,8 +4,11 @@ class ChartsController < ApplicationController
   def index
   end
 
+  def multiple
+    @charts = Chart.for_datasets(params.select { |k,v| k.to_s =~ /series/ && v.present? })
+  end
+
   def show
     @chart = Chart.for_dataset(params[:id])
-    respond_with @chart
   end
 end
