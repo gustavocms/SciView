@@ -370,7 +370,7 @@ $(document).ready(function() {
             function dragged(){
                 var extent_rectangle = gBrush.select('.extent'),
                     dx               = d3.event.dx,
-                    current_x        = parseInt(extent_rectangle.attr('x'));
+                    current_x        = parseFloat(extent_rectangle.attr('x'));
                 extent_rectangle.attr('x', current_x - (dx * portionShown()));
             };
 

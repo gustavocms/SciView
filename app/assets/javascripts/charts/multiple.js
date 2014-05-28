@@ -144,9 +144,6 @@
             gEnter.append('g').attr('class', 'nv-legendWrap');
 
             var focusEnter = gEnter.append('g').attr('class', 'nv-focus');
-            focusEnter.append('g').attr('class', 'nv-x nv-axis');
-            focusEnter.append('g').attr('class', 'nv-y nv-axis');
-            focusEnter.append('g').attr('class', 'nv-linesWrap');
 
             //
             var focusTarget = focusEnter.append('rect')
@@ -161,6 +158,10 @@
                     if (d3.event.defaultPrevented) return;
                     clearBrush();
                 });
+
+            focusEnter.append('g').attr('class', 'nv-x nv-axis');
+            focusEnter.append('g').attr('class', 'nv-y nv-axis');
+            focusEnter.append('g').attr('class', 'nv-linesWrap');
 
             var contextEnter = gEnter.append('g').attr('class', 'nv-context');
             contextEnter.append('g').attr('class', 'nv-x nv-axis');
@@ -362,9 +363,10 @@
             };
 
             function dragged(){
+                console.log(d3.event)
                 var extent_rectangle = gBrush.select('.extent'),
                     dx               = d3.event.dx,
-                    current_x        = parseInt(extent_rectangle.attr('x'));
+                    current_x        = parseFloat(extent_rectangle.attr('x'));
                 extent_rectangle.attr('x', current_x - (dx * portionShown()));
             };
 
