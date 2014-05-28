@@ -319,6 +319,12 @@ $(document).ready(function() {
                 skipTransitionsFor(onBrush)();
             }
 
+            function updateResizeHandlePlacement() {
+              var extents = brush.extent().map(x2);
+              gBrush.select(".resize.w").attr("transform", "translate(" + extents[0] + ",0)");
+              gBrush.select(".resize.e").attr("transform", "translate(" + extents[1] + ",0)");
+            }
+
             //------------------------------------------------------------
 
 
@@ -379,6 +385,9 @@ $(document).ready(function() {
 
                 brush.extent([new_x, current_extent[1] + offset]);
                 skipTransitionsFor(onBrush)();
+                updateResizeHandlePlacement();
+                gBrush.select('.extent').attr('stroke', 'none');
+
             };
 
 
@@ -493,7 +502,6 @@ $(document).ready(function() {
                                 };
                             })
                     ).transition().duration(transitionDuration).call(lines);
-
             };
 
             function focusLinesWrap() {
