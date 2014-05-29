@@ -442,12 +442,12 @@
                   new_east     = extent_east + extent_delta,
                   extent_rectangle = d3.select('.extent'),
                   current_x = parseFloat(extent_rectangle.attr('x')),
+                  current_width = parseFloat(extent_rectangle.attr('width')),
                   // prevent negative width
-                  new_width = Math.max(availableWidth * 0.005, parseFloat(extent_rectangle.attr('width')) + (2 * extent_delta));
-              console.log(new_width);
+                  new_width = Math.max(availableWidth * 0.005, current_width + (2 * extent_delta));
 
-              extent_rectangle.attr('x', current_x - extent_delta)
-              .attr('width', new_width);
+              if (current_width != new_width) 
+                extent_rectangle.attr('x', current_x - extent_delta).attr('width', new_width);
             };
 
             focusTarget.call(zoom);
