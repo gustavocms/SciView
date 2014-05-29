@@ -377,10 +377,13 @@
 
             function setBrushExtentsFromBBox() {
                 var current_extent = brush.extent(),
-                    new_x          = _x2(gBrush.select('rect.extent').attr('x')),
-                    offset         = new_x - current_extent[0];
+                    bbox           = gBrush.select('rect.extent'),
+                    bbox_x         = parseFloat(bbox.attr('x')),
+                    bbox_width     = parseFloat(bbox.attr('width')),
+                    new_west       = _x2(bbox_x),
+                    new_east       = _x2(bbox_x + bbox_width);
 
-                brush.extent([new_x, current_extent[1] + offset]);
+                brush.extent([new_west, new_east]);
             };
 
             function dragEnd(){
