@@ -1,6 +1,6 @@
 SciView::Application.routes.draw do
 
-  resources :charts, only: [:index, :show] do
+  resources :charts, only: [:index, :show, :create] do
     collection do
       get :multiple
     end
