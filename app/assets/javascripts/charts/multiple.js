@@ -404,12 +404,6 @@
             focusTarget.call(drag);
 
             // scroll-to-zoom behavior
-            // Account for following conditions:
-            //   - brush not applied
-            //   - brush applied
-            //   - some minimum brush width (1%?)
-            //   - brush applied, zoom to full extents (clearBrush)
-            //
             var zoom = d3.behavior.zoom()
             .on('zoomstart', zoomStart)
             .on('zoom', zoomed)
@@ -430,16 +424,14 @@
             function zoomed(){ 
               var current_extent = brush.extent(),
                   // below in pixels
-                  extent_west    = x2(current_extent[0]), 
-                  extent_east    = x2(current_extent[1]), 
-                  current_range  = extent_east - extent_west,
+                  extent_west   = x2(current_extent[0]),
+                  extent_east   = x2(current_extent[1]),
+                  current_range = extent_east - extent_west,
                   // scroll up to zoom in (smaller range),
                   // down to zoom out (larger range)
-                  new_range        = current_range / d3.event.scale,
+                  new_range        = current_range * d3.event.scale,
                   limiting_factor  = 20, // keep it from going wild (this should eventually be based on the current zoom window)
                   extent_delta     = (current_range - new_range) / limiting_factor,
-                  new_west         = extent_west - extent_delta,
-                  new_east         = extent_east + extent_delta,
                   extent_rectangle = d3.select('.extent'),
                   current_x        = parseFloat(extent_rectangle.attr('x')),
                   current_width    = parseFloat(extent_rectangle.attr('width')),
@@ -455,9 +447,6 @@
             };
 
             focusTarget.call(zoom);
-            window.zoom = zoom;
-
-
 
             //============================================================
             // Event Handling/Dispatching (in chart's scope)
