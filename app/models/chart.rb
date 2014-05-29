@@ -25,7 +25,10 @@ class Chart < ActiveRecord::Base
 
   def unique_series
     values = series.values.sort
-    existing_values = user.charts.pluck(:series).map { |s| s.values.sort }
+    value_exists = user.charts.pluck(:series).map { |s| s.values.sort }.each do |series_values|
+      break true if series_values == values
+    end
+    errors[:base] << 'Already in your list' if value_exists 
   end
 
 end
