@@ -358,6 +358,7 @@
             .on("dragend", dragEnd);
 
             function dragStart() { 
+                if (d3.event.defaultPrevented) return;
                 d3.event.sourceEvent.stopPropagation();
                 gBrush.select('.extent').attr('stroke', 'red');
             };
@@ -375,6 +376,7 @@
                 .domain(x2.range())
                 .range(x2.domain())
 
+            // update the brush domain extents using the scaled dimensions of the rect.extents element
             function setBrushExtentsFromBBox() {
                 var bbox           = gBrush.select('rect.extent'),
                     bbox_x         = parseFloat(bbox.attr('x')),
@@ -389,7 +391,7 @@
                 setBrushExtentsFromBBox();
                 skipTransitionsFor(onBrush)();
                 updateResizeHandlePlacement();
-                gBrush.select('.extent').attr('stroke', 'none');
+                //gBrush.select('.extent').attr('stroke', 'none');
             };
 
 
@@ -400,7 +402,6 @@
             };
 
 
-            focusTarget.call(drag);
 
             // scroll-to-zoom behavior
             var zoom = d3.behavior.zoom()
@@ -409,11 +410,13 @@
             .on('zoomend', dragEnd);
 
             function zoomStart(){
+                if (d3.event.defaultPrevented) return;
+              d3.event.sourceEvent.stopPropagation();
               zoom.scale(1); // keep the scale relative (otherwise, it is a persistent value in the zoom object)
               if (brush.empty()){
                 // setup the brush if it's not already in use
                 gBrush.select('.extent').attr('x', 0).attr('width', availableWidth);
-                setBrushExtentsFromBBox();
+                dragEnd();
               }
 
               gBrush.select('.extent').attr('stroke', 'red');
@@ -444,6 +447,7 @@
               };
             };
 
+            focusTarget.call(drag);
             focusTarget.call(zoom);
 
             //============================================================
