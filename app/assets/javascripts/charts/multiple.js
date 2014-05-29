@@ -370,20 +370,24 @@
                 extent_rectangle.attr('x', current_x - (dx * portionShown()));
             };
 
-            function dragEnd(){
-                // swap domain and range
-                var _x2            = d3.scale.linear()
-                                    .domain(x2.range())
-                                    .range(x2.domain()),
-                    current_extent = brush.extent(),
+            // reverse scale (swap domain and range)
+            var _x2 = d3.scale.linear()
+                .domain(x2.range())
+                .range(x2.domain())
+
+            function setBrushExtentsFromBBox() {
+                var current_extent = brush.extent(),
                     new_x          = _x2(gBrush.select('rect.extent').attr('x')),
                     offset         = new_x - current_extent[0];
 
                 brush.extent([new_x, current_extent[1] + offset]);
+            };
+
+            function dragEnd(){
+                setBrushExtentsFromBBox();
                 skipTransitionsFor(onBrush)();
                 updateResizeHandlePlacement();
                 gBrush.select('.extent').attr('stroke', 'none');
-
             };
 
 
@@ -393,8 +397,56 @@
                 return (extent[1] - extent[0]) / (x2d[1] - x2d[0]);
             };
 
+
             focusTarget.call(drag);
-            focusTarget.attr('stroke', 'red');
+
+            // scroll-to-zoom behavior
+            // Account for following conditions:
+            //   - brush not applied
+            //   - brush applied
+            //   - some minimum brush width (1%?)
+            //   - brush applied, zoom to full extents (clearBrush)
+            //
+            var zoom = d3.behavior.zoom()
+            .on('zoomstart', zoomStart)
+            .on('zoom', zoomed)
+            .on('zoomend', dragEnd);
+
+            function zoomStart(){
+              zoom.scale(1); // keep the scale relative (otherwise, it is a persistent value in the zoom object)
+              gBrush.select('.extent').attr('stroke', 'red');
+            };
+
+            function zoomEnd(){
+
+              skipTransitionsFor(onBrush)();
+              updateResizeHandlePlacement();
+              gBrush.select('.extent').attr('stroke', 'none');
+            };
+
+            function zoomed(){ 
+              var current_extent = brush.extent(),
+                  // below in pixels
+                  extent_west    = x2(current_extent[0]), 
+                  extent_east    = x2(current_extent[1]), 
+                  current_range  = extent_east - extent_west,
+                  // scroll up to zoom in (smaller range),
+                  // down to zoom out (larger range)
+                  new_range    = current_range / d3.event.scale,
+                  limiting_factor = 20, // keep it from going wild (this should be based on the current zoom window)
+                  extent_delta = (current_range - new_range) / limiting_factor,
+                  new_west     = extent_west - extent_delta,
+                  new_east     = extent_east + extent_delta,
+                  extent_rectangle = d3.select('.extent'),
+                  current_x = parseFloat(extent_rectangle.attr('x'));
+
+              extent_rectangle.attr('x', current_x - extent_delta)
+              .attr('width', parseInt(extent_rectangle.attr('width')) + (2 * extent_delta ));
+            };
+
+            focusTarget.call(zoom);
+            window.zoom = zoom;
+
 
 
             //============================================================
