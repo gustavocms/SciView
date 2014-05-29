@@ -432,7 +432,7 @@
                   new_range        = current_range * d3.event.scale,
                   limiting_factor  = 20, // keep it from going wild (this should eventually be based on the current zoom window)
                   extent_delta     = (current_range - new_range) / limiting_factor,
-                  extent_rectangle = d3.select('.extent'),
+                  extent_rectangle = gBrush.select('rect.extent'),
                   current_x        = parseFloat(extent_rectangle.attr('x')),
                   current_width    = parseFloat(extent_rectangle.attr('width')),
 
