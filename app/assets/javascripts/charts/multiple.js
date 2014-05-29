@@ -376,8 +376,7 @@
                 .range(x2.domain())
 
             function setBrushExtentsFromBBox() {
-                var current_extent = brush.extent(),
-                    bbox           = gBrush.select('rect.extent'),
+                var bbox           = gBrush.select('rect.extent'),
                     bbox_x         = parseFloat(bbox.attr('x')),
                     bbox_width     = parseFloat(bbox.attr('width')),
                     new_west       = _x2(bbox_x),
@@ -422,24 +421,20 @@
 
 
             function zoomed(){ 
-              var current_extent = brush.extent(),
-                  // below in pixels
-                  extent_west   = x2(current_extent[0]),
-                  extent_east   = x2(current_extent[1]),
-                  current_range = extent_east - extent_west,
-                  // scroll up to zoom in (smaller range),
-                  // down to zoom out (larger range)
-                  new_range        = current_range * d3.event.scale,
-                  limiting_factor  = 20, // keep it from going wild (this should eventually be based on the current zoom window)
-                  extent_delta     = (current_range - new_range) / limiting_factor,
-                  extent_rectangle = gBrush.select('rect.extent'),
+              // scroll up to zoom in (smaller range),
+              // down to zoom out (larger range)
+              var extent_rectangle = gBrush.select('rect.extent'),
                   current_x        = parseFloat(extent_rectangle.attr('x')),
                   current_width    = parseFloat(extent_rectangle.attr('width')),
+                  new_range        = current_width * d3.event.scale,
+                  limiting_factor  = 20, // keep it from going wild (this should eventually be based on the current zoom window)
+                  extent_delta     = (current_width - new_range) / limiting_factor,
 
                   // prevent out-of-bounds extents
                   new_x     = Math.max(current_x - extent_delta, 0),
                   max_width = availableWidth - new_x,
                   new_width = Math.min(max_width, Math.max(availableWidth * 0.005, current_width + (2 * extent_delta)));
+
 
 
               if (new_x == 0 && new_width == availableWidth){
