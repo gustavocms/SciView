@@ -417,15 +417,15 @@
 
             function zoomStart(){
               zoom.scale(1); // keep the scale relative (otherwise, it is a persistent value in the zoom object)
+              if (brush.empty()){
+                // setup the brush if it's not already in use
+                gBrush.select('.extent').attr('x', 0).attr('width', availableWidth);
+                setBrushExtentsFromBBox();
+              }
+
               gBrush.select('.extent').attr('stroke', 'red');
             };
 
-            function zoomEnd(){
-
-              skipTransitionsFor(onBrush)();
-              updateResizeHandlePlacement();
-              gBrush.select('.extent').attr('stroke', 'none');
-            };
 
             function zoomed(){ 
               var current_extent = brush.extent(),
@@ -435,19 +435,23 @@
                   current_range  = extent_east - extent_west,
                   // scroll up to zoom in (smaller range),
                   // down to zoom out (larger range)
-                  new_range    = current_range / d3.event.scale,
-                  limiting_factor = 20, // keep it from going wild (this should be based on the current zoom window)
-                  extent_delta = (current_range - new_range) / limiting_factor,
-                  new_west     = extent_west - extent_delta,
-                  new_east     = extent_east + extent_delta,
+                  new_range        = current_range / d3.event.scale,
+                  limiting_factor  = 20, // keep it from going wild (this should eventually be based on the current zoom window)
+                  extent_delta     = (current_range - new_range) / limiting_factor,
+                  new_west         = extent_west - extent_delta,
+                  new_east         = extent_east + extent_delta,
                   extent_rectangle = d3.select('.extent'),
-                  current_x = parseFloat(extent_rectangle.attr('x')),
-                  current_width = parseFloat(extent_rectangle.attr('width')),
-                  // prevent negative width
-                  new_width = Math.max(availableWidth * 0.005, current_width + (2 * extent_delta));
+                  current_x        = parseFloat(extent_rectangle.attr('x')),
+                  current_width    = parseFloat(extent_rectangle.attr('width')),
+
+                  // prevent out-of-bounds extents
+                  new_x     = Math.max(current_x - extent_delta, 0),
+                  max_width = availableWidth - new_x,
+                  new_width = Math.min(max_width, Math.max(availableWidth * 0.005, current_width + (2 * extent_delta)));
+
 
               if (current_width != new_width) 
-                extent_rectangle.attr('x', current_x - extent_delta).attr('width', new_width);
+                extent_rectangle.attr('x', new_x).attr('width', new_width);
             };
 
             focusTarget.call(zoom);
