@@ -148,15 +148,19 @@ $(document).ready(function() {
             // (ideally, focusEnter would be used as the target, but 
             // click events are not supported on svg groups).
             // The rectangle fills the extents of the top graph.
-            focusEnter.append('rect')
-                .attr('class', 'clearBrushTarget')
+            //
+            var focusTarget = focusEnter.append('rect')
+                .attr('class', 'focusTarget')
                 .style('fill', 'white')
                 .style('opacity', 0)
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('width', availableWidth)
                 .attr('height', availableHeight1)
-                .on('click', clearBrush);
+                .on('click', function(){
+                    if (d3.event.defaultPrevented) return;
+                    clearBrush();
+                });
 
 
             focusEnter.append('g').attr('class', 'nv-x nv-axis');
@@ -315,6 +319,12 @@ $(document).ready(function() {
                 skipTransitionsFor(onBrush)();
             }
 
+            function updateResizeHandlePlacement() {
+              var extents = brush.extent().map(x2);
+              gBrush.select(".resize.w").attr("transform", "translate(" + extents[0] + ",0)");
+              gBrush.select(".resize.e").attr("transform", "translate(" + extents[1] + ",0)");
+            }
+
             //------------------------------------------------------------
 
 
@@ -344,6 +354,54 @@ $(document).ready(function() {
             .attr('transform', 'translate(0,' + y2.range()[0] + ')');
 
             //------------------------------------------------------------
+
+            // drag-to-pan behavior
+            var drag = d3.behavior.drag()
+            .origin(function(d){ return d; })
+            .on("dragstart", dragStart)
+            .on("drag", dragged)
+            .on("dragend", dragEnd);
+
+
+            function dragStart() { 
+                d3.event.sourceEvent.stopPropagation();
+                gBrush.select('.extent').attr('stroke', 'red');
+            };
+
+            function dragged(){
+                if (brush.empty()) return;
+                var extent_rectangle = gBrush.select('.extent'),
+                    dx               = d3.event.dx,
+                    current_x        = parseFloat(extent_rectangle.attr('x'));
+                extent_rectangle.attr('x', current_x - (dx * portionShown()));
+            };
+
+            function dragEnd(){
+                // swap domain and range
+                var _x2            = d3.scale.linear()
+                                    .domain(x2.range())
+                                    .range(x2.domain()),
+                    current_extent = brush.extent(),
+                    new_x          = _x2(gBrush.select('rect.extent').attr('x')),
+                    offset         = new_x - current_extent[0];
+
+                brush.extent([new_x, current_extent[1] + offset]);
+                skipTransitionsFor(onBrush)();
+                updateResizeHandlePlacement();
+                gBrush.select('.extent').attr('stroke', 'none');
+
+            };
+
+
+            function portionShown() {
+                var x2d    = x2.domain();
+                var extent = brush.empty() ? x2 : brush.extent();
+                return (extent[1] - extent[0]) / (x2d[1] - x2d[0]);
+            };
+
+            focusTarget.call(drag);
+            focusTarget.attr('stroke', 'red');
+
 
 
             //============================================================
@@ -417,33 +475,41 @@ $(document).ready(function() {
                     url: $("#chart").data("source-url") + "?count=" + chartWidth + startStopQuery,
                     success: function(data) {
                         pendingUpdateRequest = null;
-                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap'),
-                            values = data[0].values.map(function(elem) {
+                        var values = data[0].values.map(function(elem) {
                                 return {x: new Date(elem.ts),
                                         y: elem.value};
                             }),
+
                             chartData = [{ key: data[0].key,
                                            values: values }];
 
                         // Update Main (Focus)
-                        focusLinesWrap
-                            .datum(
-                                chartData
-                                    .filter(function(d) { return !d.disabled; })
-                                    .map(function(d,i) {
-                                        return {
-                                            key: d.key,
-                                            values: d.values.filter(function(d,i) {
-                                                return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
-                                            })
-                                        };
-                                    })
-                            );
-
-                        focusLinesWrap.transition().duration(transitionDuration).call(lines);
+                        updateFocusChart(chartData, values, extent);
                     }
                 });
             }
+
+            // TODO: persist chartData, values, extent, etc. for smooth panning
+            function updateFocusChart(chartData, values, extent) {
+                focusLinesWrap()
+                    .datum(
+                        chartData
+                          .filter(function(d) { return !d.disabled; })
+                            .map(function(d,i) {
+                                return {
+                                    key: d.key,
+                                    values: d.values.filter(function(d,i) {
+                                        return lines.x()(d,i) >= extent[0] && lines.x()(d,i) <= extent[1];
+                                    })
+                                };
+                            })
+                    ).transition().duration(transitionDuration).call(lines);
+            };
+
+            function focusLinesWrap() {
+                return g.select('.nv-focus .nv-linesWrap');
+            };
+
 
             function queueChartUpdate() {
                 if (pendingChartUpdate) {
