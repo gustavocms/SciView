@@ -442,8 +442,11 @@
                   new_width = Math.min(max_width, Math.max(availableWidth * 0.005, current_width + (2 * extent_delta)));
 
 
-              if (current_width != new_width) 
+              if (new_x == 0 && new_width == availableWidth){
+                clearBrush();
+              } else if (current_width != new_width) {
                 extent_rectangle.attr('x', new_x).attr('width', new_width);
+              };
             };
 
             focusTarget.call(zoom);
