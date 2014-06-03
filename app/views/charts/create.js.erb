@@ -1,1 +1,5 @@
-$('a.button').text('Saved!').attr('href', '')
+<% if @chart.persisted? %>
+  $('a.button').text('Saved!').attr('href', '')
+<% else %>
+  alert('Error: ' + '<%= escape_javascript(@chart.errors.full_messages.join(', ')) %>')
+<% end %>

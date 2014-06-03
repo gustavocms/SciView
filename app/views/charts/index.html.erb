@@ -20,17 +20,18 @@
   <div class="column">
   </div>
 
-
 </div>
-<div class="ui three column row">
-  <div class="column"></div>
-  <div class="column">
-    <h2 class="ui header">Or choose one of your saved charts</h2>
-    <ul>
-      <% current_user.charts.each do |chart| %>
-        <li><%= link_to chart.name, chart %></li> 
-      <% end %>      
-    </ul>
+<%- if user_signed_in? -%>
+  <div class="ui three column row">
+    <div class="column"></div>
+    <div class="column">
+      <h2 class="ui header">Or choose one of your saved charts</h2>
+      <ul>
+        <% current_user.charts.each do |chart| %>
+          <li><%= link_to chart.name, chart %></li> 
+        <% end %>      
+      </ul>
+    </div>
+    <div class="column"></div>
   </div>
-  <div class="column"></div>
-</div>
+<%- end -%>
