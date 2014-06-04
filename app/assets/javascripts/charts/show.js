@@ -459,7 +459,7 @@ $(document).ready(function() {
             var pendingChartUpdate = null,
                 pendingUpdateRequest = null;
 
-            function updateChart() {
+            function updateChart(disabled_serie) {
                 if (pendingUpdateRequest) {
                     pendingUpdateRequest.abort();
                 }
@@ -472,16 +472,32 @@ $(document).ready(function() {
                     startStopQuery = "&start_time="+startTime+"&stop_time="+stopTime;
 
                 pendingUpdateRequest = $.ajax({
-                    url: $("#chart").data("source-url") + "?count=" + chartWidth + startStopQuery,
+                    url: $("#chart").data("source-url") + "&count=960" + startStopQuery,
                     success: function(data) {
+                        var chartData;
                         pendingUpdateRequest = null;
-                        var values = data[0].values.map(function(elem) {
-                                return {x: new Date(elem.ts),
-                                        y: elem.value};
-                            }),
 
-                            chartData = [{ key: data[0].key,
-                                           values: values }];
+                        chartData = [];
+
+                        $.each(data, function(i, series_data){
+                          var values;
+                          values = series_data.values.map(function(elem) {
+                              return {x: new Date(elem.ts),
+                                      y: elem.value};
+                          });
+                          if (!disabled_serie.match(series_data.key)) {
+                            chartData.push( { key: series_data.key,
+                                              values: values } );                            
+                          } else {
+                            chartData.push( { key: series_data.key,
+                                              values: [] } );                              
+                          };
+                          
+
+                        });
+                        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
+                        
+  
 
                         // Update Main (Focus)
                         updateFocusChart(chartData, values, extent);
@@ -512,10 +528,11 @@ $(document).ready(function() {
 
 
             function queueChartUpdate() {
+                var disabled_serie = d3.select('.nv-series.disabled').empty() ? '' : d3.select('.nv-series.disabled').text()
                 if (pendingChartUpdate) {
                     window.clearTimeout(pendingChartUpdate);
                 }
-                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(); }, 500);
+                pendingChartUpdate = setTimeout(function() { pendingChartUpdate = null; updateChart(disabled_serie); }, 500);
             }
 
             function onBrush() {
@@ -704,36 +721,39 @@ $(document).ready(function() {
 
 
     $.ajax({
-        url: $("#chart").data("source-url")+"?count=960",
+        url: $('#chart').data("source-url"),
         success: function(data) {
-            var values, chartData, formatString;
-
-            values = data[0].values.map(function(elem) {
+          var formatString;
+          var chartData = []
+          $.each(data, function(i, series_data){
+            var values;
+            values = series_data.values.map(function(elem) {
                 return {x: new Date(elem.ts),
                         y: elem.value};
             });
+            chartData.push( { key: series_data.key,
+                           values: values } );
 
-            chartData = [{ key: data[0].key,
-                           values: values }];
-            nv.addGraph(function() {
-                formatString = '%-I:%M:%S:%L%p';
+          });
+          nv.addGraph(function() {
+              formatString = '%-I:%M:%S:%L%p';
 
-                chart.xAxis.tickFormat(function(d) {
-                    return d3.time.format(formatString)(new Date(d));
-                });
+              chart.xAxis.tickFormat(function(d) {
+                  return d3.time.format(formatString)(new Date(d));
+              });
 
-                chart.x2Axis.tickFormat(function(d) {
-                    return d3.time.format(formatString)(new Date(d));
-                });
+              chart.x2Axis.tickFormat(function(d) {
+                  return d3.time.format(formatString)(new Date(d));
+              });
 
-                chart.yAxis.tickFormat(d3.format(',.2f'));
-                chart.y2Axis.tickFormat(d3.format(',.2f'));
-                d3.select('#chart svg').datum(chartData).call(chart);
+              chart.yAxis.tickFormat(d3.format(',.2f'));
+              chart.y2Axis.tickFormat(d3.format(',.2f'));
+              d3.select('#chart' +' svg').datum(chartData).call(chart);
 
-                nv.utils.windowResize(chart.update);
+              nv.utils.windowResize(chart.update);
 
-                return chart;
+              return chart;
             });
-        }
-    });
+          }
+        });
 });
