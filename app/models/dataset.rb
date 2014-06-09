@@ -20,8 +20,8 @@ class Dataset
 
       return_hash = {}
 
-      series_names.each do |sn|
-        return_hash.merge!(sn.to_s => {key: sn.to_s, values: []})
+      cursor['series'].each do |sn|
+        return_hash.merge!(sn['key'].to_s => {key: sn['key'].to_s, values: [], tags: sn['tags'], attributes: sn['attributes']})
       end
 
       cursor.each do |datapoint|
@@ -34,7 +34,8 @@ class Dataset
     end
 
     def for_series(name)
-      new(name)
+      raise('this method is deprecated')
+      #new(name)
     end
   end
 

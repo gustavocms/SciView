@@ -719,7 +719,10 @@
                         y: elem.value};
             });
             chartData.push( { key: series_data.key,
-                           values: values } );
+                            tags: series_data.tags,
+                            attributes: series_data.attributes,
+                            values: values } );
+
 
           });
           nv.addGraph(function() {
@@ -741,6 +744,18 @@
 
               return chart;
             });
+
+
+            var tags = '<p>Tags: ' + chartData[0].tags + '</p>';
+            tags = tags + '<p>Attributes: ';
+            for (var property in chartData[0].attributes) {
+                if (chartData[0].attributes.hasOwnProperty(property)) {
+                    tags = tags + '<br>' + property + ': ' + chartData[0].attributes[property];
+                }
+            }
+            tags = tags + '</p>';
+            //document.write(tags);
+            //window.alert(tags);
           }
         });
     });
