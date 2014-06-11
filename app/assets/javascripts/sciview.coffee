@@ -62,7 +62,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   brushed: =>
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
-    @focus.select(".area").attr("d", @lineFocus)
+    @focus.select(".line.focus").attr("d", @lineFocus)
     @focus.select(".x.axis").call(@xAxis)
 
 
@@ -84,8 +84,6 @@ class SciView.FocusChart extends SciView.BasicChart
         .datum(data)
         .attr("class", "line focus")
         .attr("d", @lineFocus)
-        .attr('fill', 'none')
-        .attr('stroke', 'red')
 
       @focus.append("g")
         .attr("class", "x axis")
@@ -100,8 +98,6 @@ class SciView.FocusChart extends SciView.BasicChart
         .datum(data)
         .attr("class", "line context")
         .attr("d", @lineContext)
-        .attr('fill', 'none')
-        .attr('stroke', 'red')
 
       @context.append("g")
         .attr("class", "x axis")
