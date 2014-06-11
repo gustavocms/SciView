@@ -84,6 +84,7 @@ class SciView.FocusChart extends SciView.BasicChart
         .datum(data)
         .attr("class", "line focus")
         .attr("d", @lineFocus)
+        .attr("clip-path", "url(#clip)")
 
       @focus.append("g")
         .attr("class", "x axis")
