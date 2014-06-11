@@ -22,7 +22,6 @@ class SciView.BasicChart
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (element) ->
     super(element)
-    @parseDate = d3.time.format("%b %Y").parse
     @x         = d3.time.scale().range([0, @width])
     @x2        = d3.time.scale().range([0, @width])
     @y         = d3.scale.linear().range([@height, 0])
@@ -30,7 +29,23 @@ class SciView.FocusChart extends SciView.BasicChart
     @xAxis     = d3.svg.axis().scale(@x).orient("bottom")
     @xAxis2    = d3.svg.axis().scale(@x2).orient("bottom")
     @yAxis     = d3.svg.axis().scale(@y).orient("left")
-    @svg       = d3.select("body").append("svg")
+    @brush = d3.svg.brush()
+      .x(@x2)
+      .on("brush", @brushed)
+    @area = d3.svg.area()
+      .interpolate("monotone")
+      .x((d) => @x(d.date))
+      .y0(@height)
+      .y1((d) => @y(d.price))
+    @area2 = d3.svg.area()
+      .interpolate("monotone")
+      .x((d) => @x2(d.date))
+      .y0(@height2)
+      .y1((d) => @y2(d.price))
+    @initializeSvg()
+
+  initializeSvg: =>
+    @svg = d3.select(@element).append("svg")
       .attr("width", @width + @margin.left + @margin.right)
       .attr("height", @height + @margin.top + @margin.bottom)
     @svg.append("defs").append("clipPath")
@@ -38,42 +53,28 @@ class SciView.FocusChart extends SciView.BasicChart
       .append("rect")
       .attr("width", @width)
       .attr("height", @height)
-    @focus = svg.append("g")
+    @focus = @svg.append("g")
       .attr("class", "focus")
       .attr("transform", "translate(" + @margin.left + "," + @margin.top + ")")
-    @context = svg.append("g")
+    @context = @svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
-    @loadCSVData()
 
-  brushed: ->
+  brushed: =>
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
-    @focus.select(".area").attr("d", area)
-    @focus.select(".x.axis").call(xAxis)
+    @focus.select(".area").attr("d", @area)
+    @focus.select(".x.axis").call(@xAxis)
 
-  brush: d3.svg.brush()
-    .x(@x2)
-    .on("brush", @brushed)
 
-  area: d3.svg.area()
-    .interpolate("monotone")
-    .x((d) => @x(d.date))
-    .y0(@height)
-    .y1((d) => @y(d.price))
-
-  area2: d3.svg.area()
-    .interpolate("monotone")
-    .x((d) => @x2(d.date))
-    .y0(@height2)
-    .y1((d) => @y2(d.price))
+  parseDate: d3.time.format("%b %Y").parse
 
   type: (d) =>
-    d.date = parseDate(d.date)
+    d.date = @parseDate(d.date)
     d.price = +d.price
     d
 
-  loadCSVData: =>
-    d3.csv("../sp500.csv", @type, (error, data) =>
+  loadCSVData: (filepath) =>
+    d3.csv(filepath, @type, (error, data) =>
       @x.domain(d3.extent(data.map((d) -> d.date )))
       @y.domain([0, d3.max(data.map((d) -> d.price ))])
       @x2.domain(@x.domain())
@@ -105,7 +106,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
       @context.append("g")
         .attr("class", "x brush")
-        .call(brush)
+        .call(@brush)
         .selectAll("rect")
         .attr("y", -6)
         .attr("height", @height2 + 7)
