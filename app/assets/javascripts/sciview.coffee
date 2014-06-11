@@ -32,16 +32,16 @@ class SciView.FocusChart extends SciView.BasicChart
     @brush = d3.svg.brush()
       .x(@x2)
       .on("brush", @brushed)
-    @area = d3.svg.area()
+    @lineFocus = d3.svg.line()
       .interpolate("monotone")
       .x((d) => @x(d.date))
-      .y0(@height)
-      .y1((d) => @y(d.price))
-    @area2 = d3.svg.area()
+      .y((d) => @y(d.price))
+
+    @lineContext = d3.svg.line()
       .interpolate("monotone")
       .x((d) => @x2(d.date))
-      .y0(@height2)
-      .y1((d) => @y2(d.price))
+      .y((d) => @y2(d.price))
+
     @initializeSvg()
 
   initializeSvg: =>
@@ -62,7 +62,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   brushed: =>
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
-    @focus.select(".area").attr("d", @area)
+    @focus.select(".area").attr("d", @lineFocus)
     @focus.select(".x.axis").call(@xAxis)
 
 
@@ -82,8 +82,10 @@ class SciView.FocusChart extends SciView.BasicChart
 
       @focus.append("path")
         .datum(data)
-        .attr("class", "area")
-        .attr("d", @area)
+        .attr("class", "line focus")
+        .attr("d", @lineFocus)
+        .attr('fill', 'none')
+        .attr('stroke', 'red')
 
       @focus.append("g")
         .attr("class", "x axis")
@@ -96,8 +98,10 @@ class SciView.FocusChart extends SciView.BasicChart
 
       @context.append("path")
         .datum(data)
-        .attr("class", "area")
-        .attr("d", @area2)
+        .attr("class", "line context")
+        .attr("d", @lineContext)
+        .attr('fill', 'none')
+        .attr('stroke', 'red')
 
       @context.append("g")
         .attr("class", "x axis")
