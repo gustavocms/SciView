@@ -35,12 +35,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .x(@x2)
       .on("brush", @brushed)
     @lineFocus = d3.svg.line()
-      .interpolate("monotone")
       .x((d) => @x(d.x))
       .y((d) => @y(d.y))
 
     @lineContext = d3.svg.line()
-      .interpolate("monotone")
       .x((d) => @x2(d.x))
       .y((d) => @y2(d.y))
 
