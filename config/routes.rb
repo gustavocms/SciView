@@ -11,7 +11,7 @@ SciView::Application.routes.draw do
     end
   end
 
-  resource :coffee_chart, only: [:show]
+  resources :coffee_charts, only: [:show]
 
   devise_for :users
   get "d3/index"
