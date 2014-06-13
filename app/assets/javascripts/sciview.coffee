@@ -15,6 +15,7 @@ class SciView.BasicChart
   # otherwise return current data
   data: (d) ->
     if d
+      console.log('chart data!')
       @_data = d
       return @
     @_data
@@ -35,13 +36,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .on("brush", @brushed)
     @lineFocus = d3.svg.line()
       .interpolate("monotone")
-      .x((d) => @x(d.date))
-      .y((d) => @y(d.price))
+      .x((d) => @x(d.x))
+      .y((d) => @y(d.y))
 
-    @lineContext = d3.svg.line()
-      .interpolate("monotone")
-      .x((d) => @x2(d.date))
-      .y((d) => @y2(d.price))
+    @lineContext = @lineFocus
 
     @initializeSvg()
 
@@ -66,51 +64,55 @@ class SciView.FocusChart extends SciView.BasicChart
     @focus.select(".line.focus").attr("d", @lineFocus)
     @focus.select(".x.axis").call(@xAxis)
 
+  type: (d) -> { x: new Date(d.ts), y: d.value }
 
-  parseDate: d3.time.format("%b %Y").parse
+  render: ->
+    key = Object.keys(@_data)[0]
+    values = @_data[key].values # TODO: this is hard-coded for testing purposes
+    data = (@type(e) for e in values)
+    window.data = data
 
-  type: (d) =>
-    d.date = @parseDate(d.date)
-    d.price = +d.price
-    d
+    @x.domain(d3.extent(data.map((d) -> d.x )))
+    @y.domain(d3.extent(data.map((d) -> d.y )))
+    @x2.domain(@x.domain())
+    @y2.domain(@y.domain())
+
+    @focus.append("path")
+      .datum(data)
+      .attr("class", "line focus")
+      .attr("d", @lineFocus)
+      .attr("clip-path", "url(#clip)")
+
+    @focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + @height + ")")
+      .call(@xAxis)
+
+    @focus.append("g")
+      .attr("class", "y axis")
+      .call(@yAxis)
+
+    @context.append("path")
+      .datum(data)
+      .attr("class", "line context")
+      .attr("d", @lineContext)
+
+    @context.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + @height2 + ")")
+      .call(@xAxis2)
+
+    @context.append("g")
+      .attr("class", "x brush")
+      .call(@brush)
+      .selectAll("rect")
+      .attr("y", -6)
+      .attr("height", @height2 + 7)
+
+
 
   loadCSVData: (filepath) =>
     d3.csv(filepath, @type, (error, data) =>
-      @x.domain(d3.extent(data.map((d) -> d.date )))
-      @y.domain([0, d3.max(data.map((d) -> d.price ))])
-      @x2.domain(@x.domain())
-      @y2.domain(@y.domain())
-
-      @focus.append("path")
-        .datum(data)
-        .attr("class", "line focus")
-        .attr("d", @lineFocus)
-        .attr("clip-path", "url(#clip)")
-
-      @focus.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + @height + ")")
-        .call(@xAxis)
-
-      @focus.append("g")
-        .attr("class", "y axis")
-        .call(@yAxis)
-
-      @context.append("path")
-        .datum(data)
-        .attr("class", "line context")
-        .attr("d", @lineContext)
-
-      @context.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + @height2 + ")")
-        .call(@xAxis2)
-
-      @context.append("g")
-        .attr("class", "x brush")
-        .call(@brush)
-        .selectAll("rect")
-        .attr("y", -6)
-        .attr("height", @height2 + 7)
+      @data(data)
+      @render()
     )
-
