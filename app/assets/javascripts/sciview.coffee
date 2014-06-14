@@ -75,8 +75,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
 
   render: ->
-
-    all_data = d3.values(@_data).reduce (a, b) -> a.values.concat b.values
+    all_data = @data().reduce (a, b) -> a.values.concat b.values
 
     @x.domain(d3.extent(all_data.map((d) -> d.x )))
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
@@ -87,8 +86,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
     focus.enter()
       .append('path')
-      .attr('class', 'focus')
-      .attr('d', @lineFocus)
+      .attr('class', 'line focus')
+      .attr('d', (d) => @lineFocus(d.values))
 
     window.focus = focus
 
