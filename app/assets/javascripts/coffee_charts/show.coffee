@@ -4,7 +4,6 @@ $(document).ready ->
 
   $.ajax({
     url:  d3.select(chart.element).attr('data-source-url')
-    success: (data) ->
-      chart.data(data).render()
+    success: (data) -> chart.data(data).render()
   })
 

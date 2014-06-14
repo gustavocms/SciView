@@ -11,14 +11,6 @@ class SciView.BasicChart
     @height  = 500 - @margin.top - @margin.bottom
     @height2 = 500 - @margin2.top - @margin2.bottom
 
-  # if argument is present, set data and return self;
-  # otherwise return current data
-  data: (d) ->
-    if d
-      console.log('chart data!')
-      @_data = d
-      return @
-    @_data
 
 
 class SciView.FocusChart extends SciView.BasicChart
@@ -44,6 +36,22 @@ class SciView.FocusChart extends SciView.BasicChart
 
     @initializeSvg()
 
+  # if argument is present, set data and return self;
+  # otherwise return current data
+  data: (d) ->
+    if d
+      @_data = @preprocess(d)
+      return @
+    @_data
+
+  # Stores the data in a renderable format:
+  # [ { key: "some key", values: [ { x: 10, y: 20 }, { x: 20, y: 30 } ]} ... ]
+  preprocess: (data) ->
+    {
+      key: s.key
+      values: ({ x: new Date(d.ts), y: d.value } for d in s.values )
+    } for _, s of data
+
   initializeSvg: =>
     @svg = d3.select(@element).append("svg")
       .attr("width", @width + @margin.left + @margin.right)
@@ -65,36 +73,42 @@ class SciView.FocusChart extends SciView.BasicChart
     @focus.select(".line.focus").attr("d", @lineFocus)
     @focus.select(".x.axis").call(@xAxis)
 
-  type: (d) -> { x: new Date(d.ts), y: d.value }
 
   render: ->
-    key = Object.keys(@_data)[0]
-    values = @_data[key].values # TODO: this is hard-coded for testing purposes
-    data = (@type(e) for e in values)
-    window.data = data
 
-    @x.domain(d3.extent(data.map((d) -> d.x )))
-    @y.domain(d3.extent(data.map((d) -> d.y )))
+    all_data = d3.values(@_data).reduce (a, b) -> a.values.concat b.values
+
+    @x.domain(d3.extent(all_data.map((d) -> d.x )))
+    @y.domain(d3.extent(all_data.map((d) -> d.y )))
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
-    @focus.append("path")
-      .datum(data)
-      .attr("class", "line focus")
-      .attr("d", @lineFocus)
-      .attr("clip-path", "url(#clip)")
+    focus = @focus.selectAll('path.focus').data(d3.values(@_data))
 
-    @focus.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + @height + ")")
-      .call(@xAxis)
+    focus.enter()
+      .append('path')
+      .attr('class', 'focus')
+      .attr('d', @lineFocus)
 
-    @focus.append("g")
-      .attr("class", "y axis")
-      .call(@yAxis)
+    window.focus = focus
+
+    #@focus.append("path")
+    #.datum(data)
+    #.attr("class", "line focus")
+    #.attr("d", @lineFocus)
+    #.attr("clip-path", "url(#clip)")
+
+    #@focus.append("g")
+    #.attr("class", "x axis")
+    #.attr("transform", "translate(0," + @height + ")")
+    #.call(@xAxis)
+
+    #@focus.append("g")
+    #.attr("class", "y axis")
+    #.call(@yAxis)
 
     @context.append("path")
-      .datum(data)
+      .datum(@_data[0])
       .attr("class", "line context")
       .attr("d", @lineContext)
 
@@ -109,8 +123,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
-
-
 
   loadCSVData: (filepath) =>
     d3.csv(filepath, @type, (error, data) =>
