@@ -70,9 +70,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
   brushed: =>
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
-    @focus.select(".line.focus").attr("d", @lineFocus)
+    @focus.selectAll(".line.focus").attr("d", (d) => @lineFocus(d.values))
     @focus.select(".x.axis").call(@xAxis)
-
 
   render: ->
     all_data = @data().reduce (a, b) -> a.values.concat b.values
@@ -82,40 +81,29 @@ class SciView.FocusChart extends SciView.BasicChart
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
-    focus = @focus.selectAll('path.focus').data(d3.values(@_data))
-
-    focus.enter()
+    focusPaths = @focus.selectAll('path.focus').data(@_data)
+    focusPaths.enter()
       .append('path')
       .attr('class', 'line focus')
       .attr('d', (d) => @lineFocus(d.values))
+      .attr("clip-path", "url(#clip)")
+    @focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + @height + ")")
+      .call(@xAxis)
+    @focus.append("g")
+      .attr("class", "y axis")
+      .call(@yAxis)
 
-    window.focus = focus
-
-    #@focus.append("path")
-    #.datum(data)
-    #.attr("class", "line focus")
-    #.attr("d", @lineFocus)
-    #.attr("clip-path", "url(#clip)")
-
-    #@focus.append("g")
-    #.attr("class", "x axis")
-    #.attr("transform", "translate(0," + @height + ")")
-    #.call(@xAxis)
-
-    #@focus.append("g")
-    #.attr("class", "y axis")
-    #.call(@yAxis)
-
-    @context.append("path")
-      .datum(@_data[0])
+    contextPaths = @context.selectAll("path.context").data(@_data)
+    contextPaths.enter()
+      .append('path')
       .attr("class", "line context")
-      .attr("d", @lineContext)
-
+      .attr("d", (d) => @lineContext(d.values))
     @context.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + @height2 + ")")
       .call(@xAxis2)
-
     @context.append("g")
       .attr("class", "x brush")
       .call(@brush)
