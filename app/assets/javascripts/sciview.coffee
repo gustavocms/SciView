@@ -49,15 +49,28 @@ class SciView.FocusChart extends SciView.BasicChart
   # otherwise return current data
   data: (d) ->
     if d
-      @_data = preprocess(d)
+      if @_data # initial data set has already been loaded, and should be kept as the low-fi data set
+        @zoomData(d)
+      else
+        @_data = preprocess(d)
       return @
     @_data
+
+  # higher-fidelity data over a narrower domain
+  zoomData: (d) ->
+    if d
+      @_zoomData = preprocess(d)
+      @isZoomed  = true
+      return @
+    @_zoomData
 
   # Trigger the ajax call.
   getData: ->
     $.ajax({
       url: "#{@dataURL()}#{@startStopQuery()}"
-      success: (data) => @data(data).render()
+      success: (data) =>
+        @data(data)
+        @render()
     })
 
   # Stores the data in a renderable format:
@@ -94,16 +107,13 @@ class SciView.FocusChart extends SciView.BasicChart
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
     @focus.selectAll(".line.focus").attr("d", (d) => @lineFocus(d.values))
     @focus.select(".x.axis").call(@xAxis)
-    console.log('brushed')
 
   brushEnd: =>
     # load new data
-    console.log("brushEnd")
     @getData()
 
   brushStart: =>
     # probably don't need this
-    console.log("brushStart")
 
 
   # Rendering functions
@@ -126,7 +136,24 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
 
   render: ->
-    all_data = @data().reduce (a, b) -> a.values.concat b.values
+    if @_zoomData
+      @renderZoomData()
+    else
+      @renderInitialData()
+
+  renderZoomData: ->
+    zoomFocusPaths = @focus.selectAll('path.focus.zoom').data(@_zoomData)
+    zoomFocusPaths.enter()
+      .append('path')
+      .attr('class', 'line focus zoom')
+      .attr('clip-path', "url(#clip)")
+    zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
+    zoomFocusPaths.exit().remove()
+
+
+  
+  renderInitialData: ->
+    all_data = @_data.reduce (a, b) -> a.values.concat b.values
 
     @x.domain(d3.extent(all_data.map((d) -> d.x )))
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
