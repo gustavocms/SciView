@@ -53,6 +53,13 @@ class SciView.FocusChart extends SciView.BasicChart
       return @
     @_data
 
+  # Trigger the ajax call.
+  getData: ->
+    $.ajax({
+      url: @dataURL()
+      success: (data) => @data(data).render()
+    })
+
   # Stores the data in a renderable format:
   # [ { key: "some key", values: [ { x: 10, y: 20 }, { x: 20, y: 30 } ]} ... ]
   preprocess = (data) ->
