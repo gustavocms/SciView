@@ -99,7 +99,9 @@ class SciView.FocusChart extends SciView.BasicChart
   brushed: =>
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
     @focus.selectAll(".line.zoom").remove()
-    @focus.selectAll(".line.focus").attr("d", (d) => @lineFocus(d.values))
+    @focus.selectAll(".line.focus")
+      .attr('opacity', 1)
+      .attr("d", (d) => @lineFocus(d.values))
     @focus.select(".x.axis").call(@xAxis)
 
   brushEnd: =>
@@ -132,6 +134,7 @@ class SciView.FocusChart extends SciView.BasicChart
       @renderInitialData()
 
   renderZoomData: ->
+    @focus.selectAll('.init').attr('opacity', 0)
     zoomFocusPaths = @focus.selectAll('path.focus.zoom').data(@_zoomData)
     zoomFocusPaths.enter()
       .append('path')
@@ -148,10 +151,10 @@ class SciView.FocusChart extends SciView.BasicChart
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
-    focusPaths = @focus.selectAll('path.focus').data(@_data)
+    focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
       .append('path')
-      .attr('class', 'line focus')
+      .attr('class', 'line focus init')
       .attr('d', (d) => @lineFocus(d.values))
       .attr("clip-path", "url(#clip)")
     @focus.append("g")
