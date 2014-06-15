@@ -1,2 +1,0 @@
-class CoffeeChartsController < ChartsController
-end
