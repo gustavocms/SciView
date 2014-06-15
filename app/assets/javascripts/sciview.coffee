@@ -32,12 +32,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @lineFocus = d3.svg.line()
       .x((d) => @x(d.x))
       .y((d) => @y(d.y))
-
-    @lineFocusStepped = d3.svg.line()
-      .x((d) => @x(d.x))
-      .y((d) => @y(d.y))
-      .interpolate('step')
-
+      .interpolate('linear')
 
     @lineContext = d3.svg.line()
       .x((d) => @x2(d.x))
@@ -71,7 +66,7 @@ class SciView.FocusChart extends SciView.BasicChart
   # Trigger the ajax call.
   getData: ->
     $.ajax({
-      url: "#{@dataURL()}#{@startStopQuery()}"
+      url: "#{@dataURL()}#{@startStopQuery()}&count=960"
       success: (data) =>
         @data(data)
         @render()
@@ -144,8 +139,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('clip-path', "url(#clip)")
     zoomFocusPaths.transition().attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
-
-
   
   renderInitialData: ->
     all_data = @_data.reduce (a, b) -> a.values.concat b.values
@@ -184,4 +177,3 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
-
