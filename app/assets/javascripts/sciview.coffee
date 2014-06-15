@@ -56,7 +56,7 @@ class SciView.FocusChart extends SciView.BasicChart
   # Trigger the ajax call.
   getData: ->
     $.ajax({
-      url: @dataURL()
+      url: "#{@dataURL()}#{@startStopQuery()}"
       success: (data) => @data(data).render()
     })
 
@@ -80,6 +80,13 @@ class SciView.FocusChart extends SciView.BasicChart
       @render()
     )
 
+  dateString = (t) -> new Date(t).toISOString()
+
+  startStopQuery: ->
+    return "" if @brush.empty()
+    extents = (dateString(t) for t in @brush.extent())
+    "&start_time=#{extents[0]}&stop_time=#{extents[1]}"
+
   # Brushing functions
   ########################################
 
@@ -92,6 +99,7 @@ class SciView.FocusChart extends SciView.BasicChart
   brushEnd: =>
     # load new data
     console.log("brushEnd")
+    @getData()
 
   brushStart: =>
     # probably don't need this
