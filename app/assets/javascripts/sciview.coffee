@@ -144,7 +144,7 @@ class SciView.FocusChart extends SciView.BasicChart
     zoomFocusPaths.exit().remove()
   
   renderInitialData: ->
-    all_data = @_data.reduce(((a, b) -> a.values.concat(b.values)), { values: [] })
+    all_data = @_data.map((obj) -> obj.values).reduce((a, b) -> a.concat(b))
 
     @x.domain(d3.extent(all_data.map((d) -> d.x )))
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
