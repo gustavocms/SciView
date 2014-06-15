@@ -3,8 +3,8 @@
 window.SciView = {}
 
 class SciView.BasicChart
-  constructor: (element = 'body') ->
-    @element = element
+  constructor: (options = {}) ->
+    @element = options.element or 'body'
     @margin  = {top: 10, right: 10, bottom: 100, left: 40}
     @margin2 = {top: 430, right: 10, bottom: 20, left: 40}
     @width   = 960 - @margin.left - @margin.right
@@ -14,8 +14,9 @@ class SciView.BasicChart
 
 
 class SciView.FocusChart extends SciView.BasicChart
-  constructor: (element) ->
-    super(element)
+  constructor: (options = {}) ->
+    super(options)
+    @_dataURL  = options.url
     @x         = d3.time.scale().range([0, @width])
     @x2        = d3.time.scale().range([0, @width])
     @y         = d3.scale.linear().range([@height, 0])
@@ -40,21 +41,58 @@ class SciView.FocusChart extends SciView.BasicChart
 
     @initializeSvg()
 
+
+  # Data loading
+  # #################################################
+ 
   # if argument is present, set data and return self;
   # otherwise return current data
   data: (d) ->
     if d
-      @_data = @preprocess(d)
+      @_data = preprocess(d)
       return @
     @_data
 
   # Stores the data in a renderable format:
   # [ { key: "some key", values: [ { x: 10, y: 20 }, { x: 20, y: 30 } ]} ... ]
-  preprocess: (data) ->
+  preprocess = (data) ->
     {
       key: s.key
       values: ({ x: new Date(d.ts), y: d.value } for d in s.values )
     } for _, s of data
+
+  dataURL: (string) ->
+    if string
+      @_dataURL = string
+      return @
+    @_dataURL
+
+  loadCSVData: (filepath) =>
+    d3.csv(filepath, @type, (error, data) =>
+      @data(data)
+      @render()
+    )
+
+  # Brushing functions
+  ########################################
+
+  brushed: =>
+    @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
+    @focus.selectAll(".line.focus").attr("d", (d) => @lineFocus(d.values))
+    @focus.select(".x.axis").call(@xAxis)
+    console.log('brushed')
+
+  brushEnd: =>
+    # load new data
+    console.log("brushEnd")
+
+  brushStart: =>
+    # probably don't need this
+    console.log("brushStart")
+
+
+  # Rendering functions
+  ################################################
 
   initializeSvg: =>
     @svg = d3.select(@element).append("svg")
@@ -71,20 +109,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @context = @svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
-
-  brushed: =>
-    @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
-    @focus.selectAll(".line.focus").attr("d", (d) => @lineFocus(d.values))
-    @focus.select(".x.axis").call(@xAxis)
-    console.log('brushed')
-
-  brushEnd: =>
-    # load new data
-    console.log("brushEnd")
-
-  brushStart: =>
-    # probably don't need this
-    console.log("brushStart")
 
   render: ->
     all_data = @data().reduce (a, b) -> a.values.concat b.values
@@ -124,8 +148,3 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("y", -6)
       .attr("height", @height2 + 7)
 
-  loadCSVData: (filepath) =>
-    d3.csv(filepath, @type, (error, data) =>
-      @data(data)
-      @render()
-    )
