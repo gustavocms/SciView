@@ -91,12 +91,6 @@ class SciView.FocusChart extends SciView.BasicChart
       return @
     @_dataURL
 
-  loadCSVData: (filepath) =>
-    d3.csv(filepath, @type, (error, data) =>
-      @data(data)
-      @render()
-    )
-
   dateString = (t) -> new Date(t).toISOString()
 
   startStopQuery: ->
