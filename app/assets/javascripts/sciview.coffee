@@ -28,12 +28,16 @@ class SciView.FocusChart extends SciView.BasicChart
       .x(@x2)
       .on("brush", @brushed)
       .on("brushend", @brushEnd)
-      .on("brushstart", @brushStart)
-
 
     @lineFocus = d3.svg.line()
       .x((d) => @x(d.x))
       .y((d) => @y(d.y))
+
+    @lineFocusStepped = d3.svg.line()
+      .x((d) => @x(d.x))
+      .y((d) => @y(d.y))
+      .interpolate('step')
+
 
     @lineContext = d3.svg.line()
       .x((d) => @x2(d.x))
@@ -105,15 +109,12 @@ class SciView.FocusChart extends SciView.BasicChart
 
   brushed: =>
     @x.domain(if @brush.empty() then @x2.domain() else @brush.extent())
+    @focus.selectAll(".line.zoom").remove()
     @focus.selectAll(".line.focus").attr("d", (d) => @lineFocus(d.values))
     @focus.select(".x.axis").call(@xAxis)
 
   brushEnd: =>
-    # load new data
-    @getData()
-
-  brushStart: =>
-    # probably don't need this
+    @getData() unless @brush.empty()
 
 
   # Rendering functions
