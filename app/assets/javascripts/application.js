@@ -16,3 +16,5 @@
 //= require d3.v3
 //= require sciview
 //= require stream_layers
+//= require charts/multiple
+//= require charts/index
