@@ -16,3 +16,4 @@
 //= require d3.v3
 //= require nv.d3.js
 //= require stream_layers
+//= require select2
