@@ -40,7 +40,6 @@ class SciView.FocusChart extends SciView.BasicChart
 
     @initializeSvg()
 
-
   # Data loading
   # #################################################
  
@@ -127,6 +126,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
 
+  lineColor = d3.scale.category10()
+
   render: ->
     if @_zoomData
       @renderZoomData()
@@ -140,6 +141,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .append('path')
       .attr('class', 'line focus zoom')
       .attr('clip-path', "url(#clip)")
+      .style('stroke', (d) -> lineColor(d.key))
     zoomFocusPaths.transition().attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
   
@@ -157,6 +159,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('class', 'line focus init')
       .attr('d', (d) => @lineFocus(d.values))
       .attr("clip-path", "url(#clip)")
+      .style('stroke', (d) -> lineColor(d.key))
     @focus.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + @height + ")")
@@ -170,6 +173,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .append('path')
       .attr("class", "line context")
       .attr("d", (d) => @lineContext(d.values))
+      .style('stroke', (d) -> lineColor(d.key))
     @context.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + @height2 + ")")
