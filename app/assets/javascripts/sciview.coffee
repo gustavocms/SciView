@@ -142,7 +142,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('class', 'line focus zoom')
       .attr('clip-path', "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
-    zoomFocusPaths.transition().attr('d', (d) => @lineFocus(d.values))
+    zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
   
   renderInitialData: ->
