@@ -1,16 +1,6 @@
 <h2 class="ui header"><%= chart.name %></h2>
 <%= link_to "Save this chart", [:charts, series: chart.series], method: :post, remote: true, class: 'ui submit button' %>
 
-
-<div class="ui segment">
-  <div id="<%= chart.name.parameterize %>" class="chart with-3d-shadow with-transitions"
-    data-source-url="<%= multiple_datasets_path(chart.series) %>">
-    <svg style="height: 500px;"></svg>
-  </div>
-</div>
-
-
-
 <div class="ui one column row">
   <div class="column">
     <div id="series-tags">
@@ -21,3 +11,13 @@
     </div>
   </div>
 </div>
+
+<div class="ui segment">
+  <div id="<%= chart.name.parameterize %>" class="chart with-3d-shadow with-transitions"
+    data-source-url="<%= multiple_datasets_path(chart.series) %>">
+    <svg style="height: 500px;"></svg>
+  </div>
+</div>
+
+
+

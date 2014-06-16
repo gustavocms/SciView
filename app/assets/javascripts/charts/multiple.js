@@ -747,34 +747,26 @@
 
 
 
-            // Update…
-            var tags = d3.select("#series-tags").selectAll("p")
-                .data(chartData[0].tags)
-                .text(String);
-            // Enter…
-            tags.enter().append("p")
-                .text(String);
-            // Exit…
-            tags.exit().remove();
+            $.each( chartData[0].tags, function( index, value ){
 
+                var tagButton=$('<input type="button" value="' + value + '">') // Create the element
+                    .button() // Ask jQuery UI to buttonize it
+                    .click(function(){ alert('I was clicked!');}); // Add a click handler
 
+                $('#series-tags')
+                    .append(tagButton);
 
-            var attributes = [];
-            for (var property in chartData[0].attributes) {
-                if (chartData[0].attributes.hasOwnProperty(property)) {
-                    attributes.push(property + ': ' + chartData[0].attributes[property]);
-                }
-            }
+            });
 
-            // Update…
-            var attrs = d3.select("#series-attributes").selectAll("p")
-                .data(attributes)
-                .text(String);
-            // Enter…
-            attrs.enter().append("p")
-                .text(String);
-            // Exit…
-            attrs.exit().remove();
+            $.each( chartData[0].attributes, function( key, value ) {
+                var attrButton=$('<input type="button" value="' + key + ':' + value + '">') // Create the element
+                    .button() // Ask jQuery UI to buttonize it
+                    .click(function(){ alert('I was clicked!');}); // Add a click handler
+
+                $('#series-attributes')
+                    .append(attrButton);
+            });
+
           }
         });
     });
