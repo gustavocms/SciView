@@ -1,7 +1,9 @@
 module ApplicationHelper
-  def javascript_for_action
-    javascript_include_tag("#{controller_name}/#{action_name}")
-  end
+  
+  # this wont work on production enviroment since everything is compiled
+  #def javascript_for_action
+  #  javascript_include_tag("#{controller_name}/#{action_name}")
+  #end
 
 
   def get_tempodb_client
