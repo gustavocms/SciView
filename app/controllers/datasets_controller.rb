@@ -14,6 +14,22 @@ class DatasetsController < ApplicationController
     respond_with dataset    
   end
 
+  def update_attribute
+    respond_with Dataset.update_attribute(params[:series_key],params[:attribute], params[:value])
+  end
+
+  def remove_attribute
+    respond_with Dataset.remove_attribute(params[:series_key],params[:attribute])
+  end
+
+  def add_tag
+    respond_with Dataset.add_tag(params[:series_key],params[:tag])
+  end
+
+  def remove_tag
+    respond_with Dataset.remove_tag(params[:series_key],params[:tag])
+  end
+
   def show
     raise('this method is deprecated')
     # dataset = Dataset.for_series(params[:id])

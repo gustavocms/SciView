@@ -8,6 +8,10 @@ SciView::Application.routes.draw do
   resources :datasets, only: [:index, :show] do
     collection do
       get :multiple
+      get :update_attribute
+      get :remove_attribute
+      get :add_tag
+      get :remove_tag
     end
   end
 

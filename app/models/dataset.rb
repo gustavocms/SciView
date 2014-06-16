@@ -33,6 +33,30 @@ class Dataset
       return_hash
     end
 
+    def update_attribute(series_key, attribute, value)
+      series = tempodb_client.get_series(series_key)
+      series.attributes[attribute] = value
+      tempodb_client.update_series(series)
+    end
+
+    def remove_attribute(series_key, attribute)
+      series = tempodb_client.get_series(series_key)
+      series.attributes = series.attributes.except(attribute)
+      tempodb_client.update_series(series)
+    end
+
+    def add_tag(series_key, tag)
+      series = tempodb_client.get_series(series_key)
+      series.tags.push(tag)
+      tempodb_client.update_series(series)
+    end
+
+    def remove_tag(series_key, tag)
+      series = tempodb_client.get_series(series_key)
+      series.tags.delete(tag)
+      tempodb_client.update_series(series)
+    end
+
     def for_series(name)
       raise('this method is deprecated')
       #new(name)
