@@ -1,3 +1,70 @@
+<script>
+    $(function() {
+        $("#addTag, #addAttribute")
+            .button() // Ask jQuery UI to buttonize it
+            .click(function(){ alert('I was clicked!');}); // Add a click handler
+        });
+
+    removeTag = function(series_key, tag, sender) {
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>Are you sure?</h6></div>')
+            .dialog({
+                modal: true,
+                resizable: false,
+                title: 'Remove Tag',
+                width: 'auto',
+                buttons: {
+                    "Delete": function () {
+                        $.ajax({
+                            url: "/datasets/remove_tag?series_key=" + series_key + "&tag=" + tag,
+                            success: function(data) {
+                                sender.remove();
+                                }
+                        });
+
+                        $(this).dialog("close");
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+            });
+    };
+
+    removeAttribute = function(series_key, attribute, sender) {
+        $('<div></div>').appendTo('body')
+                .html('<div><h6>Are you sure?</h6></div>')
+                .dialog({
+                    modal: true,
+                    resizable: false,
+                    title: 'Remove Attribute',
+                    width: 300,
+                    buttons: {
+                        "Delete": function () {
+                            $.ajax({
+                                url: "/datasets/remove_attribute?series_key=" + series_key + "&attribute=" + attribute,
+                                success: function(data) {
+                                    sender.remove();
+                                }
+                            });
+
+                            $(this).dialog("close");
+                        },
+                        Cancel: function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+    };
+
+</script>
+
 <h2 class="ui header"><%= chart.name %></h2>
 <%= link_to "Save this chart", [:charts, series: chart.series], method: :post, remote: true, class: 'ui submit button' %>
 
@@ -5,9 +72,11 @@
   <div class="column">
     <div id="series-tags">
       <h3>tags</h3>
+      <button id="addTag">Add Tag</button>
     </div>
     <div id="series-attributes">
       <h3>attributes</h3>
+      <button id="addAttribute">Add Attribute</button>
     </div>
   </div>
 </div>

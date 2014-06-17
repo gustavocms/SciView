@@ -746,12 +746,11 @@
             });
 
 
-
             $.each( chartData[0].tags, function( index, value ){
 
-                var tagButton=$('<input type="button" value="' + value + '">') // Create the element
-                    .button() // Ask jQuery UI to buttonize it
-                    .click(function(){ alert('I was clicked!');}); // Add a click handler
+                var tagButton=$('<button>' + value + '</button>') // Create the element
+                    .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
+                    .click(function(){ removeTag(chartData[0].key, value, this);}); // Add a click handler
 
                 $('#series-tags')
                     .append(tagButton);
@@ -759,9 +758,9 @@
             });
 
             $.each( chartData[0].attributes, function( key, value ) {
-                var attrButton=$('<input type="button" value="' + key + ':' + value + '">') // Create the element
-                    .button() // Ask jQuery UI to buttonize it
-                    .click(function(){ alert('I was clicked!');}); // Add a click handler
+                var attrButton=$('<button>' + key + ':' + value + '</button>') // Create the element
+                    .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
+                    .click(function(){ removeAttribute(chartData[0].key, key, this);}); // Add a click handler
 
                 $('#series-attributes')
                     .append(attrButton);
