@@ -745,25 +745,14 @@
               return chart;
             });
 
+            $("#series-key").text(String(chartData[0].key));
 
             $.each( chartData[0].tags, function( index, value ){
-
-                var tagButton=$('<button>' + value + '</button>') // Create the element
-                    .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
-                    .click(function(){ removeTag(chartData[0].key, value, this);}); // Add a click handler
-
-                $('#series-metadata')
-                    .append(tagButton);
-
+                addTagButton (value);
             });
 
             $.each( chartData[0].attributes, function( key, value ) {
-                var attrButton=$('<button>' + key + ':' + value + '</button>') // Create the element
-                    .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
-                    .click(function(){ removeAttribute(chartData[0].key, key, this);}); // Add a click handler
-
-                $('#series-metadata')
-                    .append(attrButton);
+                addAttributeButton (key, value);
             });
 
           }
