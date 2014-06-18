@@ -1,9 +1,21 @@
+<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">-->
+
+<!--<style>-->
+    /*body { font-size: 62.5%;*/
+        /*font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";*/
+        /*font-size: 62.5%;}*/
+    /*label, input { display:block; }*/
+    /*input.text { margin-bottom:12px; width:95%; padding: .4em; }*/
+    /*fieldset { padding:0; border:0; margin-top:25px; }*/
+    /*h1 { font-size: 1.2em; margin: .6em 0; }*/
+    /*div#users-contain { width: 350px; margin: 20px 0; }*/
+    /*div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }*/
+    /*div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }*/
+    /*.ui-dialog .ui-state-error { padding: .3em; }*/
+    /*.validateTips { border: 1px solid transparent; padding: 0.3em; }*/
+<!--</style>-->
+
 <script>
-    $(function() {
-        $("#addTag, #addAttribute")
-            .button() // Ask jQuery UI to buttonize it
-            .click(function(){ alert('I was clicked!');}); // Add a click handler
-        });
 
     removeTag = function(series_key, tag, sender) {
         $('<div></div>').appendTo('body')
@@ -63,6 +75,54 @@
                 });
     };
 
+    checkLength = function ( o ) {
+        if ( o.val().length == 0  ) {
+            o.addClass( "ui-state-error" );
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    $(function() {
+        var form_tag = $( "#dialog-tag" ),
+            form_key = $( "#dialog-key" ),
+            form_value = $( "#dialog-value" ),
+            allFields = $( [] ).add( form_tag ).add( form_key ).add( form_value );
+
+        $( "#dialog-form" ).dialog({
+            autoOpen: false,
+            height: 400,
+            width: 500,
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                },
+                "Add": function() {
+                    allFields.removeClass( "ui-state-error" );
+
+                    if ( checkLength(form_tag)) {
+
+                        $( this ).dialog( "close" );
+                    }
+                    else if (checkLength(form_key) && checkLength(form_value)) {
+
+                        $( this ).dialog( "close" );
+                    }
+                }
+            },
+            close: function() {
+                allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+        $( "#addMetadata" )
+                .button({icons: {primary: "ui-icon-plusthick"}, text: false}) // Ask jQuery UI to buttonize it
+                .click(function() {
+                    $( "#dialog-form" ).dialog( "open" );
+                });
+        });
 </script>
 
 <h2 class="ui header"><%= chart.name %></h2>
@@ -70,14 +130,29 @@
 
 <div class="ui one column row">
   <div class="column">
-    <div id="series-tags">
-      <h3>tags</h3>
-      <button id="addTag">Add Tag</button>
+    <div id="series-metadata">
+      <h3>Series Tags and Attributes</h3>
+      <button id="addMetadata">New</button>
     </div>
-    <div id="series-attributes">
-      <h3>attributes</h3>
-      <button id="addAttribute">Add Attribute</button>
-    </div>
+  </div>
+</div>
+
+<div id="dialog-form" title="Add a tag or attribute">
+  <div class="form-row">
+    <label>Tag</label>
+    <div class="metadata-info">Ex: <span class="info">humidity</span></div>
+    <div class="metadata-error error" style="display: none;">The tag is invalid.</div>
+    <input class="add-tag" type="text" id="dialog-tag" maxlength="255">
+  </div>
+  <h3 class="or">or</h3>
+  <div class="form-row">
+    <label>Attribute</label>
+    <div class="metadata-info">Ex: <span class="info">thermostat: 1</span></div>
+    <div class="metadata-error error" style="display: none;">The attribute is invalid.</div>
+    <br>
+    <input class="add-attribute add-attribute-key" type="text" id="dialog-key" maxlength="255">
+    <span class="colon"> : </span>
+    <input class="add-attribute add-attribute-value" type="text" id="dialog-value" maxlength="255">
   </div>
 </div>
 

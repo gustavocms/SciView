@@ -752,7 +752,7 @@
                     .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
                     .click(function(){ removeTag(chartData[0].key, value, this);}); // Add a click handler
 
-                $('#series-tags')
+                $('#series-metadata')
                     .append(tagButton);
 
             });
@@ -762,7 +762,7 @@
                     .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
                     .click(function(){ removeAttribute(chartData[0].key, key, this);}); // Add a click handler
 
-                $('#series-attributes')
+                $('#series-metadata')
                     .append(attrButton);
             });
 
