@@ -27,3 +27,7 @@ log
 !/bin/rake
 !/bin/spring
 vendor/.bundle/
+python_app/env
+ruby_app/.generators
+ruby_app/.rakeTasks
+ruby_app/ruby_app.iml
