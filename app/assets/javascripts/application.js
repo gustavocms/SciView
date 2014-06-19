@@ -14,5 +14,7 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require d3.v3
-//= require nv.d3.js
+//= require sciview
 //= require stream_layers
+//= require charts/multiple
+//= require charts/index

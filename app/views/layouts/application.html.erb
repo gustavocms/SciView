@@ -4,7 +4,6 @@
   <title>SciView</title>
   <%= stylesheet_link_tag    "application", media: "all" %>
   <%= javascript_include_tag "application" %>
-  <%= javascript_for_action %>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -19,6 +18,7 @@
         <div class="right menu">
           <% if user_signed_in? %>
             <span class="item"><%= current_user.email %></span>
+            <span class="item"><%= link_to "My Charts", [:charts] %></span>
             <%= button_to "Sign Out", destroy_user_session_path,
                                       method: :delete,
                                       form_class: "item" %>

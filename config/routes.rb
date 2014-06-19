@@ -1,6 +1,6 @@
 SciView::Application.routes.draw do
 
-  resources :charts, only: [:index, :show] do
+  resources :charts, only: [:index, :show, :create] do
     collection do
       get :multiple
     end
@@ -10,6 +10,8 @@ SciView::Application.routes.draw do
       get :multiple
     end
   end
+
+  resources :coffee_charts, only: [:show]
 
   devise_for :users
   get "d3/index"
