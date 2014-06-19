@@ -31,3 +31,8 @@ python_app/env
 ruby_app/.generators
 ruby_app/.rakeTasks
 ruby_app/ruby_app.iml
+python_app/.ipynb_checkpoints
+python_app/out
+*.pyc
+python_app/python_app.iml
+python_app/sciview-python.iml
