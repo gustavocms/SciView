@@ -24,10 +24,21 @@ class SciView.FocusChart extends SciView.BasicChart
     @xAxis     = d3.svg.axis().scale(@x).orient("bottom")
     @xAxis2    = d3.svg.axis().scale(@x2).orient("bottom")
     @yAxis     = d3.svg.axis().scale(@y).orient("left")
+
     @brush = d3.svg.brush()
       .x(@x2)
       .on("brush", @brushed)
       .on("brushend", @brushEnd)
+
+    #@focusBrush = d3.svg.brush()
+    #.x(@x)
+    #.on("brushend", =>
+    #@brush.extent(@focusBrush.extent())
+    #@focusBrush.clear()
+    #@focus.select('g.brush').call(@focusBrush)
+    #@context.select('g.brush').call(@brush)
+    #@brushEnd()
+    #)
 
     @lineFocus = d3.svg.line()
       .x((d) => @x(d.x))
@@ -106,6 +117,34 @@ class SciView.FocusChart extends SciView.BasicChart
   brushEnd: =>
     @getData() unless @brush.empty()
 
+  # Dragging
+  ###############################################
+
+  dragged: =>
+    d3.event.sourceEvent.stopPropagation()
+    return if @brush.empty()
+    dx = d3.event.dx
+
+
+    dx_time = @x.invert(dx)
+    # move as a percentage of range:
+    pct = (dx / Math.abs(@x.range()[0] - @x.range()[1]))
+    extent = @brush.extent()
+    e.setSeconds(e.getSeconds() - dx) for e in extent
+    @brush.extent(extent)
+
+    @context.select('g.brush').call(@brush)
+    @brushed()
+
+
+  dragStart: ->
+    d3.event.sourceEvent.stopPropagation()
+
+  dragEnd: ->
+    d3.event.sourceEvent.stopPropagation()
+
+
+
 
   # Rendering functions
   ################################################
@@ -153,6 +192,21 @@ class SciView.FocusChart extends SciView.BasicChart
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
+    @drag = d3.behavior.drag()
+      .on("dragstart", @dragStart)
+      .on("drag", @dragged)
+      .on("dragend", @dragEnd)
+
+    @focusTarget = @focus.append('rect')
+      .attr('class', 'focusTarget')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('height', @height2)
+      .attr('width', @width)
+      .style('fill', 'red')
+      .attr('width', 960)
+    @focusTarget.call(@drag)
+
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
       .append('path')
@@ -184,3 +238,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+    # @focus.append("g")
+    #   .attr("class", "x brush")
+    #   .call(@focusBrush)
+    #   .selectAll("rect")
+    #   .attr("y", -6)
+    #   .attr("height", @height)
+
