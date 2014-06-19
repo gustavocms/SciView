@@ -14,11 +14,18 @@ def display_properties(tdms_object, level):
 def display(s, level):
     print("%s%s" % (" " * 2 * level, s))
 
-
+# Determine the absolute path of the /data/ directory
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'data'))
-data_file = 'TR_M17_QT_42-4.tdms'
-# data_file = 'Tdm_Example_File.tdm'
-# data_file = 'Tdm_Example_File.tdx'
+
+# File we want to use
+# data_file = 'TR_M17_QT_42-4.tdms'
+# data_file = 'TR_M17_QT_33-1.tdms'
+data_file = 'EXAMPLE.tdms'
+
+# data_file = 'Tdm_Example_File.tdm'  # This one doesn't work because it's xml and the npTDMS library doesn't support XML
+# data_file = 'Tdm_Example_File.tdx'  # This one doesn't work -- not sure why
+
+# Calculate full path for file
 file_path = os.path.join(data_dir, data_file)
 
 tdmsfile = TdmsFile(file_path)
@@ -55,16 +62,16 @@ for group in tdmsfile.groups():
             # display("data: %s" % channel.data, level)
 
 
-g = 'QT_42-4_Lower'
-c = 'Temp_J'
-ch = tdmsfile.object(g, c)
-display_properties(ch, 3)
-
-print ch.properties['root_datetime'] # UTC time
-print ch.data
-print ch.time_track()
-
-print len(ch.data)
-print len(ch.time_track())
-
-print ch.properties
+# g = 'QT_42-4_Lower'
+# c = 'Temp_J'
+# ch = tdmsfile.object(g, c)
+# display_properties(ch, 3)
+#
+# print ch.properties['root_datetime']  # UTC time
+# print ch.data
+# print ch.time_track()
+#
+# print len(ch.data)
+# print len(ch.time_track())
+#
+# print ch.properties
