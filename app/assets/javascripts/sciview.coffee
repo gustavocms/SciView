@@ -30,16 +30,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .on("brush", @brushed)
       .on("brushend", @brushEnd)
 
-    #@focusBrush = d3.svg.brush()
-    #.x(@x)
-    #.on("brushend", =>
-    #@brush.extent(@focusBrush.extent())
-    #@focusBrush.clear()
-    #@focus.select('g.brush').call(@focusBrush)
-    #@context.select('g.brush').call(@brush)
-    #@brushEnd()
-    #)
-
     @lineFocus = d3.svg.line()
       .x((d) => @x(d.x))
       .y((d) => @y(d.y))
@@ -123,14 +113,13 @@ class SciView.FocusChart extends SciView.BasicChart
   dragged: =>
     d3.event.sourceEvent.stopPropagation()
     return if @brush.empty()
-    dx = d3.event.dx
 
-    brush_extent        = @brush.extent()
-    brush_extent_pixels = brush_extent.map(@x2)
-    brush_width         = Math.abs(brush_extent_pixels.reduce((a, b) -> a - b))
-    d_brush             = brush_width * dx / @width
-    d_brush_extent      = brush_extent_pixels.map((x) => @x2.invert(x - d_brush))
-    @brush.extent(d_brush_extent)
+    dx             = d3.event.dx
+    extent_pixels  = @brush.extent().map(@x2)
+    brush_width    = Math.abs(extent_pixels[0] - extent_pixels[1])
+    d_brush        = brush_width * dx / @width
+
+    @brush.extent(extent_pixels.map((x) => @x2.invert(x - d_brush)))
     @context.select('g.brush').call(@brush)
     @brushed()
 
@@ -138,8 +127,9 @@ class SciView.FocusChart extends SciView.BasicChart
   dragStart: ->
     d3.event.sourceEvent.stopPropagation()
 
-  dragEnd: ->
+  dragEnd: =>
     d3.event.sourceEvent.stopPropagation()
+    @brushEnd()
 
 
 
@@ -191,7 +181,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @y2.domain(@y.domain())
 
     @drag = d3.behavior.drag()
-      .on("dragstart", @dragStart)
       .on("drag", @dragged)
       .on("dragend", @dragEnd)
 
