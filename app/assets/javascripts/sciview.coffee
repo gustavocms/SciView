@@ -125,14 +125,12 @@ class SciView.FocusChart extends SciView.BasicChart
     return if @brush.empty()
     dx = d3.event.dx
 
-
-    dx_time = @x.invert(dx)
-    # move as a percentage of range:
-    pct = (dx / Math.abs(@x.range()[0] - @x.range()[1]))
-    extent = @brush.extent()
-    e.setSeconds(e.getSeconds() - dx) for e in extent
-    @brush.extent(extent)
-
+    brush_extent        = @brush.extent()
+    brush_extent_pixels = brush_extent.map(@x2)
+    brush_width         = Math.abs(brush_extent_pixels.reduce((a, b) -> a - b))
+    d_brush             = brush_width * dx / @width
+    d_brush_extent      = brush_extent_pixels.map((x) => @x2.invert(x - d_brush))
+    @brush.extent(d_brush_extent)
     @context.select('g.brush').call(@brush)
     @brushed()
 
