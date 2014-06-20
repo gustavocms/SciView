@@ -119,6 +119,9 @@ class SciView.FocusChart extends SciView.BasicChart
     brush_width    = Math.abs(extent_pixels[0] - extent_pixels[1])
     d_brush        = brush_width * dx / @width
 
+    return if d3.min(extent_pixels) - d_brush < 0 # overflow left
+    return if d3.max(extent_pixels) - d_brush > @width # overflow right
+
     @brush.extent(extent_pixels.map((x) => @x2.invert(x - d_brush)))
     @context.select('g.brush').call(@brush)
     @brushed()
