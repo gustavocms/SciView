@@ -12,6 +12,7 @@ http://hackercodex.com/guide/python-development-environment-on-mac-osx/
 $ cd python_app
 $ mkdir ~/virtualenvs
 $ virtualenv ~/virtualenvs/sciview-python
+$ source ~/virtualenvs/sciview-python/bin/activate
 $ pip install -r requirements.txt
 
 ### Validate your environment works by running a simple TDMS viewer 
