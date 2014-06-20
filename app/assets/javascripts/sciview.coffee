@@ -191,10 +191,9 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('class', 'focusTarget')
       .attr('x', 0)
       .attr('y', 0)
-      .attr('height', @height2)
+      .attr('height', @height)
       .attr('width', @width)
-      .style('fill', 'red')
-      .attr('width', 960)
+      .style('fill', 'white')
     @focusTarget.call(@drag)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
