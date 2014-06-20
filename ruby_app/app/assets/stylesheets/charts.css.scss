@@ -1,0 +1,26 @@
+// Place all the styles related to the charts controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.chart {
+
+  .line {
+    stroke: red;
+    fill: none;
+  }
+
+  .zoom {
+    stroke: green;
+    stroke-width: 2pt;
+  }
+  
+  .axis line {
+    fill: none;
+    stroke: #000;
+  }
+
+  .brush .extent {
+    stroke: #fff;
+    fill-opacity: .125;
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SciView</title>
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<div class="ui one column page grid">
+
+  <div class="ui one column row">
+    <div class="column">
+      <h1 class="ui header">SciView</h1>
+
+      <nav class="ui secondary menu">
+        <div class="right menu">
+          <% if user_signed_in? %>
+            <span class="item"><%= current_user.email %></span>
+            <span class="item"><%= link_to "My Charts", [:charts] %></span>
+            <%= button_to "Sign Out", destroy_user_session_path,
+                                      method: :delete,
+                                      form_class: "item" %>
+          <% else %>
+            <div class="ui buttons item">
+              <%= link_to "Sign Up", new_user_registration_path, class: "ui button" %>
+              <%= link_to "Sign In", new_user_session_path, class: "ui positive button" %>
+            </div>
+          <% end %>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="ui one column row">
+    <div class="column">
+      <% if notice %>
+        <div class="ui info message">
+          <i class="close icon"></i>
+          <div class="notice header"><%= notice %></div>
+        </div>
+      <% end %>
+
+      <% if alert %>
+        <div class="ui error message">
+          <i class="close icon"></i>
+          <div class="alert header"><%= alert %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+
+<%= yield %>
+
+</div>
+
+</body>
+</html>
