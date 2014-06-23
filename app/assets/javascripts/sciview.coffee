@@ -41,6 +41,10 @@ class SciView.FocusChart extends SciView.BasicChart
 
     @initializeSvg()
 
+    @drag = d3.behavior.drag()
+      .on("drag", @dragged)
+      .on("dragend", @dragEnd)
+
   # Data loading
   # #################################################
  
@@ -109,9 +113,6 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Dragging
   ###############################################
-  drag: d3.behavior.drag()
-    .on("drag", @dragged)
-    .on("dragend", @dragEnd)
 
   dragged: =>
     d3.event.sourceEvent.stopPropagation()
@@ -136,6 +137,18 @@ class SciView.FocusChart extends SciView.BasicChart
   dragEnd: =>
     d3.event.sourceEvent.stopPropagation()
     @brushEnd()
+
+  # Zooming
+  ###############################################
+  
+  zoom: d3.behavior.zoom()
+    .on('zoom', -> console.log('zoom', d3.event.scale, d3.event.translate))
+    .on('zoomend', =>
+      console.log('zoomend')
+    )
+
+  zoomEnd: ->
+    @zoom.scale(1)
 
 
 
@@ -194,6 +207,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('height', @height)
       .attr('width', @width)
       .style('fill', 'white')
+    #@focusTarget.call(@zoom)
     @focusTarget.call(@drag)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
