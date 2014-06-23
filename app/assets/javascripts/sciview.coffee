@@ -160,11 +160,11 @@ class SciView.FocusChart extends SciView.BasicChart
 
   render: ->
     if @_zoomData
-      @renderZoomData()
+      @_renderZoomData()
     else
-      @renderInitialData()
+      @_renderInitialData()
 
-  renderZoomData: ->
+  _renderZoomData: ->
     @focus.selectAll('.init').attr('opacity', 0)
     zoomFocusPaths = @focus.selectAll('path.focus.zoom').data(@_zoomData)
     zoomFocusPaths.enter()
@@ -175,7 +175,7 @@ class SciView.FocusChart extends SciView.BasicChart
     zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
   
-  renderInitialData: ->
+  _renderInitialData: ->
     all_data = @_data.map((obj) -> obj.values).reduce((a, b) -> a.concat(b))
 
     @x.domain(d3.extent(all_data.map((d) -> d.x )))
