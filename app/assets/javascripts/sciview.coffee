@@ -109,6 +109,9 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Dragging
   ###############################################
+  drag: d3.behavior.drag()
+    .on("drag", @dragged)
+    .on("dragend", @dragEnd)
 
   dragged: =>
     d3.event.sourceEvent.stopPropagation()
@@ -183,9 +186,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
-    @drag = d3.behavior.drag()
-      .on("drag", @dragged)
-      .on("dragend", @dragEnd)
 
     @focusTarget = @focus.append('rect')
       .attr('class', 'focusTarget')
