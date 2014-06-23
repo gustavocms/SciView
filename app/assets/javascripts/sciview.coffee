@@ -130,7 +130,10 @@ class SciView.FocusChart extends SciView.BasicChart
     }[d3.event.sourceEvent.type] or (->))()
 
   _zoomed_zoom: =>
-    extent_pixels = @brush.extent().map(@x2)
+    if @brush.empty()
+      extent_pixels = [0, @width]
+    else
+      extent_pixels = @brush.extent().map(@x2)
     brush_width   = Math.abs(extent_pixels[0] - extent_pixels[1])
     new_width     = brush_width * @zoom.scale()
     d_brush       = (new_width - brush_width) / 2
@@ -144,9 +147,9 @@ class SciView.FocusChart extends SciView.BasicChart
       @brush.clear()
     else
       @brush.extent([x0, x1].map(@x2.invert))
+
     @context.select('g.brush').call(@brush)
     @brushed()
-
     @zoom.scale(1) # keep this relative
 
 
