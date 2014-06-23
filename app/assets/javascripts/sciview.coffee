@@ -227,10 +227,3 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
-    # @focus.append("g")
-    #   .attr("class", "x brush")
-    #   .call(@focusBrush)
-    #   .selectAll("rect")
-    #   .attr("y", -6)
-    #   .attr("height", @height)
-
