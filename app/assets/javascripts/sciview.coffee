@@ -41,9 +41,6 @@ class SciView.FocusChart extends SciView.BasicChart
 
     @initializeSvg()
 
-    @drag = d3.behavior.drag()
-      .on("drag", @dragged)
-      .on("dragend", @dragEnd)
     @zoom = d3.behavior.zoom()
       .on('zoom', @zoomed)
       .on('zoomend', =>
@@ -116,36 +113,8 @@ class SciView.FocusChart extends SciView.BasicChart
   brushEnd: =>
     @getData() unless @brush.empty()
 
-  # Dragging
+  # Zooming and Dragging
   ###############################################
-
-  dragged: =>
-    d3.event.sourceEvent.stopPropagation()
-    return if @brush.empty()
-
-    dx             = d3.event.dx
-    extent_pixels  = @brush.extent().map(@x2)
-    brush_width    = Math.abs(extent_pixels[0] - extent_pixels[1])
-    d_brush        = brush_width * dx / @width
-
-    return if d3.min(extent_pixels) - d_brush < 0 # overflow left
-    return if d3.max(extent_pixels) - d_brush > @width # overflow right
-
-    @brush.extent(extent_pixels.map((x) => @x2.invert(x - d_brush)))
-    @context.select('g.brush').call(@brush)
-    @brushed()
-
-
-  dragStart: ->
-    d3.event.sourceEvent.stopPropagation()
-
-  dragEnd: =>
-    d3.event.sourceEvent.stopPropagation()
-    @brushEnd()
-
-  # Zooming
-  ###############################################
-  
 
   zoomEnd: ->
     d3.event.sourceEvent.stopPropagation()
@@ -242,7 +211,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('width', @width)
       .style('fill', 'white')
     @focusTarget.call(@zoom)
-    #@focusTarget.call(@drag)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
