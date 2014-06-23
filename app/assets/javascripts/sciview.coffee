@@ -117,7 +117,7 @@ class SciView.FocusChart extends SciView.BasicChart
   ###############################################
 
   zoomEnd: ->
-    d3.event.sourceEvent.stopPropagation()
+    d3.event?.sourceEvent?.stopPropagation()
     @zoom.scale(1).translate([0, 0]) # keep movements relative
     @_dx_prev = 0
     @brushEnd()
@@ -130,6 +130,25 @@ class SciView.FocusChart extends SciView.BasicChart
     }[d3.event.sourceEvent.type] or (->))()
 
   _zoomed_zoom: =>
+    extent_pixels = @brush.extent().map(@x2)
+    brush_width   = Math.abs(extent_pixels[0] - extent_pixels[1])
+    new_width     = brush_width * @zoom.scale()
+    d_brush       = (new_width - brush_width) / 2
+
+    x0 = extent_pixels[0] + d_brush
+    x1 = extent_pixels[1] - d_brush
+    x0 = 0 if x0 < 0
+    x1 = @width if x1 > @width
+
+    if x0 is 0 and x1 is @width
+      @brush.clear()
+    else
+      @brush.extent([x0, x1].map(@x2.invert))
+    @context.select('g.brush').call(@brush)
+    @brushed()
+
+    @zoom.scale(1) # keep this relative
+
 
   _zoomed_pan: =>
     return if @brush.empty()
@@ -149,11 +168,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @brush.extent(extent_pixels.map((x) => @x2.invert(x - d_brush)))
     @context.select('g.brush').call(@brush)
     @brushed()
-
-
-    
-
-
 
 
   # Rendering functions
