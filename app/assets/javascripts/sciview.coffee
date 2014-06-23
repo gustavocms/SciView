@@ -44,6 +44,11 @@ class SciView.FocusChart extends SciView.BasicChart
     @drag = d3.behavior.drag()
       .on("drag", @dragged)
       .on("dragend", @dragEnd)
+    @zoom = d3.behavior.zoom()
+      .on('zoom', @zoomed)
+      .on('zoomend', =>
+        @zoomEnd()
+      )
 
   # Data loading
   # #################################################
@@ -141,14 +146,43 @@ class SciView.FocusChart extends SciView.BasicChart
   # Zooming
   ###############################################
   
-  zoom: d3.behavior.zoom()
-    .on('zoom', -> console.log('zoom', d3.event.scale, d3.event.translate))
-    .on('zoomend', =>
-      console.log('zoomend')
-    )
 
   zoomEnd: ->
-    @zoom.scale(1)
+    d3.event.sourceEvent.stopPropagation()
+    @zoom.scale(1).translate([0, 0]) # keep movements relative
+    @_dx_prev = 0
+    @brushEnd()
+
+  zoomed: =>
+    d3.event.sourceEvent.stopPropagation()
+    ({ # event types (MouseEvent or WheelEvent)
+      mousemove: @_zoomed_pan
+      wheel: @_zoomed_zoom
+    }[d3.event.sourceEvent.type] or (->))()
+
+  _zoomed_zoom: =>
+
+  _zoomed_pan: =>
+    return if @brush.empty()
+    # For zoom events, the translation vector is absolute until 'zoomend'.
+    # These three lines keep the vector relative to allow 1 - 1 pixel dragging.
+    _dx       = d3.event.translate[0]
+    dx        = _dx - (@_dx_prev or 0)
+    @_dx_prev = _dx
+
+    extent_pixels  = @brush.extent().map(@x2)
+    brush_width    = Math.abs(extent_pixels[0] - extent_pixels[1])
+    d_brush        = brush_width * dx / @width
+
+    return if d3.min(extent_pixels) - d_brush < 0 # overflow left
+    return if d3.max(extent_pixels) - d_brush > @width # overflow right
+
+    @brush.extent(extent_pixels.map((x) => @x2.invert(x - d_brush)))
+    @context.select('g.brush').call(@brush)
+    @brushed()
+
+
+    
 
 
 
@@ -207,8 +241,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('height', @height)
       .attr('width', @width)
       .style('fill', 'white')
-    #@focusTarget.call(@zoom)
-    @focusTarget.call(@drag)
+    @focusTarget.call(@zoom)
+    #@focusTarget.call(@drag)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
