@@ -1,0 +1,27 @@
+<div class="ui segment" id="graph_group">
+  <div class="ui pointing menu" id="graph_buttons">
+    <a class="graph_button item" data-chart="3Series">
+      3 Series
+    </a>
+    <a class="graph_button item" data-chart="randomPeaks">
+      Random with high peaks
+    </a>
+    <a class="graph_button item" data-chart="randomFreq">
+      Random with inconsistent sample frequencies
+    </a>
+    <a class="graph_button item" data-chart="jsonDate">
+      JSON date parsing
+    </a>
+    <a class="graph_button item" data-action="addMyJSONGraph">
+      TempoDB webservice
+    </a>
+    <div class="series_key item">
+      <div class="ui input">
+        <input placeholder="TempoDB-Series-Key" type="text" id="tempodb-series-key">
+      </div>
+    </div>
+  </div>
+  <div id="chart" class="with-3d-shadow with-transitions">
+    <svg style="height: 500px;"></svg>
+  </div>
+</div>
