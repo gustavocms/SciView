@@ -35,6 +35,7 @@ tdmsfile = TdmsFile(file_path)
 
 show_properties = True
 show_data = True
+show_time_track = True
 
 level = 0
 root = tdmsfile.object()
@@ -54,6 +55,13 @@ for group in tdmsfile.groups():
             level = 3
             display("data type: %s" % channel.data_type.name, level)
             display_properties(channel, level)
+        if show_time_track:
+            level = 3
+            try:
+                time_track = channel.time_track()
+                print time_track
+            except KeyError:
+                print "no time track"
         if show_data:
             level = 3
             data = channel.data
