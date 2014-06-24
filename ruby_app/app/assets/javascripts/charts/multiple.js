@@ -27,9 +27,13 @@ $(function() {
                 $( this ).dialog( "close" );
             },
             "Add": function() {
+                var closeDialog = false;
+
                 allFields.removeClass( "ui-state-error" );
 
                 if ( checkLength(dialog_tag)) {
+                    closeDialog = true;
+
                     var tag = dialog_tag.val();
                     $.ajax({
                         url: "/datasets/add_tag?series_key=" + series_key.text() + "&tag=" + tag,
@@ -37,10 +41,11 @@ $(function() {
                             addTagButton(tag);
                         }
                     });
-
-                    $( this ).dialog( "close" );
                 }
-                else if (checkLength(dialog_key) && checkLength(dialog_value)) {
+
+                if (checkLength(dialog_key) && checkLength(dialog_value)) {
+                    closeDialog = true;
+
                     var attribute = dialog_key.val(),
                         value = dialog_value.val()
                     $.ajax({
@@ -49,7 +54,9 @@ $(function() {
                             addAttributeButton(attribute,value);
                         }
                     });
+                }
 
+                if (closeDialog == true) {
                     $( this ).dialog( "close" );
                 }
             }
