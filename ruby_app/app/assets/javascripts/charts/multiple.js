@@ -36,7 +36,7 @@ $(function() {
 
                     var tag = dialog_tag.val();
                     $.ajax({
-                        url: "/datasets/add_tag?series_key=" + series_key.text() + "&tag=" + tag,
+                        url: "/datasets/" + series_key.text() + "/tags/create?tag=" + tag,
                         success: function(data) {
                             addTagButton(tag);
                         }
@@ -49,7 +49,7 @@ $(function() {
                     var attribute = dialog_key.val(),
                         value = dialog_value.val()
                     $.ajax({
-                        url: "/datasets/update_attribute?series_key=" + series_key.text() + "&attribute=" + attribute + "&value=" + value,
+                        url: "/datasets/" + series_key.text() + "/attributes/create?attribute=" + attribute + "&value=" + value,
                         success: function(data) {
                             addAttributeButton(attribute,value);
                         }
@@ -116,7 +116,7 @@ removeTag = function(series_key, tag, sender) {
             buttons: {
                 "Delete": function () {
                     $.ajax({
-                        url: "/datasets/remove_tag?series_key=" + series_key + "&tag=" + tag,
+                        url: "/datasets/" + series_key + "/tags/" + tag + "/destroy",
                         success: function(data) {
                             sender.remove();
                         }
@@ -145,7 +145,7 @@ removeAttribute = function(series_key, attribute, sender) {
             buttons: {
                 "Delete": function () {
                     $.ajax({
-                        url: "/datasets/remove_attribute?series_key=" + series_key + "&attribute=" + attribute,
+                        url: "/datasets/" + series_key + "/attributes/" + attribute + "/destroy",
                         success: function(data) {
                             sender.remove();
                         }
