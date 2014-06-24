@@ -3,9 +3,10 @@ namespace :data do
   desc 'lists all series in TempoDB (or at least the first 5000)'
   task :list_series do
     client = get_tempodb_client
-    series_list = client.get_series()
-    puts series_list
-    puts series_list.count
+    cursor = client.list_series
+    cursor.each_with_index do |series, index|
+      puts "Series #{index}: #{series.key}"
+    end
 
   end
 
@@ -203,8 +204,7 @@ namespace :data do
 
   # @return [TempoDB::Client]
   def get_tempodb_client
-    TempoDB::Client.new(ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
-
+    TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
   end
 
 
