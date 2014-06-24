@@ -141,16 +141,16 @@ namespace :data do
     client = get_tempodb_client
     key = args[:key] || 'my-random-key'
 
-    #Choose arbitrarily early time for first in the series
+    # Choose arbitrarily early time for first in the series
     start = Time.utc(1999, 1, 1)
 
-    #Choose arbitrarily late time for last in the series
+    # Choose arbitrarily late time for last in the series
     stop = Time.utc(2020, 1, 1)
 
     keys = [key]
 
-    #More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
-    #returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
+    # More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
+    # returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
     returned_data = client.read(start, stop, :keys => keys, :interval => "raw")
     data = returned_data[0].data
     data.each { |d|
