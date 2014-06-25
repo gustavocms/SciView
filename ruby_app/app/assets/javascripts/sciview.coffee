@@ -57,6 +57,7 @@ class SciView.FocusChart extends SciView.BasicChart
         @zoomData(d)
       else
         @_data = preprocess(d)
+        loadMetadata()
       return @
     @_data
 
@@ -75,7 +76,6 @@ class SciView.FocusChart extends SciView.BasicChart
       success: (data) =>
         @data(data)
         @render()
-        loadMetadata()
     })
 
   # Stores the data in a renderable format:
