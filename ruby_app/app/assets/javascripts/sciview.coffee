@@ -75,6 +75,7 @@ class SciView.FocusChart extends SciView.BasicChart
       success: (data) =>
         @data(data)
         @render()
+        loadMetadata()
     })
 
   # Stores the data in a renderable format:
@@ -83,6 +84,8 @@ class SciView.FocusChart extends SciView.BasicChart
     {
       key: s.key
       values: ({ x: new Date(d.ts), y: d.value } for d in s.values )
+      tags: s.tags
+      attributes: s.attributes
     } for _, s of data
 
   dataURL: (string) ->
