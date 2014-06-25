@@ -9,12 +9,9 @@ SciView::Application.routes.draw do
     collection do
       get :multiple
     end
-    member do
-      get 'tags/create' => 'tags#create'
-      get	'tags/:tag/destroy' =>	'tags#destroy'
-      get 'attributes/create' => 'attributes#create'
-      get	'attributes/:attribute/destroy' =>	'attributes#destroy'
-    end
+
+    resources :tags, only: [:create, :destroy]
+    resources :attributes, only: [:create, :destroy]
   end
 
   resources :coffee_charts, only: [:show]
