@@ -124,14 +124,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
   zoomEnd: ->
     d3.event.sourceEvent?.stopPropagation()
-
-    # Try to prevent single clicks from triggering zoomEnd:
-    # "mouseup" is also the type when dragging ends.
-    # return if d3.event.sourceEvent?.type is "mouseup"
-
     @zoom.scale(1).translate([0, 0]) # keep movements relative
     @_dx_prev = 0
-
     # fire immediately for panning; delay for zoom
     (if d3.event.sourceEvent?.type is "mouseup" then @brushEnd else @brushEndDelayed)()
 
