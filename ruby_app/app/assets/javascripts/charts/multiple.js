@@ -32,26 +32,34 @@ $(function() {
                 allFields.removeClass( "ui-state-error" );
 
                 if ( checkLength(dialog_tag)) {
-                    closeDialog = true;
 
                     var tag = dialog_tag.val();
                     $.ajax({
-                        url: "/datasets/" + series_key.text() + "/tags/create?tag=" + tag,
-                        success: function(data) {
+                        url: "/datasets/" + series_key.text() + "/tags",
+                        type: "POST",
+                        dataType: "json",
+                        data: {"tag":tag},
+                        async: false,
+                        success: function() {
                             addTagButton(tag);
+                            closeDialog = true;
                         }
                     });
                 }
 
                 if (checkLength(dialog_key) && checkLength(dialog_value)) {
-                    closeDialog = true;
 
                     var attribute = dialog_key.val(),
                         value = dialog_value.val()
                     $.ajax({
-                        url: "/datasets/" + series_key.text() + "/attributes/create?attribute=" + attribute + "&value=" + value,
-                        success: function(data) {
+                        url: "/datasets/" + series_key.text() + "/attributes",
+                        type: "POST",
+                        dataType: "json",
+                        data: {"attribute":attribute,"value":value},
+                        async: false,
+                        success: function() {
                             addAttributeButton(attribute,value);
+                            closeDialog = true;
                         }
                     });
                 }
@@ -116,7 +124,9 @@ removeTag = function(series_key, tag, sender) {
             buttons: {
                 "Delete": function () {
                     $.ajax({
-                        url: "/datasets/" + series_key + "/tags/" + tag + "/destroy",
+                        url: "/datasets/" + series_key + "/tags/" + tag,
+                        type: "DELETE",
+                        async: false,
                         success: function(data) {
                             sender.remove();
                         }
@@ -145,7 +155,9 @@ removeAttribute = function(series_key, attribute, sender) {
             buttons: {
                 "Delete": function () {
                     $.ajax({
-                        url: "/datasets/" + series_key + "/attributes/" + attribute + "/destroy",
+                        url: "/datasets/" + series_key + "/attributes/" + attribute,
+                        type: "DELETE",
+                        async: false,
                         success: function(data) {
                             sender.remove();
                         }
