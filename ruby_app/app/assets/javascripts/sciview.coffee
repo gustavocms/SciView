@@ -43,9 +43,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
     @zoom = d3.behavior.zoom()
       .on('zoom', @zoomed)
-      .on('zoomend', =>
-        @zoomEnd()
-      )
+      .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
+                                    # (does not work without the anonymous wrapper)
 
   # Data loading
   # #################################################
@@ -113,14 +112,28 @@ class SciView.FocusChart extends SciView.BasicChart
   brushEnd: =>
     @getData() unless @brush.empty()
 
+  # This functions as a single-item queue. If the countdown
+  # is already active, it is reset.
+  brushEndDelayed: =>
+    if @_brushEndTimer
+      clearTimeout(@_brushEndTimer)
+    @_brushEndTimer = setTimeout((=> @_brushEndTimer = null; @brushEnd()), 250)
+
   # Zooming and Dragging
   ###############################################
 
   zoomEnd: ->
-    d3.event?.sourceEvent?.stopPropagation()
+    d3.event.sourceEvent?.stopPropagation()
+
+    # Try to prevent single clicks from triggering zoomEnd:
+    # "mouseup" is also the type when dragging ends.
+    # return if d3.event.sourceEvent?.type is "mouseup"
+
     @zoom.scale(1).translate([0, 0]) # keep movements relative
     @_dx_prev = 0
-    @brushEnd()
+
+    # fire immediately for panning; delay for zoom
+    (if d3.event.sourceEvent?.type is "mouseup" then @brushEnd else @brushEndDelayed)()
 
   zoomed: =>
     d3.event.sourceEvent.stopPropagation()
