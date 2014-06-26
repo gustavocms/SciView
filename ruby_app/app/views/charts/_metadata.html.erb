@@ -1,0 +1,29 @@
+<hidden id="series-key"></hidden>
+
+<div class="ui one column row">
+  <div class="column">
+    <div id="series-metadata">
+      <h3>Series Tags and Attributes</h3>
+      <button id="addMetadata">New</button>
+    </div>
+  </div>
+</div>
+
+<div id="dialog-form" title="Add a tag or attribute">
+  <div class="form-row">
+    <label>Tag</label>
+    <div class="metadata-info">Ex: <span class="info">humidity</span></div>
+    <div class="metadata-error error" style="display: none;">The tag is invalid.</div>
+    <input class="add-tag" type="text" id="dialog-tag" maxlength="255">
+  </div>
+  <h3 class="or">or</h3>
+  <div class="form-row">
+    <label>Attribute</label>
+    <div class="metadata-info">Ex: <span class="info">thermostat: 1</span></div>
+    <div class="metadata-error error" style="display: none;">The attribute is invalid.</div>
+    <br>
+    <input class="add-attribute add-attribute-key" type="text" id="dialog-key" maxlength="255">
+    <span class="colon"> : </span>
+    <input class="add-attribute add-attribute-value" type="text" id="dialog-value" maxlength="255">
+  </div>
+</div>
