@@ -28,7 +28,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @brush = d3.svg.brush()
       .x(@x2)
       .on("brush", @brushed)
-      .on("brushend", @brushEnd)
+      .on("brushend", @brushEndDelayed)
 
     @lineFocus = d3.svg.line()
       .x((d) => @x(d.x))
@@ -117,7 +117,16 @@ class SciView.FocusChart extends SciView.BasicChart
   brushEndDelayed: =>
     if @_brushEndTimer
       clearTimeout(@_brushEndTimer)
-    @_brushEndTimer = setTimeout((=> @_brushEndTimer = null; @brushEnd()), 250)
+    @_brushEndTimer = setTimeout((=> @_brushEndTimer = null; @brushEnd()), @brushEndDelayInterval())
+
+  _brushEndDelayInterval: 500
+
+  brushEndDelayInterval: (d) ->
+    if d
+      @_brushEndDelayInterval = d
+      return @
+    @_brushEndDelayInterval
+
 
   # Zooming and Dragging
   ###############################################
@@ -126,8 +135,7 @@ class SciView.FocusChart extends SciView.BasicChart
     d3.event.sourceEvent?.stopPropagation()
     @zoom.scale(1).translate([0, 0]) # keep movements relative
     @_dx_prev = 0
-    # fire immediately for panning; delay for zoom
-    (if d3.event.sourceEvent?.type is "mouseup" then @brushEnd else @brushEndDelayed)()
+    @brushEndDelayed()
 
   zoomed: =>
     d3.event.sourceEvent.stopPropagation()
