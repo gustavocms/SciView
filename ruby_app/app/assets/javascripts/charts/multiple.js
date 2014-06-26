@@ -96,16 +96,25 @@ loadMetadata = function(){
 }
 
 addTagButton = function(tag){
-    var tagButton=$('<button>' + tag + '</button>') // Create the element
-        .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
-        .click(function(){ removeTag( $("#series-key").text(), tag, this ); }); // Add a click handler
+    var tagButton=$('#tag_' + tag);
 
-    $('#series-metadata')
-        .append(tagButton);
+    if (!tagButton.length) {
+        tagButton=$('<button id="tag_' + tag + '">' + tag + '</button>') // Create the element
+            .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
+            .click(function(){ removeTag( $("#series-key").text(), tag, this ); }); // Add a click handler
+
+        $('#series-metadata')
+            .append(tagButton);
+    }
 };
 
 addAttributeButton = function(key, value){
-    var attrButton=$('<button>' + key + ':' + value + '</button>') // Create the element
+    var attrButton=$('#attribute_' + key);
+    if (attrButton.length) {
+        attrButton.remove();
+    }
+
+    attrButton=$('<button id="attribute_' + key + '">' + key + ':' + value + '</button>') // Create the element
         .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
         .click(function(){ removeAttribute( $("#series-key").text(), key, this ); }); // Add a click handler
 
