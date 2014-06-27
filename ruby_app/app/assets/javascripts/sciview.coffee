@@ -57,6 +57,7 @@ class SciView.FocusChart extends SciView.BasicChart
         @zoomData(d)
       else
         @_data = preprocess(d)
+        loadMetadata()
       return @
     @_data
 
@@ -83,6 +84,8 @@ class SciView.FocusChart extends SciView.BasicChart
     {
       key: s.key
       values: ({ x: new Date(d.ts), y: d.value } for d in s.values )
+      tags: s.tags
+      attributes: s.attributes
     } for _, s of data
 
   dataURL: (string) ->

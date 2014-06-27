@@ -9,6 +9,9 @@ SciView::Application.routes.draw do
     collection do
       get :multiple
     end
+
+    resources :tags, only: [:create, :destroy]
+    resources :attributes, only: [:create, :destroy]
   end
 
   resources :coffee_charts, only: [:show]
