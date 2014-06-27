@@ -11,8 +11,7 @@ $(document).ready(function() {
 });
 
 $(function() {
-    var series_key = $( "#series-key" ),
-        dialog_tag = $( "#dialog-tag" ),
+    var dialog_tag = $( "#dialog-tag" ),
         dialog_key = $( "#dialog-key" ),
         dialog_value = $( "#dialog-value" ),
         allFields = $( [] ).add( dialog_tag ).add( dialog_key ).add( dialog_value );
@@ -27,6 +26,7 @@ $(function() {
                 $( this ).dialog( "close" );
             },
             "Add": function() {
+                var series_key = $("#dialog-form").data('series_key')
                 var closeDialog = false;
 
                 allFields.removeClass( "ui-state-error" );
@@ -35,13 +35,13 @@ $(function() {
 
                     var tag = dialog_tag.val();
                     $.ajax({
-                        url: "/datasets/" + series_key.text() + "/tags",
+                        url: "/datasets/" + series_key + "/tags",
                         type: "POST",
                         dataType: "json",
                         data: {"tag":tag},
                         async: false,
                         success: function() {
-                            addTagButton(tag);
+                            addTagButton(series_key, tag);
                             closeDialog = true;
                         }
                     });
@@ -52,13 +52,13 @@ $(function() {
                     var attribute = dialog_key.val(),
                         value = dialog_value.val()
                     $.ajax({
-                        url: "/datasets/" + series_key.text() + "/attributes",
+                        url: "/datasets/" + series_key + "/attributes",
                         type: "POST",
                         dataType: "json",
                         data: {"attribute":attribute,"value":value},
                         async: false,
                         success: function() {
-                            addAttributeButton(attribute,value);
+                            addAttributeButton(series_key, attribute, value);
                             closeDialog = true;
                         }
                     });
@@ -73,54 +73,106 @@ $(function() {
             allFields.val( "" ).removeClass( "ui-state-error" );
         }
     });
-
-    $( "#addMetadata" )
-        .button({icons: {primary: "ui-icon-plusthick"}, text: false}) // Ask jQuery UI to buttonize it
-        .click(function() {
-            $( "#dialog-form" ).dialog( "open" );
-        });
 });
 
 loadMetadata = function(){
 
-    $("#series-key").text(String(chart._data[0].key));
+    $.each( chart._data, function( index, data ){
 
-    $.each( chart._data[0].tags, function( index, value ){
-      addTagButton (value);
+        addContainerDiv (data.key);
+
+        addNewButton (data.key);
+
+        $.each( data.tags, function( i, tag ){
+            addTagButton (data.key, tag);
+        });
+
+        $.each( data.attributes, function( attribute, value ) {
+            addAttributeButton (data.key, attribute, value);
+        });
     });
-
-    $.each( chart._data[0].attributes, function( key, value ) {
-      addAttributeButton (key, value);
-    });
-
 }
 
-addTagButton = function(tag){
-    var tagButton=$('#tag_' + tag);
+addContainerDiv = function(series_key) {
+    var dataDiv=$('<div id="serie_' + series_key + '"></div>')
+    dataDiv.append('<h3>' + series_key + ' Tags and Attributes</h3>');
 
-    if (!tagButton.length) {
-        tagButton=$('<button id="tag_' + tag + '">' + tag + '</button>') // Create the element
-            .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
-            .click(function(){ removeTag( $("#series-key").text(), tag, this ); }); // Add a click handler
+    $('#series-metadata').append(dataDiv);
+}
 
-        $('#series-metadata')
-            .append(tagButton);
+addNewButton =  function(series_key) {
+    var seriesDivID = 'serie_' + series_key;
+
+    var newButton=$('<button id="addMetadata_' + series_key + '">New</button>') // Create the element
+        .button({icons: {primary: "ui-icon-plusthick"}, text: false}) // Ask jQuery UI to buttonize it
+        .click(function() {
+            $( "#dialog-form" )
+                .data('series_key', series_key)
+                .dialog( "open" );
+        });
+
+    $('#' + seriesDivID)
+        .append(newButton);
+};
+
+addTagButton = function(series_key, tag){
+    var seriesDivID = 'serie_' + series_key;
+    var tagButtonID = 'tag_' + tag;
+
+    //avoid invalid names like "`1234567890!@#$%^&*()" (will be ignored)
+    try {
+        var tagButton=$( '#' + seriesDivID + ' > #' + tagButtonID );
+    } catch(e) {
+        // handle all your exceptions here
+    }
+
+    //check if selector worked (otherwise wont create this tag button)
+    if (tagButton) {
+
+        //if button exists, do not create again
+        if (!tagButton.length) {
+
+            tagButton = $('<button id="' + tagButtonID + '">' + tag + '</button>') // Create the element
+                .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
+                .click(function () {
+                    removeTag(series_key, tag, this);
+                }); // Add a click handler
+
+            $('#' + seriesDivID)
+                .append(tagButton);
+        }
     }
 };
 
-addAttributeButton = function(key, value){
-    var attrButton=$('#attribute_' + key);
-    if (attrButton.length) {
-        attrButton.remove();
+addAttributeButton = function(series_key, attribute, value){
+    var seriesDivID = 'serie_' + series_key;
+    var attrButtonID = 'attribute_' + attribute;
+
+    //avoid invalid names like "`1234567890!@#$%^&*()" (will be ignored)
+    try {
+        var attrButton=$( '#' + seriesDivID + ' > #' + attrButtonID );
+    } catch(e) {
+        // handle all your exceptions here
     }
 
-    attrButton=$('<button id="attribute_' + key + '">' + key + ':' + value + '</button>') // Create the element
-        .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
-        .click(function(){ removeAttribute( $("#series-key").text(), key, this ); }); // Add a click handler
+    //check if selector worked (otherwise wont create this attribute button)
+    if (attrButton) {
 
-    $('#series-metadata')
-        .append(attrButton);
-}
+        //if button exists, remove before adding again
+        if (attrButton.length) {
+            attrButton.remove();
+        }
+
+        attrButton = $('<button id="' + attrButtonID + '">' + attribute + ':' + value + '</button>') // Create the element
+            .button({icons: {secondary: "ui-icon-closethick"}}) // Ask jQuery UI to buttonize it
+            .click(function () {
+                removeAttribute(series_key, attribute, this);
+            }); // Add a click handler
+
+        $('#' + seriesDivID)
+            .append(attrButton);
+    }
+};
 
 removeTag = function(series_key, tag, sender) {
     $('<div></div>').appendTo('body')
