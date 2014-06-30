@@ -16,6 +16,8 @@ SciView::Application.routes.draw do
 
   resources :coffee_charts, only: [:show]
 
+  resources :uploads, only: [:new, :create]
+
   devise_for :users
   get "d3/index"
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
