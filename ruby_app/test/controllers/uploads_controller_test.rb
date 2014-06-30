@@ -1,6 +1,12 @@
 require 'test_helper'
 
 class UploadsControllerTest < ActionController::TestCase
+  before { sign_in test_user }
+
+  test 'new' do
+    get :new
+    assert_response :success
+  end
 end
 
 class UploadsControllerNoUserTest < ActionController::TestCase
