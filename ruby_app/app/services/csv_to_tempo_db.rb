@@ -1,6 +1,8 @@
 require 'rake' # provides String#pathmap
 require 'forwardable'
 require 'csv'
+require 'time' # for IS0-8601
+# "%FT%T.%L%z" strftime string for ISO-8601 date, time with milliseconds, and utc offset
 
 class CsvToTempoDb
   include Concerns::Tempo
@@ -28,17 +30,13 @@ class CsvToTempoDb
 
   private
 
-  def date
-    @date ||= Time.utc(2014,1,1)
-  end
-
   def raw_data
     @raw_data ||= CSV.read(filepath) # :headers should be an option
   end
 
   def data
     raw_data.map do |time, amplitude|
-      datapoint_wrapper.new(date + time.to_i, amplitude.to_i)
+      datapoint_wrapper.new(Time.iso8601(time), amplitude.to_i)
     end
   end
 
