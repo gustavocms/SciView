@@ -1,1 +1,5 @@
-FORM
+<%= form_tag uploads_path, html: { method: :create }, multipart: true do |f| %>
+  <%= file_field_tag :csv %>
+  <%= text_field_tag :series_name %>
+  <%= submit_tag %>
+<% end %>

@@ -7,6 +7,11 @@ class UploadsControllerTest < ActionController::TestCase
     get :new
     assert_response :success
   end
+
+  test 'create' do
+    post :create, csv: fixture_file_upload('test_data.csv')
+    assert_response :redirect
+  end
 end
 
 class UploadsControllerNoUserTest < ActionController::TestCase
