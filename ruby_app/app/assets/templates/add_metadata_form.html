@@ -1,0 +1,16 @@
+  <!--  Angular Metadata Form Template-->
+  <form name="addMetadataForm"  ng-controller="NewMetadataController as newMetadataCtrl" ng-submit="newMetadataCtrl.addMetadata(serie)">
+    <h4>Add a tag or attribute</h4>
+    <div class="form-row">
+      <label>Tag</label>
+      <input ng-model="newMetadataCtrl.metadata.tag" type="text" class="form-control" maxlength="255" placeholder="Ex: humidity" title="Tag">
+    </div>
+    <h5 class="or">or</h5>
+    <div class="form-row">
+      <label>Attribute</label>
+      <input ng-model="newMetadataCtrl.metadata.attribute" type="text" class="form-control" maxlength="255" placeholder="Ex: thermostat" title="Attribute">
+      <span class="colon"> : </span>
+      <input ng-model="newMetadataCtrl.metadata.value" type="text" class="form-control" maxlength="255" placeholder="Ex: 5" title="Value">
+    </div>
+    <input type="submit" class="btn btn-primary pull-right" value="Confirm" />
+  </form>
