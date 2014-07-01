@@ -41,7 +41,7 @@ class MockTempoDBClient
 end
 
 describe CsvToTempoDb do
-  let(:converter){ CsvToTempoDb.new('fixtures/test_data.csv', { tags: %w[foo bar]}, MockTempoDBClient.new)}
+  let(:converter){ CsvToTempoDb.new('test/fixtures/test_data.csv', { tags: %w[foo bar]}, MockTempoDBClient.new)}
   before do
     converter.instance_variable_set(:@datapoint_wrapper, MockTempoDataPoint)
     converter.save!
