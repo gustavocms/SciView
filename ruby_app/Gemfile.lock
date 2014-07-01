@@ -37,6 +37,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    angularjs-rails (1.2.18)
     arel (5.0.1.20140414130214)
     ast (2.0.0)
     awesome_print (1.2.0)
@@ -220,6 +221,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  angularjs-rails (~> 1.2.18)
   awesome_print
   cancancan
   chronic

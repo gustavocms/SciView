@@ -1,5 +1,22 @@
 
 
+<div class="ui one column row"  ng-app="sciviewApp">
+  <div class="column">
+    <div ng-controller="MetadataCtrl">
+        <div ng-repeat="serie in series">
+          <h3>{{serie.key}} Tags and Attributes</h3>
+          <button>New</button>
+          <span ng-repeat="tag in serie.tags">
+            <button>{{tag}}</button>
+          </span>
+          <span ng-repeat="(key, value) in serie.attributes">
+            <button>{{key}}:{{value}}</button>
+          </span>
+        </div>
+    </div>
+  </div>
+</div>
+
 <div class="ui one column row">
   <div class="column">
     <div id="series-metadata"></div>

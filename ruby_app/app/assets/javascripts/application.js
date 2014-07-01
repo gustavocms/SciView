@@ -14,8 +14,12 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require d3.v3
+//= require angular
+//= require angular-route
+//= require angular-resource
 //= require sciview
 //= require stream_layers
 //= require charts/multiple
 //= require charts/index
 //= require charts/metadata
+//= require_directory ./angular

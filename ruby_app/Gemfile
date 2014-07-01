@@ -56,12 +56,13 @@ gem 'foreman'
 
 gem 'tempodb', git: "https://github.com/tempodb/tempodb-ruby.git", branch: "v1.0"
 
-
 gem 'thor'
 
 gem 'semantic-ui-sass'
 
 gem 'parallel'
+
+gem 'angularjs-rails', '~> 1.2.18'
 
 group :development do
   gem 'guard'
