@@ -22,14 +22,9 @@ class CsvToTempoDb
   # There are several strategies to be considered here
   def save!
     write_multi do |multi|
-      multi.add(series_name, data.map {|time, amplitude| TempoDB::DataPoint.new(date + time.to_i, amplitude.to_i) })
+      multi.add(series_name, data)
     end
   end
-
-  # not necessary
-  #def series
-  #  @series ||= create_series(series_name, tags_and_attributes)
-  #end
 
   private
 
@@ -37,7 +32,17 @@ class CsvToTempoDb
     @date ||= Time.utc(2014,1,1)
   end
 
+  def raw_data
+    @raw_data ||= CSV.read(filepath) # :headers should be an option
+  end
+
   def data
-    @data ||= CSV.read(filepath) # :headers should be an option
+    raw_data.map do |time, amplitude|
+      datapoint_wrapper.new(date + time.to_i, amplitude.to_i)
+    end
+  end
+
+  def datapoint_wrapper
+    @datapoint_wrapper || TempoDB::DataPoint
   end
 end
