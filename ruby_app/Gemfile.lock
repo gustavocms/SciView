@@ -40,8 +40,12 @@ GEM
     angularjs-rails (1.2.18)
     arel (5.0.1.20140414130214)
     ast (2.0.0)
+    autoprefixer-rails (2.1.0.20140628)
+      execjs
     awesome_print (1.2.0)
     bcrypt (3.1.7)
+    bootstrap-sass (3.2.0.0)
+      sass (~> 3.2)
     builder (3.2.2)
     cancancan (1.7.1)
     celluloid (0.15.2)
@@ -222,7 +226,9 @@ PLATFORMS
 
 DEPENDENCIES
   angularjs-rails (~> 1.2.18)
+  autoprefixer-rails
   awesome_print
+  bootstrap-sass (~> 3.2.0.0)
   cancancan
   chronic
   coffee-rails (~> 4.0.0)

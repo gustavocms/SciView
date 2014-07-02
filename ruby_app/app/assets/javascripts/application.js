@@ -17,6 +17,7 @@
 //= require angular
 //= require angular-route
 //= require angular-resource
+//= require bootstrap-sprockets
 //= require sciview
 //= require stream_layers
 //= require charts/multiple
