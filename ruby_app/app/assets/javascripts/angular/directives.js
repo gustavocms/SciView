@@ -1,8 +1,10 @@
-var metadataDirectives = angular.module('metadataDirectives', []);
+(function() {
+    var module = angular.module('metadataDirectives', []);
 
-metadataDirectives.directive('addMetadataForm', function(){
-    return {
-        restrict: 'E',
-        templateUrl: '/assets/add_metadata_form.html'
-    };
-});
+    module.directive('addMetadataForm', function () {
+        return {
+            restrict: 'E',
+            templateUrl: '/assets/add_metadata_form.html'
+        };
+    });
+})();

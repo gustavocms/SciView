@@ -3,14 +3,15 @@
 <div class="ui one column row"  ng-app="sciviewApp">
   <div class="column">
     <div ng-controller="LoadDataController as loadDataCtrl">
+      <h3>{{loadDataCtrl.params.series_1}}</h3>
         <div ng-repeat="serie in series">
           <h3>{{serie.key}} Tags and Attributes</h3>
-          <button>New</button>
+          <button type="button" class="btn btn-sm btn-primary" ng-click="">New</button>
           <span ng-repeat="tag in serie.tags">
-            <button>{{tag}}</button>
+            <button type="button" class="btn btn-sm btn-default" ng-click="loadDataCtrl.removeTag(serie, tag)">{{tag}}</button>
           </span>
           <span ng-repeat="(key, value) in serie.attributes">
-            <button>{{key}}:{{value}}</button>
+            <button type="button" class="btn btn-sm btn-default" ng-click="">{{key}}:{{value}}</button>
           </span>
 
           <add-metadata-form></add-metadata-form>

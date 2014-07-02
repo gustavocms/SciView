@@ -1,6 +1,8 @@
-angular.module('sciviewApp', [
-    'ngRoute',
-    'metadataDirectives',
-    'metadataControllers',
-    'metadataServices'
-]);
+(function() {
+    angular.module('sciviewApp', [
+        'ngRoute',
+        'metadataDirectives',
+        'metadataControllers',
+        'metadataServices'
+    ]);
+})();
