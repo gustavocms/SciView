@@ -39,7 +39,7 @@ class CsvToTempoDb
 
   def data
     raw_data.map do |time, amplitude|
-      datapoint_wrapper.new(iso8601(Time.parse(time)), amplitude.to_i)
+      datapoint_wrapper.new(Time.parse(time), amplitude.to_i)
     end
   end
 
