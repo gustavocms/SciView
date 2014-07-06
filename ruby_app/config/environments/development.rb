@@ -31,8 +31,9 @@ SciView::Application.configure do
   config.action_mailer.default_url_options = { host: 'localhost:5000' }
 end
 
-class HTTPClient
-  def debug_dev
-    @debug_dev ||= Rails.logger
-  end
-end
+# Uncomment these lines to enable logging for TempoDB requests.
+# class HTTPClient
+#   def debug_dev
+#     @debug_dev ||= Rails.logger
+#   end
+# end
