@@ -41,14 +41,27 @@ class CSVSample
     @start_time ||= Time.new(2014, 1, 1)
   end
 
-  def sample_datapoints(generator = WhiteNoiseGenerator)
-    generator.sample(10000)
+  def sample_datapoints(generator = VolatilityGenerator)
+    generator.sample(1000)
   end
+end
+
+class VolatilityGenerator
+  class << self
+    def sample(n, volatility = 0.1)
+      n.times.with_object([]) do |index, array|
+        prev   = array.last || rand(1000)
+        change = volatility * (rand(200) - 100) / 100
+        array << prev * (1 + change)
+      end
+    end
+  end
+
 end
 
 class WhiteNoiseGenerator
   class << self
-    def sample(n)
+    def sample(n, *)
       n.times.map { rand(1000) }
     end
   end
