@@ -77,8 +77,6 @@ group :development, :test do
   gem 'awesome_print'
   gem 'dotenv-rails'
   gem 'spring-commands-rspec'
-
-  gem 'httplog', require: false # for debugging TempoDB requests
 end
 
 group :test do
