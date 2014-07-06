@@ -8,19 +8,8 @@ class UploadsController < ApplicationController
 
   def create
     CsvToTempoDb.new(csv.path).tap do |c|
-      begin
       c.series_name = series_name
       c.save!
-
-      puts c.series_name.inspect
-      puts c.send(:raw_data).inspect
-
-      rescue TempoDB::TempoDBMultiStatusError => e
-        puts e.inspect
-        puts e.http_response.inspect
-        puts e.multi_status_response.inspect
-        throw e
-      end
     end
 
     redirect_to_temp_chart
@@ -45,6 +34,6 @@ class UploadsController < ApplicationController
   end
 
   def series_name
-    @series_name ||= params[:series_name] || csv.original_filename.pathmap("%n")
+    @series_name ||= params[:series_name].presence || csv.original_filename.pathmap("%n")
   end
 end
