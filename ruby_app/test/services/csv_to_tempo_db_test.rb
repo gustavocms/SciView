@@ -51,10 +51,4 @@ describe CsvToTempoDb do
     converter.data_store.store.data.keys.must_equal ["test_data"]
     converter.data_store.store.data["test_data"].count.must_equal 10
   end
-
-  it 'converts the time into ISO 8601 format' do
-    converter.data_store.store.data["test_data"].first.tap do |datapoint|
-      datapoint.datetime.must_equal Time.iso8601("2014-07-01T09:00:00.001Z")
-    end
-  end
 end

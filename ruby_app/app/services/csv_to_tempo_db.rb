@@ -21,7 +21,6 @@ class CsvToTempoDb
   end
 
   # Sends the data to TempoDB.
-  # There are several strategies to be considered here
   def save!
     write_multi do |multi|
       multi.add(series_name, data)
@@ -30,13 +29,17 @@ class CsvToTempoDb
 
   private
 
+  def iso8601(time, decimal_digits = 3)
+    time.strftime("%FT%T.%#{decimal_digits}N%z")
+  end
+
   def raw_data
     @raw_data ||= CSV.read(filepath) # :headers should be an option
   end
 
   def data
     raw_data.map do |time, amplitude|
-      datapoint_wrapper.new(Time.iso8601(time), amplitude.to_i)
+      datapoint_wrapper.new(iso8601(Time.parse(time)), amplitude.to_i)
     end
   end
 
