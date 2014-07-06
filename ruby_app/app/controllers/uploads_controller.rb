@@ -12,6 +12,9 @@ class UploadsController < ApplicationController
       c.series_name = series_name
       c.save!
 
+      puts c.series_name.inspect
+      puts c.send(:raw_data).inspect
+
       rescue TempoDB::TempoDBMultiStatusError => e
         puts e.inspect
         puts e.http_response.inspect
