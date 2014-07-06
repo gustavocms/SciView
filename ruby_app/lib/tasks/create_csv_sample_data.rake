@@ -1,5 +1,6 @@
 require 'securerandom'
 require 'csv'
+require_relative '../../app/services/fake_data'
 
 CSV_SAMPLE_DATA_DIRECTORY = %{tmp/csv_sample_data}
 
@@ -18,7 +19,7 @@ class CSVSample
   def save_data_to_file
     _filename.tap do |filename|
       CSV.open(filename, 'w') do |csv|
-        sample_rows.each {|sample| csv << sample }
+        sample_datapoints.each {|time, dp| csv << [time.strftime("%FT%T.%3N%z"), dp] }
       end
     end
   end
@@ -27,43 +28,11 @@ class CSVSample
     %{#{CSV_SAMPLE_DATA_DIRECTORY}/sample_#{SecureRandom.hex(3)}_#{Time.now.to_i}.csv}
   end
 
-  def sample_rows
-    sample_datapoints.zip(timestamps).map do |dp, time|
-      [time.strftime("%FT%T.%3N%z"), dp]
-    end
-  end
-
-  def timestamps
-    (0..Float::INFINITY).step(0.001).lazy.map {|t| start_time + t }
-  end
-
-  def start_time
-    @start_time ||= Time.new(2014, 1, 1)
-  end
-
-  def sample_datapoints(generator = VolatilityGenerator)
-    generator.sample(1000)
-  end
-end
-
-class VolatilityGenerator
-  class << self
-    def sample(n, volatility = 0.1)
-      n.times.with_object([]) do |index, array|
-        prev   = array.last || rand(1000)
-        change = volatility * (rand(200) - 100) / 100
-        array << prev * (1 + change)
-      end
-    end
-  end
-
-end
-
-class WhiteNoiseGenerator
-  class << self
-    def sample(n, *)
-      n.times.map { rand(1000) }
-    end
+  def sample_datapoints
+    FakeData.generate({
+      generator: FakeData::Generators::VolatilityGenerator,
+      count: 2000
+    })
   end
 end
 
