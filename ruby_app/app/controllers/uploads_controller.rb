@@ -1,4 +1,4 @@
-require 'rake'
+require 'rake' # provides 'pathmap'
 
 class UploadsController < ApplicationController
   before_filter :authenticate_user!

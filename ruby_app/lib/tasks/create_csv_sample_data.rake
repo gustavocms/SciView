@@ -55,6 +55,7 @@ class WhiteNoiseGenerator
 end
 
 namespace :data do
+  desc 'create a csv file with random data for TempoDB'
   task :create_csv => :create_csv_sample_folder do
     CSVSample.new.save!
   end
