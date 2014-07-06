@@ -1,5 +1,11 @@
 <%= form_tag uploads_path, html: { method: :create }, multipart: true do |f| %>
-  <%= file_field_tag :csv %>
-  <%= text_field_tag :series_name %>
-  <%= submit_tag %>
+  <p>
+    <%= file_field_tag :csv %>
+  </p>
+  <p>
+    <%= text_field_tag :series_name, nil, placeholder: '(optional) series name', style: "width:200px" %>
+  </p>
+  <p>
+    <%= submit_tag %>
+  </p>
 <% end %>
