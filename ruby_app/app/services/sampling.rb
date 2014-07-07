@@ -27,6 +27,15 @@ module Sampling
     end
   end
 
+  # ignores any threshold arguments; simply returns the dataset.
+  class CompleteSample 
+    class << self
+      def sample(dataset, *)
+        dataset
+      end
+    end
+  end
+
   # A non-deterministic random sample. Probabilistically close
   # to the given threshold, but not guaranteed.
   class DistributedReservoir
