@@ -9,7 +9,7 @@ module Sampling
     # if the target sample is larger than the raw data size.
     def sample(&block)
       return dataset if drop <= 0
-      yield dataset, length, drop, keep
+      yield dataset, length, drop
     end
 
     attr_reader :dataset, :threshold
@@ -20,10 +20,6 @@ module Sampling
     
     def drop
       @drop ||= length - threshold
-    end
-
-    def keep
-      @keep ||= length - drop
     end
   end
 
@@ -50,6 +46,22 @@ module Sampling
       end
     end
   end
+
+  # DO NOT USE
+  # Distributed Reservoir sampling will not maintain the ordering
+  # of time-series data.
+  #
+  # class DistributedReservoir
+  #   class << self
+  #     def sample(dataset, threshold)
+  #       sampler = Base.new(dataset, threshold)
+
+  #       sampler.sample do |data|
+
+  #       end
+  #     end
+  #   end
+  # end
 
   class MedianModeBucket
   end

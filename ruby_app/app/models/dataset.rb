@@ -83,6 +83,9 @@ class Dataset
       opts[:rollup_function] = 'mean'
     end
 
-    [{ key: @key, values: tempodb_client.read_data(@key, @start, @stop, opts)}]
+    [{ 
+       key: @key, 
+       values: Sampling::RandomSample(tempodb_client.read_data(@key, @start, @stop, opts), 1000)
+    }]
   end
 end
