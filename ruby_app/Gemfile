@@ -63,6 +63,7 @@ gem 'semantic-ui-sass'
 gem 'parallel'
 
 gem 'angularjs-rails', '~> 1.2.18'
+gem 'angular-ui-bootstrap-rails'
 
 gem 'bootstrap-sass', '~> 3.2.0.0'
 gem 'autoprefixer-rails'

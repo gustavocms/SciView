@@ -1,42 +1,35 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('LoadDataController', ['$scope', '$location', 'Datasets',
-        function ($scope, $location, Datasets) {
-            this.params = $location.search();
-            $scope.series = Datasets.query();
+    module.controller('LoadDataController', ['$scope', '$log', 'MetadataService', 'ConfirmationService',
+        function ($scope, $log, MetadataService, ConfirmationService) {
 
-            this.removeTag = function(serie, tag) {
-                $('<div></div>').appendTo('body')
-                    .html('<div><h6>Are you sure?</h6></div>')
-                    .dialog({
-                        modal: true,
-                        resizable: false,
-                        title: 'Remove Tag',
-                        width: 'auto',
-                        buttons: {
-                            "Delete": function () {
-//                                $.ajax({
-//                                    url: "/datasets/" + series_key + "/tags/" + tag,
-//                                    type: "DELETE",
-//                                    async: false,
-//                                    success: function(data) {
-                                var index = serie.tags.indexOf(tag);
-                                serie.tags.splice(index, 1);
-                                $scope.$apply();
-//                                    }
-//                                });
+            $scope.seriesList = MetadataService.query();
 
-                                $(this).dialog("close");
-                            },
-                            Cancel: function () {
-                                $(this).dialog("close");
-                            }
-                        },
-                        close: function (event, ui) {
-                            $(this).remove();
-                        }
-                    });
+            this.removeAttribute = function(series, key) {
+                var result = ConfirmationService.showModal({}, {
+                    actionButtonText: 'Delete',
+                    headerText: 'Remove attribute?',
+                    bodyText: 'Are you sure you want to delete this attribute?'
+                });
+
+                result.then(function () {
+                    delete series.attributes[key];
+                    $log.info('attribute deleted');
+                });
+            };
+
+            this.removeTag = function(series, tag) {
+                var result = ConfirmationService.showModal({}, {
+                    actionButtonText: 'Delete',
+                    headerText: 'Remove tag?',
+                    bodyText: 'Are you sure you want to delete this tag?'
+                });
+
+                result.then(function () {
+                    series.tags.splice(series.tags.indexOf(tag), 1);
+                    $log.info('tag deleted');
+                });
             };
 
         }
