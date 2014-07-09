@@ -1,12 +1,13 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('LoadDataController', ['$scope', '$log', 'MetadataService', 'ModalService',
-        function ($scope, $log, MetadataService, ModalService) {
+    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', '$routeParams',
+        function ($scope, $log, MetadataService, ModalService, $routeParams) {
 
             $scope.seriesList = MetadataService.query();
+            $scope.parameters = $routeParams;
 
-            this.addMetadata = function(series) {
+            $scope.addMetadata = function(series) {
                 var result = ModalService.showModal({
                     controller: 'NewMetadataController',
                     templateUrl: '/assets/add_metadata_form.html',
@@ -22,7 +23,7 @@
                 });
             };
 
-            this.removeAttribute = function(series, key) {
+            $scope.removeAttribute = function(series, key) {
                 var result = ModalService.showModal({}, {
                     actionButtonText: 'Delete',
                     headerText: 'Remove attribute?',
@@ -35,7 +36,7 @@
                 });
             };
 
-            this.removeTag = function(series, tag) {
+            $scope.removeTag = function(series, tag) {
                 var result = ModalService.showModal({}, {
                     actionButtonText: 'Delete',
                     headerText: 'Remove tag?',
@@ -47,7 +48,6 @@
                     $log.info('tag deleted');
                 });
             };
-
         }
     ]);
 

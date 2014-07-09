@@ -1,10 +1,10 @@
 (function() {
-    angular.module('sciviewApp', [
-        'ngRoute',
+    angular.module('sciViewApp', [
         'ui.bootstrap',
         'ui.utils',
+        'metadataRoutes',
         'metadataDirectives',
-        'metadataControllers',
-        'metadataServices'
+        'metadataServices',
+        'metadataControllers'
     ]);
 })();
