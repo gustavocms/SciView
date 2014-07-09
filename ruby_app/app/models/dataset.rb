@@ -1,6 +1,6 @@
 class Dataset
   include Concerns::Tempo
-  class<<self
+  class << self
 
     def all
       tempodb_client.list_series
@@ -28,6 +28,10 @@ class Dataset
         j = datapoint.as_json
         serie = return_hash[j['value'].keys[0]]
         serie[:values] << { value: j['value'].values[0], ts: j['ts'] }
+      end
+
+      return_hash.each do |_, series|
+        series[:values] = Sampling::RandomSample.sample(series[:values], 1000)
       end
 
       return_hash
@@ -85,7 +89,7 @@ class Dataset
 
     [{ 
        key: @key, 
-       values: Sampling::RandomSample(tempodb_client.read_data(@key, @start, @stop, opts), 1000)
+       values: Sampling::RandomSample(tempodb_client.read_data(@key, @start, @stop, opts), 500)
     }]
   end
 end

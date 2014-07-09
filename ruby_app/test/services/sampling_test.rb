@@ -16,4 +16,11 @@ describe Sampling do
     end
   end
 
+  describe Sampling::LargestTriangleThreeBuckets do
+    specify 'sample all' do
+      Sampling::LargestTriangleThreeBuckets.sample(dataset, 1024).must_equal dataset
+    end
+
+  end
+
 end

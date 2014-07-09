@@ -17,14 +17,14 @@ module Sampling
     def length
       @length ||= dataset.length
     end
-    
+
     def drop
       @drop ||= length - threshold
     end
   end
 
   # ignores any threshold arguments; simply returns the dataset.
-  class CompleteDataset 
+  class CompleteDataset
     class << self
       def sample(dataset, *)
         dataset
@@ -34,16 +34,28 @@ module Sampling
 
   # A non-deterministic random sample. Probabilistically close
   # to the given threshold, but not guaranteed.
-  class RandomSample
+  class RandomSample < Base
     class << self
       def sample(dataset, threshold)
-        sampler    = Base.new(dataset, threshold)
+        sampler    = new(dataset, threshold)
         drop_ratio = sampler.drop / sampler.length.to_f
 
         sampler.sample do |data|
-          data.select {|dp| rand > drop_ratio }
+          data.select { |dp| rand > drop_ratio }
         end
       end
+    end
+  end
+
+  class LargestTriangleThreeBuckets < Base
+    class << self
+      def sample(dataset, threshold)
+        sampler = new(dataset, threshold).sample
+      end
+    end
+
+    def sample
+      dataset
     end
   end
 
@@ -63,9 +75,9 @@ module Sampling
   #   end
   # end
 
-  class MedianModeBucket
-  end
+  # class MedianModeBucket
+  # end
 
-  class MinStandardErrorBucket
-  end
+  # class MinStandardErrorBucket
+  # end
 end
