@@ -1,13 +1,13 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('LoadDataController', ['$scope', '$log', 'MetadataService', 'ConfirmationService',
-        function ($scope, $log, MetadataService, ConfirmationService) {
+    module.controller('LoadDataController', ['$scope', '$log', 'MetadataService', 'ModalService',
+        function ($scope, $log, MetadataService, ModalService) {
 
             $scope.seriesList = MetadataService.query();
 
-            this.addMetadata = function(series, tag) {
-                var result = ConfirmationService.showModal({
+            this.addMetadata = function() {
+                var result = ModalService.showModal({
                     controller: 'NewMetadataController',
                     templateUrl: '/assets/add_metadata_form.html'
                 }, {});
@@ -18,7 +18,7 @@
             };
 
             this.removeAttribute = function(series, key) {
-                var result = ConfirmationService.showModal({}, {
+                var result = ModalService.showModal({}, {
                     actionButtonText: 'Delete',
                     headerText: 'Remove attribute?',
                     bodyText: 'Are you sure you want to delete this attribute?'
@@ -31,7 +31,7 @@
             };
 
             this.removeTag = function(series, tag) {
-                var result = ConfirmationService.showModal({}, {
+                var result = ModalService.showModal({}, {
                     actionButtonText: 'Delete',
                     headerText: 'Remove tag?',
                     bodyText: 'Are you sure you want to delete this tag?'

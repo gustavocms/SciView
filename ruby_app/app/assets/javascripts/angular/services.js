@@ -1,7 +1,7 @@
 (function() {
     var module = angular.module('metadataServices', ['ngResource']);
 
-    module.service('ConfirmationService', ['$modal',
+    module.service('ModalService', ['$modal',
         function ($modal) {
 
             var modalDefaults = {
