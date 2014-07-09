@@ -6,7 +6,7 @@
       <h3>{{loadDataCtrl.params.series_1}}</h3>
         <div ng-repeat="series in seriesList">
           <h3>{{series.key}} Tags and Attributes</h3>
-          <button type="button" class="btn btn-sm btn-primary" ng-click="loadDataCtrl.addMetadata()">New</button>
+          <button type="button" class="btn btn-sm btn-primary" ng-click="loadDataCtrl.addMetadata(series)">New</button>
           <span ng-repeat="tag in series.tags">
             <button type="button" class="btn btn-sm btn-default" ng-click="loadDataCtrl.removeTag(series, tag)">{{tag}}</button>
           </span>

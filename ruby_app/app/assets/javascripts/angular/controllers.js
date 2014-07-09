@@ -6,10 +6,15 @@
 
             $scope.seriesList = MetadataService.query();
 
-            this.addMetadata = function() {
+            this.addMetadata = function(series) {
                 var result = ModalService.showModal({
                     controller: 'NewMetadataController',
-                    templateUrl: '/assets/add_metadata_form.html'
+                    templateUrl: '/assets/add_metadata_form.html',
+                    resolve: {
+                        series: function () {
+                            return series;
+                        }
+                    }
                 }, {});
 
                 result.then(function (newMetadata) {
@@ -46,14 +51,17 @@
         }
     ]);
 
-    module.controller('NewMetadataController', ['$scope', '$modalInstance',
-        function ($scope, $modalInstance) {
-            $scope.tag = "";
-            $scope.attribute = "";
-            $scope.value = "";
+    module.controller('NewMetadataController', ['$scope', '$modalInstance', '$log', 'series',
+        function ($scope, $modalInstance, $log, series) {
+            $scope.newMetadata = {
+                series: series,
+                tag: "",
+                attribute: "",
+                value: ""
+            };
 
             $scope.ok = function () {
-                $modalInstance.close({tag: $scope.tag, attribute: $scope.attribute, value: $scope.value});
+                $modalInstance.close($scope.newMetadata);
             };
 
             $scope.cancel = function () {
