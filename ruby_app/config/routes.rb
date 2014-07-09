@@ -20,6 +20,9 @@ SciView::Application.routes.draw do
 
   resources :uploads, only: [:new, :create]
 
+  resource :holding_pattern
+
+
   devise_for :users
   get "d3/index"
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
