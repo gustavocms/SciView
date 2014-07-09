@@ -30,3 +30,10 @@ SciView::Application.configure do
   # Default ActionMailer URL, required for Devise
   config.action_mailer.default_url_options = { host: 'localhost:5000' }
 end
+
+# Uncomment these lines to enable logging for TempoDB requests.
+# class HTTPClient
+#   def debug_dev
+#     @debug_dev ||= Rails.logger
+#   end
+# end
