@@ -175,6 +175,7 @@ GEM
     redis (3.1.0)
     redis-namespace (1.5.0)
       redis (~> 3.0, >= 3.0.4)
+    rr (1.1.2)
     rubocop (0.20.1)
       json (>= 1.7.7, < 2)
       parser (~> 2.1.7)
@@ -257,6 +258,7 @@ DEPENDENCIES
   pg
   rails (~> 4.1.0)
   rails_12factor
+  rr
   sass-rails (~> 4.0.2)
   sdoc
   semantic-ui-sass

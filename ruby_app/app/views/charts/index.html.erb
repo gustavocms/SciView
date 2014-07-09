@@ -21,6 +21,16 @@
   </div>
 
 </div>
+
+<div class="ui three column row">
+  <div class="column"></div>
+  <div class="column">
+    <h2 class="ui header">Upload a CSV file:</h2>
+    <%= render "uploads/form" %>
+  </div>
+  <div class="column"></div>
+</div>
+
 <%- if user_signed_in? -%>
   <div class="ui three column row">
     <div class="column"></div>
