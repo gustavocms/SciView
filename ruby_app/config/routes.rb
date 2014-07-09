@@ -1,4 +1,6 @@
 SciView::Application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   resources :charts, only: [:index, :show, :create] do
     collection do
