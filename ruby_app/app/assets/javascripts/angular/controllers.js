@@ -6,6 +6,17 @@
 
             $scope.seriesList = MetadataService.query();
 
+            this.addMetadata = function(series, tag) {
+                var result = ConfirmationService.showModal({
+                    controller: 'NewMetadataController',
+                    templateUrl: '/assets/add_metadata_form.html'
+                }, {});
+
+                result.then(function (newMetadata) {
+                    $log.info(newMetadata);
+                });
+            };
+
             this.removeAttribute = function(series, key) {
                 var result = ConfirmationService.showModal({}, {
                     actionButtonText: 'Delete',
@@ -35,13 +46,18 @@
         }
     ]);
 
-    module.controller('NewMetadataController', ['$scope',
-        function ($scope) {
-            this.metadata = {};
+    module.controller('NewMetadataController', ['$scope', '$modalInstance',
+        function ($scope, $modalInstance) {
+            $scope.tag = "";
+            $scope.attribute = "";
+            $scope.value = "";
 
-            this.addMetadata = function (serie) {
-                serie.tags.push(this.metadata.tag);
-                this.metadata = {};
+            $scope.ok = function () {
+                $modalInstance.close({tag: $scope.tag, attribute: $scope.attribute, value: $scope.value});
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
             };
         }
     ]);
