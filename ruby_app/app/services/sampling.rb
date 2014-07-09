@@ -47,6 +47,7 @@ module Sampling
     end
   end
 
+  # NOT DONE, do not use yet!
   class LargestTriangleThreeBuckets < Base
     class << self
       def sample(dataset, threshold)
