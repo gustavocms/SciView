@@ -18,6 +18,7 @@
 //= require angular-route
 //= require angular-resource
 //= require angular-ui-bootstrap-tpls
+//= require ui-utils
 //= require bootstrap-sprockets
 //= require sciview
 //= require stream_layers

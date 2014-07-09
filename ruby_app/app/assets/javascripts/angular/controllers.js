@@ -60,8 +60,10 @@
                 value: ""
             };
 
-            $scope.ok = function () {
-                $modalInstance.close($scope.newMetadata);
+            $scope.ok = function (metadataForm) {
+                if (metadataForm.$valid) {
+                    $modalInstance.close($scope.newMetadata);
+                }
             };
 
             $scope.cancel = function () {
