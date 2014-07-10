@@ -1,10 +1,10 @@
-workers Integer(ENV['PUMA_WORKDERS'] || 3)
+workers Integer(ENV['PUMA_WORKERS'] || 0)
 threads Integer(ENV['MIN_THREADS'] || 1), Integer(ENV['MAX_THREADS'] || 16)
 
 preload_app!
 
 rackup DefaultRackup
-port ENV['port'] || 3000
+port ENV['PORT'] || 3000
 environment ENV['RACK_ENV'] || 'development'
 
 on_worker_boot do
@@ -17,7 +17,7 @@ on_worker_boot do
 
     if defined?(Sidekiq)
 
-      # configure Sidekiq here...
+      # TODO: configure Sidekiq here...
     end
   end
 end
