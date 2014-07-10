@@ -6,11 +6,25 @@
             $routeProvider.
                 when('/charts/multiple', {
                     templateUrl: '/assets/metadata.html',
-                    controller: 'MetadataController'
+                    controller: 'MetadataController',
+                    resolve: {
+                        // looking for the parameters on the hidden field to inject on the controller
+                        seriesParams: function () {
+                            var seriesParams = JSON.parse($('#chartSeries').text());
+                            return seriesParams;
+                        }
+                    }
                 }).
                 when('/charts/:chartId', {
                     templateUrl: '/assets/metadata.html',
-                    controller: 'MetadataController'
+                    controller: 'MetadataController',
+                    resolve: {
+                        // looking for the parameters on the hidden field to inject on the controller
+                        seriesParams: function () {
+                            var seriesParams = JSON.parse($('#chartSeries').text());
+                            return seriesParams;
+                        }
+                    }
                 });
 
             // configure html5 to get links working on jsfiddle

@@ -24,5 +24,4 @@
 //= require stream_layers
 //= require charts/multiple
 //= require charts/index
-//= require charts/metadata
 //= require_directory ./angular

@@ -6,7 +6,5 @@ $(document).ready(function() {
     })
 
     chart.getData();
-
-    initMetadataDialog();
   });
 });

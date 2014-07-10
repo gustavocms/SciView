@@ -1,10 +1,10 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', '$routeParams', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $log, MetadataService, ModalService, $routeParams, SeriesTagsService, SeriesAttributesService) {
+    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'seriesParams', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $log, MetadataService, ModalService, seriesParams, SeriesTagsService, SeriesAttributesService) {
 
-            $scope.parameters = $routeParams;
+            $scope.parameters = seriesParams;
 
             $scope.seriesList = MetadataService.query($scope.parameters);
 
