@@ -6,28 +6,14 @@
             return $resource('/datasets/metadata');
         }]);
 
-    //TODO: test with $http
     module.factory('SeriesTagsService', ['$resource',
         function ($resource) {
-            return $resource('/datasets/:seriesId/tags', {}, {
-                save: {
-                    method: 'POST',
-                    xsrfHeaderName: 'X-CSRF-Token',
-                    xsrfCookieName: 'csrf_token'
-                }
-            });
+            return $resource('/datasets/:seriesId/tags/:tagId');
         }]);
 
-    //TODO: test with $http
     module.factory('SeriesAttributesService', ['$resource',
         function ($resource) {
-            return $resource('/datasets/:seriesId/attributes', {}, {
-                save: {
-                    method: 'POST',
-                    xsrfHeaderName: 'X-CSRF-Token',
-                    xsrfCookieName: 'csrf_token'
-                }
-            });
+            return $resource('/datasets/:seriesId/attributes/:attributeId');
         }]);
 
     module.service('ModalService', ['$modal',

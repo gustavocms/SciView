@@ -1,8 +1,8 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', '$routeParams',
-        function ($scope, $log, MetadataService, ModalService, $routeParams) {
+    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', '$routeParams', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $log, MetadataService, ModalService, $routeParams, SeriesTagsService, SeriesAttributesService) {
 
             $scope.parameters = $routeParams;
 
@@ -32,8 +32,16 @@
                 });
 
                 result.then(function () {
-                    delete series.attributes[key];
-                    $log.info('attribute deleted');
+                    //ajax call
+                    SeriesAttributesService.delete({
+                            seriesId: series.key,
+                            attributeId: key
+                        }, {},
+                        //onSuccess promise function
+                        function () {
+                            //update scope removing object
+                            delete series.attributes[key];
+                        });
                 });
             };
 
@@ -45,8 +53,16 @@
                 });
 
                 result.then(function () {
-                    series.tags.splice(series.tags.indexOf(tag), 1);
-                    $log.info('tag deleted');
+                    //ajax call
+                    SeriesTagsService.delete({
+                            seriesId: series.key,
+                            tagId: tag
+                        }, {},
+                        //onSuccess promise function
+                        function () {
+                            //update scope removing object
+                            series.tags.splice(series.tags.indexOf(tag), 1);
+                        });
                 });
             };
         }
@@ -61,48 +77,44 @@
                 value: ""
             };
 
+            //TODO: duplicate calling $modalInstance.close
             $scope.ok = function (metadataForm) {
                 if (metadataForm.$valid) {
 
-                    var closeDialog = false;
-
                     if ($scope.newMetadata.tag.length > 0) {
 
-                        var postData = {tag: $scope.newMetadata.tag};
+                        var tagData = {tag: $scope.newMetadata.tag};
 
                         //ajax call
                         SeriesTagsService.save(
-                            {seriesId: $scope.newMetadata.series.key}, postData,
+                            {seriesId: $scope.newMetadata.series.key}, tagData,
                             //onSuccess promise function
                             function() {
                                 //update scope with new object
-                                $scope.newMetadata.series.tags.push(postData.tag);
+                                $scope.newMetadata.series.tags.push(tagData.tag);
 
-                                closeDialog = true;
+                                $modalInstance.close($scope.newMetadata);
                             });
                     };
 
                     if ($scope.newMetadata.attribute.length > 0) {
 
-                        var postData = {
+                        var attrData = {
                             attribute: $scope.newMetadata.attribute,
                             value: $scope.newMetadata.value
                         };
 
                         //ajax call
                         SeriesAttributesService.save(
-                            {seriesId: $scope.newMetadata.series.key}, postData,
+                            {seriesId: $scope.newMetadata.series.key}, attrData,
                             //onSuccess promise function
                             function() {
                                 //update scope with new object
-                                $scope.newMetadata.series.attributes[postData.attribute] = postData.value;
-                                closeDialog = true;
+                                $scope.newMetadata.series.attributes[attrData.attribute] = attrData.value;
+
+                                $modalInstance.close($scope.newMetadata);
                             });
                     };
-
-                    if (closeDialog) {
-                        $modalInstance.close($scope.newMetadata);
-                    }
                 }
             };
 
