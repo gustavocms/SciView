@@ -1,6 +1,35 @@
 (function() {
     var module = angular.module('metadataServices', ['ngResource']);
 
+    module.factory('MetadataService', ['$resource',
+        function ($resource) {
+            return $resource('/datasets/metadata');
+        }]);
+
+    //TODO: test with $http
+    module.factory('SeriesTagsService', ['$resource',
+        function ($resource) {
+            return $resource('/datasets/:seriesId/tags', {}, {
+                save: {
+                    method: 'POST',
+                    xsrfHeaderName: 'X-CSRF-Token',
+                    xsrfCookieName: 'csrf_token'
+                }
+            });
+        }]);
+
+    //TODO: test with $http
+    module.factory('SeriesAttributesService', ['$resource',
+        function ($resource) {
+            return $resource('/datasets/:seriesId/attributes', {}, {
+                save: {
+                    method: 'POST',
+                    xsrfHeaderName: 'X-CSRF-Token',
+                    xsrfCookieName: 'csrf_token'
+                }
+            });
+        }]);
+
     module.service('ModalService', ['$modal',
         function ($modal) {
 
@@ -51,23 +80,4 @@
             };
 
         }]);
-
-    module.factory('MetadataService', ['$resource',
-        function ($resource) {
-            return $resource('/datasets/metadata', {}, {
-                query: {
-                    method: 'GET',
-                    params: {
-                        series_1: 'paul-sin-1',
-                        series_2: 'paul-sin-2'},
-                    isArray: true}
-            });
-        }])
-//
-//    phonecatServices.factory('Phone', ['$resource',
-//        function($resource){
-//            return $resource('phones/:phoneId.json', {}, {
-//                query: {method:'GET', params:{phoneId:'phones'}, isArray:true}
-//            });
-//        }]);
 })();

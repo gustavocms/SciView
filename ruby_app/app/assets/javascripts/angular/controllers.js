@@ -4,8 +4,9 @@
     module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', '$routeParams',
         function ($scope, $log, MetadataService, ModalService, $routeParams) {
 
-            $scope.seriesList = MetadataService.query();
             $scope.parameters = $routeParams;
+
+            $scope.seriesList = MetadataService.query($scope.parameters);
 
             $scope.addMetadata = function(series) {
                 var result = ModalService.showModal({
@@ -51,8 +52,8 @@
         }
     ]);
 
-    module.controller('NewMetadataController', ['$scope', '$modalInstance', '$log', 'series',
-        function ($scope, $modalInstance, $log, series) {
+    module.controller('NewMetadataController', ['$scope', '$modalInstance', '$log', 'series', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $modalInstance, $log, series, SeriesTagsService, SeriesAttributesService) {
             $scope.newMetadata = {
                 series: series,
                 tag: "",
@@ -62,7 +63,46 @@
 
             $scope.ok = function (metadataForm) {
                 if (metadataForm.$valid) {
-                    $modalInstance.close($scope.newMetadata);
+
+                    var closeDialog = false;
+
+                    if ($scope.newMetadata.tag.length > 0) {
+
+                        var postData = {tag: $scope.newMetadata.tag};
+
+                        //ajax call
+                        SeriesTagsService.save(
+                            {seriesId: $scope.newMetadata.series.key}, postData,
+                            //onSuccess promise function
+                            function() {
+                                //update scope with new object
+                                $scope.newMetadata.series.tags.push(postData.tag);
+
+                                closeDialog = true;
+                            });
+                    };
+
+                    if ($scope.newMetadata.attribute.length > 0) {
+
+                        var postData = {
+                            attribute: $scope.newMetadata.attribute,
+                            value: $scope.newMetadata.value
+                        };
+
+                        //ajax call
+                        SeriesAttributesService.save(
+                            {seriesId: $scope.newMetadata.series.key}, postData,
+                            //onSuccess promise function
+                            function() {
+                                //update scope with new object
+                                $scope.newMetadata.series.attributes[postData.attribute] = postData.value;
+                                closeDialog = true;
+                            });
+                    };
+
+                    if (closeDialog) {
+                        $modalInstance.close($scope.newMetadata);
+                    }
                 }
             };
 
