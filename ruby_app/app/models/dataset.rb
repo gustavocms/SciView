@@ -31,7 +31,10 @@ class Dataset
       end
 
       return_hash.each do |_, series|
-        series[:values] = Sampling::RandomSample.sample(series[:values], 1000)
+        t = Time.now
+        puts "SAMPLING STARTED..."
+        series[:values] = Sampling::RandomSample.sample(series[:values], 2000)
+        puts "SAMPLING ENDED (#{Time.now - t} seconds)"
       end
 
       return_hash
