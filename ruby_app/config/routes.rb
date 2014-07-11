@@ -1,4 +1,6 @@
 SciView::Application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   resources :charts, only: [:index, :show, :create] do
     collection do
@@ -15,6 +17,8 @@ SciView::Application.routes.draw do
   end
 
   resources :coffee_charts, only: [:show]
+
+  resources :uploads, only: [:new, :create]
 
   devise_for :users
   get "d3/index"
