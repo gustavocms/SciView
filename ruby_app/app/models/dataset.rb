@@ -1,6 +1,6 @@
 class Dataset
   include Concerns::Tempo
-  class<<self
+  class << self
 
     def all
       tempodb_client.list_series
@@ -28,6 +28,13 @@ class Dataset
         j = datapoint.as_json
         serie = return_hash[j['value'].keys[0]]
         serie[:values] << { value: j['value'].values[0], ts: j['ts'] }
+      end
+
+      return_hash.each do |_, series|
+        t = Time.now
+        puts "SAMPLING STARTED..."
+        series[:values] = Sampling::RandomSample.sample(series[:values], 2000)
+        puts "SAMPLING ENDED (#{Time.now - t} seconds)"
       end
 
       return_hash
@@ -83,6 +90,9 @@ class Dataset
       opts[:rollup_function] = 'mean'
     end
 
-    [{ key: @key, values: tempodb_client.read_data(@key, @start, @stop, opts)}]
+    [{ 
+       key: @key, 
+       values: Sampling::RandomSample(tempodb_client.read_data(@key, @start, @stop, opts), 500)
+    }]
   end
 end
