@@ -35,3 +35,4 @@ python_app/out
 *.pyc
 python_app/python_app.iml
 python_app/sciview-python.iml
+*.rdb
