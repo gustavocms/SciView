@@ -69,9 +69,6 @@ class Dataset
       raise('this method is deprecated')
       #new(name)
     end
-
-    private
-
   end
 
   attr_accessor :start, :stop, :count
