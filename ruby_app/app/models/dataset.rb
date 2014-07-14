@@ -31,8 +31,6 @@ class Dataset
         end
       end
 
-      puts return_hash.inspect
-
       return_hash.each do |_, series|
         t = Time.now
         puts "SAMPLING STARTED..."
