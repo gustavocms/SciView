@@ -21,14 +21,17 @@ class Dataset
       return_hash = {}
 
       cursor['series'].each do |sn|
-        return_hash.merge!(sn['key'].to_s => {key: sn['key'].to_s, values: [], tags: sn['tags'], attributes: sn['attributes']})
+        return_hash[sn['key'].to_s] = { key: sn['key'].to_s, values: [], tags: sn['tags'], attributes: sn['attributes'] }
       end
 
+
       cursor.each do |datapoint|
-        j = datapoint.as_json
-        serie = return_hash[j['value'].keys[0]]
-        serie[:values] << { value: j['value'].values[0], ts: j['ts'] }
+        datapoint.value.each do |key, value|
+          return_hash[key][:values] << { value: value, ts: datapoint.ts } 
+        end
       end
+
+      puts return_hash.inspect
 
       return_hash.each do |_, series|
         t = Time.now
@@ -68,6 +71,9 @@ class Dataset
       raise('this method is deprecated')
       #new(name)
     end
+
+    private
+
   end
 
   attr_accessor :start, :stop, :count
