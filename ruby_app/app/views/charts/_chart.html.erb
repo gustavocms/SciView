@@ -6,5 +6,11 @@
 <div class="ui segment">
   <div id="<%= chart.name.parameterize %>" class="chart with-3d-shadow with-transitions"
     data-source-url="<%= multiple_datasets_path(chart.series) %>">
+    <hidden id="chartSeries"><%= chart.series.to_json %></hidden>
+  </div>
+</div>
+
+<div class="ui one column row"  ng-app="sciViewApp">
+  <div class="column" ng-view>
   </div>
 </div>

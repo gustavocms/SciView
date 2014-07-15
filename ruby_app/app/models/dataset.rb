@@ -41,6 +41,16 @@ class Dataset
       return_hash
     end
 
+    def multiple_series_metadata(series)
+      series_data = []
+
+      series.values.each do |key|
+        series_data << tempodb_client.get_series(key)
+      end
+
+      series_data
+    end
+
     def update_attribute(series_key, attribute, value)
       series = tempodb_client.get_series(series_key)
       series.attributes[attribute] = value
