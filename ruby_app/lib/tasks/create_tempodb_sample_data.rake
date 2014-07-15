@@ -143,7 +143,7 @@ namespace :data do
     # key = "gustavo series"
 
     #Choose arbitrarily early time for first in the series
-    start = Time.utc(1999, 1, 1)
+    start = Time.utc(1899, 1, 1)
 
     #Choose arbitrarily late time for last in the series
     stop = Time.utc(2020, 1, 1)

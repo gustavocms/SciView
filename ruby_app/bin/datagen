@@ -277,7 +277,7 @@ class DataGenCLI < Thor
   # @return [Integer]
   def get_series_count(client, key)
     #Choose arbitrarily early time for first in the series
-    query_start = Time.utc(1999, 1, 1)
+    query_start = Time.utc(1899, 1, 1)
 
     #Choose arbitrarily late time for last in the series
     query_end = Time.utc(2020, 1, 1)

@@ -7,7 +7,7 @@ class Dataset
     end
 
     def multiple_series(start, stop, series, count=nil)
-      start ||= Time.utc(1999, 1, 1)
+      start ||= Time.utc(1899, 1, 1)
       stop ||= Time.utc(2020, 1, 1)
 
       series_names = series.values
@@ -78,7 +78,7 @@ class Dataset
     @key = URI.decode(series_name)
 
     # Find start and stop times based on first and last single values
-    past = Time.utc(1999, 1, 1)
+    past = Time.utc(1899, 1, 1)
     future = Time.utc(2020, 1, 1)
     @start = @client.single_value(@key, ts: past, direction: 'after').data.ts
     @stop = @client.single_value(@key, ts: future, direction: 'before').data.ts
