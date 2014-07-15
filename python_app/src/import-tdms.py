@@ -76,7 +76,6 @@ def import_channel_to_tempodb(tdms_channel, series_key=None, chunk_size=2000):
         print "Length of channel data and time are not equal"
 
     client = Client(DATABASE_ID, API_KEY, API_SECRET)
-    write_channel_attributes(tdms_channel, series_key, client)
 
     tempo_data = []
     start_time = datetime.now()
@@ -97,6 +96,8 @@ def import_channel_to_tempodb(tdms_channel, series_key=None, chunk_size=2000):
     if len(tempo_data) > 0:
         write_to_tempo_db(client, i, series_key, tempo_data)
         del tempo_data
+
+    write_channel_attributes(tdms_channel, series_key, client)
 
     end_time = datetime.now()
     duration = end_time - start_time
