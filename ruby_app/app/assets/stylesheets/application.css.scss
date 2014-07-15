@@ -10,9 +10,12 @@
  *
  *= require_self
  *= require_tree .
- *= require jquery.ui.all
+ *= require jquery-ui/all
  */
 
 body {
   font-family: "Open Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
