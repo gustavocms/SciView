@@ -12,7 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.all
+//= require jquery-ui
 //= require d3.v3
 //= require sciview
 //= require stream_layers

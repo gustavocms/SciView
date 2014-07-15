@@ -3,10 +3,9 @@ namespace :data do
   desc 'lists all series in TempoDB (or at least the first 5000)'
   task :list_series do
     client = get_tempodb_client
-    cursor = client.list_series
-    cursor.each_with_index do |series, index|
-      puts "Series #{index}: #{series.key}"
-    end
+    series_list = client.get_series()
+    puts series_list
+    puts series_list.count
 
   end
 
@@ -140,22 +139,22 @@ namespace :data do
 
     client = get_tempodb_client
     key = args[:key] || 'my-random-key'
+    puts "Reading value for '#{key}'"
+    # key = "gustavo series"
 
-    # Choose arbitrarily early time for first in the series
+    #Choose arbitrarily early time for first in the series
     start = Time.utc(1999, 1, 1)
 
-    # Choose arbitrarily late time for last in the series
+    #Choose arbitrarily late time for last in the series
     stop = Time.utc(2020, 1, 1)
 
     keys = [key]
 
     # More details here on reading data from TempoDB: https://tempo-db.com/docs/api/read/
-    # returned_data = client.read(start, stop, :keys => keys, :interval => "PT1S")
-    returned_data = client.read(start, stop, :keys => keys, :interval => "raw")
-    data = returned_data[0].data
-    data.each { |d|
-      puts "#{d.ts}\t\t%.5f" % d.value
-    }
+    cursor = client.read_data(key, start, stop)
+    cursor.each do |datapoint|
+      puts "#{datapoint.ts}: #{datapoint.value}"
+    end
 
   end
 
@@ -205,6 +204,7 @@ namespace :data do
   # @return [TempoDB::Client]
   def get_tempodb_client
     TempoDB::Client.new(ENV['TEMPODB_API_ID'], ENV['TEMPODB_API_KEY'], ENV['TEMPODB_API_SECRET'])
+
   end
 
 
