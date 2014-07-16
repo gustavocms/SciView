@@ -7,38 +7,7 @@ class Dataset
     end
 
     def multiple_series(start, stop, series, count=nil)
-      start ||= Time.utc(1999, 1, 1)
-      stop ||= Time.utc(2020, 1, 1)
-
-      series_names = series.values
-
-      options = {}
-
-      options.merge!(keys: series_names)
-      options.merge!(count: count) if count
-      cursor = tempodb_client.read_multi(start, stop, options)
-
-      return_hash = {}
-
-      cursor['series'].each do |sn|
-        return_hash[sn['key'].to_s] = { key: sn['key'].to_s, values: [], tags: sn['tags'], attributes: sn['attributes'] }
-      end
-
-
-      cursor.each do |datapoint|
-        datapoint.value.each do |key, value|
-          return_hash[key][:values] << { value: value, ts: datapoint.ts } 
-        end
-      end
-
-      return_hash.each do |_, series|
-        t = Time.now
-        puts "SAMPLING STARTED..."
-        series[:values] = Sampling::RandomSample.sample(series[:values], 2000)
-        puts "SAMPLING ENDED (#{Time.now - t} seconds)"
-      end
-
-      return_hash
+      new(series, { start: start, stop: stop, count: count }).to_hash
     end
 
     def update_attribute(series_key, attribute, value)
@@ -114,8 +83,8 @@ class Dataset
   def initialize(series, opts = {})
 
     @series_names = series.values
-    @start        = opts.fetch(:start){ Time.utc(1999,1,1) }
-    @stop         = opts.fetch(:stop){ Time.utc(2020,1,1) }
+    @start        = opts[:start] || Time.utc(1999)
+    @stop         = opts[:stop] || Time.utc(2020)
     @options      = { keys: series_names, count: opts[:count] }.select {|_,v| v }
   end
 
