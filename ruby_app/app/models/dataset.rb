@@ -49,47 +49,23 @@ class Dataset
     end
   end
 
-  attr_accessor :start, :stop, :count
-  attr_reader :client, :keys
+  attr_reader :series_names, :client, :options, :count
 
-  # def initialize(series_names)
-  #   @client = tempodb_client
-  #   @keys   = Array(series_names).map {|sn| URI.decode(sn) }
-
-  #   # Find start and stop times based on first and last single values
-  #   past = Time.utc(1999, 1, 1)
-  #   future = Time.utc(2020, 1, 1)
-  #   @start = @client.single_value(@key, ts: past, direction: 'after').data.ts
-  #   @stop = @client.single_value(@key, ts: future, direction: 'before').data.ts
-  # end
-
-  # def as_json(opts = {})
-  #   if count
-  #     opts[:rollup_period] = "PT#{"%.2f" % ((@stop - @start) / count)}S"
-  #     opts[:rollup_function] = 'mean'
-  #   end
-
-  #   [{ 
-  #      key: @key, 
-  #      values: Sampling::RandomSample.sample(tempodb_client.read_data(@key, @start, @stop, opts).to_a, 500)
-  #   }]
-  # end
-  
   # series: a hash of the form { series_1: 'sample_abcdef123' }
   # options: start
   #          stop
   #          count
-  attr_reader :series_names, :client, :options
   def initialize(series, opts = {})
 
     @series_names = series.values
     @start        = opts[:start] || Time.utc(1999)
-    @stop         = opts[:stop] || Time.utc(2020)
-    @options      = { keys: series_names, count: opts[:count] }.select {|_,v| v }
+    @stop         = opts[:stop]  || Time.utc(2020)
+    @count        = opts[:count] || 2000
+    @options      = { keys: series_names, count: count }.select {|_,v| v }
   end
 
   def summary
-    @summary ||= DatasetSummary.new(client.get_summary(key, start, stop))
+    @summary ||= DatasetSummary.new(series_names.map {|key| tempodb_client.get_summary(key, start, stop) })
   end
   
   def to_hash
@@ -103,8 +79,14 @@ class Dataset
   end
 
   def cursor
-    @cursor ||= tempodb_client.read_multi(start, stop, options)
+    @cursor ||= tempodb_client.read_multi(start, stop, options.merge(rollup_options))
   end
+
+  def rollup_options
+    { rollup_function: 'mean' }
+  end
+
+  # TODO: rollup functions!
 
   def return_hash
     @return_hash ||= {}.tap do |hash|
@@ -127,7 +109,7 @@ class Dataset
 end
 
 require 'forwardable'
-class DatasetSummary
+class SeriesSummary
   extend Forwardable
 
   class << self
@@ -162,7 +144,32 @@ class DatasetSummary
   def rollup_period(desired_number_of_segments)
     time_extents / desired_number_of_segments
   end
+end
 
-  private
+class DatasetSummary
+  attr_reader :series_summaries
 
+  def initialize(series_summaries)
+    @series_summaries = Array(series_summaries)
+  end
+
+  def min
+    series_summaries.map(&:min).min
+  end
+
+  def max
+    series_summaries.map(&:max).max
+  end
+
+  def count
+    series_summaries.inject(0) {|sum, summary| sum + summary.count }
+  end
+
+  def keys
+    series_summaries.map(&:key)
+  end
+
+  def names
+    series_summaries.map(&:name)
+  end
 end

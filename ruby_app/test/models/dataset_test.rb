@@ -1,15 +1,13 @@
 require 'test_helper'
 require 'ostruct'
+require 'rr'
 
 describe Dataset do
-end
-
-describe DatasetSummary do
   let(:meta) do
-    OpenStruct.new({
+    [OpenStruct.new({
       summary: { 
         'count' => 1024,
-        'min'   => 0,
+        'min'   => -100,
         'max'   => 200,
         'sum'   => 10293848
       },
@@ -22,17 +20,50 @@ describe DatasetSummary do
       },
       start: Time.new(2014, 1, 1),
       stop: Time.new(2014, 1, 2)
-    })
+    }),
+    OpenStruct.new({
+      summary: { 
+        'count' => 2048,
+        'min'   => 0,
+        'max'   => 400,
+        'sum'   => 10293848
+      },
+      series: {
+        'id'         => 'abcd',
+        'key'        => 'series_2_key',
+        'name'       => 'series_name',
+        'tags'       => [],
+        'attributes' => {},
+      },
+      start: Time.new(2014, 1, 1),
+      stop: Time.new(2014, 1, 2)
+    })]
   end
 
-  let(:summary) { DatasetSummary.new(meta) }
+  let(:series_summary) { SeriesSummary.new(meta[0]) }
 
-  specify { summary.count.must_equal 1024 }
-  specify { summary.min.must_equal 0 }
-  specify { summary.max.must_equal 200 }
-  specify { summary.id.must_equal 'abcd' }
-  specify { summary.key.must_equal 'series_key' }
-  specify { summary.start.must_equal Time.new(2014, 1, 1) }
-  specify { summary.average_period.must_equal (86400.0 / 1024) }
-  specify { summary.rollup_period(64).must_equal (86400.0 / 64) }
+  specify { series_summary.count.must_equal 1024 }
+  specify { series_summary.min.must_equal -100 }
+  specify { series_summary.max.must_equal 200 }
+  specify { series_summary.id.must_equal 'abcd' }
+  specify { series_summary.key.must_equal 'series_key' }
+  specify { series_summary.start.must_equal Time.new(2014, 1, 1) }
+  specify { series_summary.average_period.must_equal (86400.0 / 1024) }
+  specify { series_summary.rollup_period(64).must_equal (86400.0 / 64) }
+
+  let(:dataset_summary) { DatasetSummary.new(meta.map {|m| SeriesSummary.new(m) }) }
+  specify { dataset_summary.count.must_equal 3072 }
+  specify { dataset_summary.min.must_equal -100 }
+  specify { dataset_summary.max.must_equal 400 }
+  specify { dataset_summary.keys.must_equal ['series_key', 'series_2_key'] }
+
+  describe "dataset methods" do
+    let(:dataset){ Dataset.new(series_1: "series_key", series_2: "series_2_key") }
+
+    specify do 
+      stub(dataset).summary { dataset_summary }
+      dataset.summary.count.must_equal 3072
+    end
+  end
 end
+
