@@ -33,4 +33,6 @@ describe DatasetSummary do
   specify { summary.id.must_equal 'abcd' }
   specify { summary.key.must_equal 'series_key' }
   specify { summary.start.must_equal Time.new(2014, 1, 1) }
+  specify { summary.average_period.must_equal (86400.0 / 1024) }
+  specify { summary.rollup_period(64).must_equal (86400.0 / 64) }
 end
