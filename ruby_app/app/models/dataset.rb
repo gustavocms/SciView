@@ -42,32 +42,41 @@ class Dataset
     end
 
     def update_attribute(series_key, attribute, value)
-      series = tempodb_client.get_series(series_key)
-      series.attributes[attribute] = value
-      tempodb_client.update_series(series)
+      with_series(series_key) do |series|
+        series.attributes[attribute] = value
+      end
     end
 
     def remove_attribute(series_key, attribute)
-      series = tempodb_client.get_series(series_key)
-      series.attributes = series.attributes.except(attribute)
-      tempodb_client.update_series(series)
+      with_series(series_key) do |series|
+        series.attributes = series.attributes.except(attribute)
+      end
     end
 
     def add_tag(series_key, tag)
-      series = tempodb_client.get_series(series_key)
-      series.tags.push(tag)
-      tempodb_client.update_series(series)
+      with_series(series_key) do |series|
+        series.tags.push(tag)
+      end
     end
 
     def remove_tag(series_key, tag)
-      series = tempodb_client.get_series(series_key)
-      series.tags.delete(tag)
-      tempodb_client.update_series(series)
+      with_series(series_key) do |series|
+        series.tags.delete(tag)
+      end
     end
 
     def for_series(name)
       raise('this method is deprecated')
-      #new(name)
+    end
+
+    private
+
+    # Performs a get-update-save transaction
+    def with_series(series_key)
+      tempodb_client.get(series_key).tap do |series|
+        yield series
+        tempodb_client.update_series(series)
+      end
     end
   end
 
@@ -117,7 +126,6 @@ class DatasetSummary
     end
   end
 
-
   def initialize(summary)
     @summary = summary # expects TempoDB::SeriesSummary object / duck
   end
@@ -125,4 +133,22 @@ class DatasetSummary
   def_delegators :@summary, :summary, :series, :start, :stop
   hash_attr :summary, :count, :mean, :min, :max, :stddev, :sum
   hash_attr :series, :id, :key, :name, :tags, :attributes
+
+  # The time between datapoints, assuming an even distribution.
+  # Unit: seconds
+  def average_period
+    time_extents / count
+  end
+
+  # Length of dataset in seconds
+  def time_extents
+    (stop - start).to_f
+  end
+
+  def rollup_period(desired_number_of_segments)
+    time_extents / desired_number_of_segments
+  end
+
+  private
+
 end
