@@ -86,7 +86,7 @@ class Dataset
   end
 
   def summary
-    @summary ||= client.get_summary(key, start, stop)
+    @summary ||= DatasetSummary.new(client.get_summary(key, start, stop))
   end
 
 
@@ -103,22 +103,26 @@ class Dataset
   end
 end
 
+require 'forwardable'
 class DatasetSummary
+  extend Forwardable
+
   class << self
-    def summary_attr(*args)
+    def hash_attr(accessor, *args)
       args.each do |arg|
         define_method(arg) do
-          summary.fetch("#{arg}", nil)
+          send(accessor).fetch("#{arg}", nil)
         end
       end
     end
   end
 
-  attr_reader :summary
 
   def initialize(summary)
     @summary = summary # expects TempoDB::SeriesSummary object / duck
   end
 
-  summary_attr :count, :mean, :min, :max, :stddev, :sum
+  def_delegators :@summary, :summary, :series, :start, :stop
+  hash_attr :summary, :count, :mean, :min, :max, :stddev, :sum
+  hash_attr :series, :id, :key, :name, :tags, :attributes
 end
