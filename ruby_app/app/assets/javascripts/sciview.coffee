@@ -16,14 +16,16 @@ class SciView.BasicChart
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
-    @_dataURL  = options.url
-    @x         = d3.time.scale().range([0, @width])
-    @x2        = d3.time.scale().range([0, @width])
-    @y         = d3.scale.linear().range([@height, 0])
-    @y2        = d3.scale.linear().range([@height2, 0])
-    @xAxis     = d3.svg.axis().scale(@x).orient("bottom")
-    @xAxis2    = d3.svg.axis().scale(@x2).orient("bottom")
-    @yAxis     = d3.svg.axis().scale(@y).orient("left")
+    @_dataURL     = options.url
+    @_permalink   = ''
+    @zoom_options = { start: options.start_time, stop: options.stop_time }
+    @x            = d3.time.scale().range([0, @width])
+    @x2           = d3.time.scale().range([0, @width])
+    @y            = d3.scale.linear().range([@height, 0])
+    @y2           = d3.scale.linear().range([@height2, 0])
+    @xAxis        = d3.svg.axis().scale(@x).orient("bottom")
+    @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
+    @yAxis        = d3.svg.axis().scale(@y).orient("left")
 
     @brush = d3.svg.brush()
       .x(@x2)
@@ -57,6 +59,7 @@ class SciView.FocusChart extends SciView.BasicChart
         @zoomData(d)
       else
         @_data = preprocess(d)
+
       return @
     @_data
 
@@ -68,12 +71,17 @@ class SciView.FocusChart extends SciView.BasicChart
       return @
     @_zoomData
 
+  permalink: (permalink)->
+    @_permalink = permalink || ''
+
   # Trigger the ajax call.
   getData: ->
+    get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
-      url: "#{@dataURL()}#{@startStopQuery()}&count=960"
-      success: (data) =>
-        @data(data)
+      url: get_data_url
+      success: (response) =>
+        @data(response.data)
+        @permalink(response.permalink)
         @render()
     })
 
@@ -109,10 +117,13 @@ class SciView.FocusChart extends SciView.BasicChart
     @focus.selectAll(".line.focus")
       .attr('opacity', 1)
       .attr("d", (d) => @lineFocus(d.values))
+    
     @focus.select(".x.axis").call(@xAxis)
 
   brushEnd: =>
-    @getData() unless @brush.empty()
+    unless @brush.empty()
+      @getData()
+      window.history.replaceState {}, null, @_permalink
 
   # This functions as a single-item queue. If the countdown
   # is already active, it is reset.
@@ -213,9 +224,18 @@ class SciView.FocusChart extends SciView.BasicChart
 
   render: ->
     if @_zoomData
-      @_renderZoomData()
+     @_renderZoomData()
     else
       @_renderInitialData()
+
+  
+
+  zoomIt: ->
+    if @zoom_options
+      @brush.extent([new Date(1000*1388627761), new Date(1000*1388634028)])
+      @context.select('.brush').call(@brush)
+      @brushed()
+      @brushEnd()
 
   _renderZoomData: ->
     @focus.selectAll('.init').attr('opacity', 0)
@@ -235,7 +255,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
-
 
     @focusTarget = @focus.append('rect')
       .attr('class', 'focusTarget')
@@ -277,3 +296,5 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+    
+    @zoomIt()
