@@ -304,5 +304,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("y", (d, i) -> (i * 20) + 9)
       .text((d) -> d.key)
 
+    legend.on 'click', ->
+      console.log $(this).find('text').text()
+
 
     @zoomIt()
