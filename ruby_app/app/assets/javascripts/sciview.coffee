@@ -292,21 +292,17 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("y", -6)
       .attr("height", @height2 + 7)
 
-
-
-
-    legend = focusPaths.enter().append("circle").attr("class", "legend")
+    legend = focusPaths.enter().append("g").attr("class", "legend")
     
-    legend.append("rect").attr("x", @width + 20).attr("y", (d, i) ->
-      i * 20
-    ).attr("width", 10).attr("height", 10).style "fill", (d) ->
-      lineColor(d.key)
+    legend.append("rect")
+      .attr("x", @width + 20)
+      .attr("y", (d, i) -> i * 20 )
+      .attr("width", 10).attr("height", 10).style "fill", (d) -> lineColor(d.key)
 
-    legend.append("text").attr("x", @width + 35).attr("y", (d, i) ->
-      (i * 20) + 9
-    ).text (d) ->
-      d.key
-
+    legend.append("text")
+      .attr("x", @width + 35)
+      .attr("y", (d, i) -> (i * 20) + 9)
+      .text((d) -> d.key)
 
 
     @zoomIt()
