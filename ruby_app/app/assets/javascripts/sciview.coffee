@@ -223,8 +223,6 @@ class SciView.FocusChart extends SciView.BasicChart
     else
       @_renderInitialData()
 
-  
-
   zoomIt: ->
     if @zoom_options['startTime'] && @zoom_options['stopTime']
       @brush.extent([new Date(1000*@zoom_options['startTime']), new Date(1000*@zoom_options['stopTime'])])
@@ -276,11 +274,13 @@ class SciView.FocusChart extends SciView.BasicChart
       .call(@yAxis)
 
     contextPaths = @context.selectAll("path.context").data(@_data)
+    
     contextPaths.enter()
       .append('path')
       .attr("class", "line context")
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
+    
     @context.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + @height2 + ")")
@@ -291,5 +291,22 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+
+
+
+
+    legend = focusPaths.enter().append("g").attr("class", "legend")
     
+    legend.append("rect").attr("x", @width + 20).attr("y", (d, i) ->
+      i * 20
+    ).attr("width", 10).attr("height", 10).style "fill", (d) ->
+      lineColor(d.key)
+
+    legend.append("text").attr("x", @width + 35).attr("y", (d, i) ->
+      (i * 20) + 9
+    ).text (d) ->
+      d.key
+
+
+
     @zoomIt()
