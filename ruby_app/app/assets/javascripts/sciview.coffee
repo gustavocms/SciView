@@ -84,12 +84,20 @@ class SciView.FocusChart extends SciView.BasicChart
   # Stores the data in a renderable format:
   # [ { key: "some key", values: [ { x: 10, y: 20 }, { x: 20, y: 30 } ]} ... ]
   preprocess = (data) ->
-    {
-      key: s.key
-      values: ({ x: new Date(d.ts), y: d.value } for d in s.values )
-      tags: s.tags
-      attributes: s.attributes
-    } for _, s of data
+    for _, s of data
+      disabled = false
+      legend = d3.select("#legend_#{s.key}")
+      try
+        disabled = legend.attr('data-disabled') is 'disabled'
+      catch e
+        #null need to figure this out
+        
+      {
+        key: s.key
+        values: ( if disabled then {} else { x: new Date(d.ts), y: d.value } for d in s.values )
+        tags: s.tags
+        attributes: s.attributes
+      }
 
   dataURL: (string) ->
     if string
@@ -236,8 +244,10 @@ class SciView.FocusChart extends SciView.BasicChart
     zoomFocusPaths.enter()
       .append('path')
       .attr('class', 'line focus zoom')
+      .attr('id', (d) -> d.key )
       .attr('clip-path', "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
+      .style('opacity', (d)-> d3.select("#legend_#{d.key}").active)
     zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
   
@@ -262,6 +272,7 @@ class SciView.FocusChart extends SciView.BasicChart
     focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
+      .attr('id', (d) -> d.key )
       .attr('d', (d) => @lineFocus(d.values))
       .attr("clip-path", "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
@@ -292,7 +303,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("y", -6)
       .attr("height", @height2 + 7)
 
-    legend = focusPaths.enter().append("g").attr("class", "legend")
+    legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
     legend.append("rect")
       .attr("x", @width + 20)
@@ -303,9 +314,22 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("x", @width + 35)
       .attr("y", (d, i) -> (i * 20) + 9)
       .text((d) -> d.key)
+      
 
-    legend.on 'click', ->
-      console.log $(this).find('text').text()
+    legend.on "click", (d)=>
+        # Determine if current line is visible
+        active  = (if this.active then false else true)
+        disable = (if active then 'disabled' else '')
+        newLegendOpacity = (if active then 0.5 else 1)
+        newGraphOpacity = (if active then 0 else 1)
+        # Hide or show the elements
+        d3.select("##{d.key}").style "opacity", newGraphOpacity
+        d3.select("#legend_#{d.key}").style("opacity", newLegendOpacity).attr('data-disabled', disable)
+        # Update whether or not the elements are active
+        d3.select("##{d.key}").active = active
+        this.active = active
+        @getData()
+        return false
 
 
     @zoomIt()
