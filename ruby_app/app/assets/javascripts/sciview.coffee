@@ -90,7 +90,7 @@ class SciView.FocusChart extends SciView.BasicChart
       try
         disabled = legend.attr('data-disabled') is 'disabled'
       catch e
-        #null need to figure this out
+        #sometimes this is null need to figure this out
         
       {
         key: s.key
@@ -319,7 +319,7 @@ class SciView.FocusChart extends SciView.BasicChart
     legend.on "click", (d)=>
         # Determine if current line is visible
         active  = (if this.active then false else true)
-        disable = (if active then 'disabled' else '')
+        disable = (if active then 'disabled' else 'enabled')
         newLegendOpacity = (if active then 0.5 else 1)
         newGraphOpacity = (if active then 0 else 1)
         # Hide or show the elements
