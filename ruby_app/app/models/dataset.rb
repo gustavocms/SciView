@@ -42,7 +42,8 @@ class Dataset
     end
   end
 
-  attr_reader :series_names, :client, :options, :count, :start, :stop
+  attr_reader :series_names, :client, :options, :count, :start, :stop,
+    :function, :interval
 
   # series: a hash of the form { series_1: 'sample_abcdef123' }
   # options: start
@@ -54,6 +55,8 @@ class Dataset
     @stop         = opts[:stop]  || Time.utc(2020)
     @count        = Integer(opts[:count] || 2000)
     @options      = { keys: series_names, count: count }.select {|_,v| v }
+    @function     = opts[:function] || "mean"
+    @interval     = opts[:interval] || "1min"
   end
 
   def summary
@@ -84,8 +87,8 @@ class Dataset
   end
 
   def rollup_options
-    return {} if count >= summary.max_count
-    { rollup_function: 'mean', rollup_period: "PT1M" }
+    #return {} if count >= summary.max_count
+    { rollup_function: function, rollup_period: interval }
   end
 
   def return_hash

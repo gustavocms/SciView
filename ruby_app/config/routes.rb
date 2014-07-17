@@ -10,6 +10,7 @@ SciView::Application.routes.draw do
   resources :datasets, only: [:index, :show] do
     collection do
       get :multiple
+      get :profile
     end
 
     resources :tags, only: [:create, :destroy]
