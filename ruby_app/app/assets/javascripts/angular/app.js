@@ -3,7 +3,6 @@
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
-        'metadataDirectives',
         'metadataServices',
         'metadataControllers'
     ]);
