@@ -11,9 +11,7 @@ class Dataset
     end
 
     def update_attribute(series_key, attribute, value)
-      with_series(series_key) do |series|
-        series.attributes[attribute] = value
-      end
+      with_series(series_key) {|series| series.attributes[attribute] = value }
     end
 
     def remove_attribute(series_key, attribute)
@@ -23,15 +21,11 @@ class Dataset
     end
 
     def add_tag(series_key, tag)
-      with_series(series_key) do |series|
-        series.tags.push(tag)
-      end
+      with_series(series_key) {|series| series.tags << (tag) }
     end
 
     def remove_tag(series_key, tag)
-      with_series(series_key) do |series|
-        series.tags.delete(tag)
-      end
+      with_series(series_key) {|series| series.tags.delete(tag) }
     end
 
     def for_series(name)
@@ -42,10 +36,9 @@ class Dataset
 
     # Performs a get-update-save transaction
     def with_series(series_key)
-      tempodb_client.get(series_key).tap do |series|
-        yield series
-        tempodb_client.update_series(series)
-      end
+      tempodb_client.update_series(
+        tempodb_client.get(series_key).tap {|series| yield series }
+      )
     end
   end
 
@@ -56,7 +49,6 @@ class Dataset
   #          stop
   #          count
   def initialize(series, opts = {})
-
     @series_names = series.values
     @start        = opts[:start] || Time.utc(1999)
     @stop         = opts[:stop]  || Time.utc(2020)
@@ -147,18 +139,16 @@ class SeriesSummary
 end
 
 class DatasetSummary
-  attr_reader :series_summaries
-
   def initialize(series_summaries)
     @series_summaries = Array(series_summaries)
   end
 
   def min
-    series_summaries.map(&:min).min
+    _min :min
   end
 
   def max
-    series_summaries.map(&:max).max
+    _max :max
   end
 
   def count
@@ -166,10 +156,38 @@ class DatasetSummary
   end
 
   def keys
-    series_summaries.map(&:key)
+    _attr :key
   end
 
   def names
-    series_summaries.map(&:name)
+    _attr :name
+  end
+
+  def start
+    _min :start
+  end
+
+  def stop
+    _max :stop
+  end
+
+  def time_extents
+    stop - start
+  end
+
+  private
+
+  attr_reader :series_summaries
+
+  def _min(attribute)
+    _attr(attribute).min
+  end
+
+  def _max(attribute)
+    _attr(attribute).max
+  end
+
+  def _attr(attribute)
+    series_summaries.map(&attribute)
   end
 end
