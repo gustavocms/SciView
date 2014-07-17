@@ -37,12 +37,12 @@ class Dataset
     # Performs a get-update-save transaction
     def with_series(series_key)
       tempodb_client.update_series(
-        tempodb_client.get(series_key).tap {|series| yield series }
+        tempodb_client.get_series(series_key).tap {|series| yield series }
       )
     end
   end
 
-  attr_reader :series_names, :client, :options, :count
+  attr_reader :series_names, :client, :options, :count, :start, :stop
 
   # series: a hash of the form { series_1: 'sample_abcdef123' }
   # options: start
@@ -57,7 +57,9 @@ class Dataset
   end
 
   def summary
-    @summary ||= DatasetSummary.new(series_names.map {|key| tempodb_client.get_summary(key, start, stop) })
+    @summary ||= DatasetSummary.new(series_names.map do |key| 
+      SeriesSummary.new(tempodb_client.get_summary(key, start, stop))
+    end)
   end
   
   def to_hash
