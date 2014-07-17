@@ -1,6 +1,11 @@
-<h2 class="ui header"><%= chart.name %></h2>
+<div class="ui one column row"  ng-app="sciViewApp">
+
+  <h2 class="ui header"><%= chart.name %></h2>
 <% if current_user %>
   <%= link_to "Save this chart", [:charts, series: chart.series], method: :post, remote: true, class: 'ui submit button' %>
+
+      <div ui-view="saveChart">
+      </div>
 <% end %>
 
 <div class="ui segment">
@@ -10,7 +15,6 @@
   </div>
 </div>
 
-<div class="ui one column row"  ng-app="sciViewApp">
-  <div class="column" ng-view>
+  <div class="column" ui-view="metadata">
   </div>
 </div>
