@@ -295,7 +295,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
 
 
-    legend = focusPaths.enter().append("g").attr("class", "legend")
+    legend = focusPaths.enter().append("circle").attr("class", "legend")
     
     legend.append("rect").attr("x", @width + 20).attr("y", (d, i) ->
       i * 20
