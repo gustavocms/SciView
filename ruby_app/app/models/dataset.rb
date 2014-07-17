@@ -52,7 +52,7 @@ class Dataset
     @series_names = series.values
     @start        = opts[:start] || Time.utc(1999)
     @stop         = opts[:stop]  || Time.utc(2020)
-    @count        = opts[:count] || 2000
+    @count        = Integer(opts[:count] || 2000)
     @options      = { keys: series_names, count: count }.select {|_,v| v }
   end
 
@@ -73,23 +73,34 @@ class Dataset
   end
 
   def cursor
-    @cursor ||= tempodb_client.read_multi(start, stop, options.merge(rollup_options))
+    @cursor ||= _get_cursor #tempodb_client.read_multi(start, stop, options.merge(rollup_options))
+  end
+
+  def _get_cursor
+    puts "GET CURSOR #{t = Time.now}..."
+    c = tempodb_client.read_multi(start, stop, options.merge(rollup_options))
+    puts "CURSOR GOT #{Time.now - t}"
+    return c
   end
 
   def rollup_options
-    { rollup_function: 'mean' }
+    return {} if count >= summary.max_count
+    { rollup_function: 'mean', rollup_period: "PT1M" }
   end
-
-  # TODO: rollup functions!
 
   def return_hash
     @return_hash ||= {}.tap do |hash|
+      puts "SETTING SERIES... #{s = Time.now}"
       cursor['series'].each { |sn| hash["#{sn['key']}"] = series(sn) }
+      puts "SERIES SET #{Time.now - s}"
+
+      puts "RETRIEVING DATA... #{r = Time.now}"
       cursor.each do |datapoint|
         datapoint.value.each do |key, value|
           hash[key][:values] << { value: value, ts: datapoint.ts }
         end
       end
+      puts "DATA RETRIEVED #{Time.now - r}"
 
       hash.each do |_, series|
         t = Time.now
@@ -153,6 +164,10 @@ class DatasetSummary
     _max :max
   end
 
+  def max_count
+    _max :count
+  end
+
   def count
     series_summaries.inject(0) {|sum, summary| sum + summary.count }
   end
@@ -177,6 +192,11 @@ class DatasetSummary
     stop - start
   end
 
+  # returns duration in seconds
+  def rollup_period(desired_number_of_segments)
+    time_extents / desired_number_of_segments
+  end
+
   private
 
   attr_reader :series_summaries
@@ -192,4 +212,18 @@ class DatasetSummary
   def _attr(attribute)
     series_summaries.map(&attribute)
   end
+end
+
+class Iso8601Duration
+  attr_reader :seconds
+
+  def initialize(seconds)
+    @seconds = seconds
+  end
+
+  def to_s
+    ""
+  end
+  alias_method :to_str, :to_s
+
 end

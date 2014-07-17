@@ -59,14 +59,32 @@ describe Dataset do
   specify { dataset_summary.start.must_equal Time.new(2013, 12, 31) }
   specify { dataset_summary.stop.must_equal Time.new(2014, 1, 3) }
   specify { dataset_summary.time_extents.must_equal 3.days }
+  specify { dataset_summary.max_count.must_equal 204800 }
 
   describe "dataset methods" do
     let(:dataset){ Dataset.new(series_1: "series_key", series_2: "series_2_key") }
 
-    specify do 
-      stub(dataset).summary { dataset_summary }
+    before do
+      # `stub` wasn't working here for some reason.
+      dataset.instance_variable_set(:@summary, dataset_summary)
+    end
+
+    specify 'summary count' do 
       dataset.summary.count.must_equal 205824
+    end
+
+    describe 'rollup options' do
+      let(:rollup){ -> (count){ 
+        dataset.tap do |d| 
+          d.instance_variable_set(:@count, count) 
+        end.send(:rollup_options) }
+      }
+      specify("count is greater than number of datapoints") { rollup.(400000).must_equal({}) }
+      specify("count is less than number of datapoints") { }
     end
   end
 end
 
+describe Iso8601Duration do
+
+end
