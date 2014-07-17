@@ -1,6 +1,22 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
+    module.controller('SaveChartController', ['$scope', '$log', 'seriesParams',
+        function ($scope, $log, seriesParams) {
+
+            var chartName = "Chart for ";
+            angular.forEach(seriesParams,
+                function(value, key) {
+                    chartName += value + ",";
+                });
+
+            $scope.chart = {
+                name: chartName.slice(0,-1),
+                series: seriesParams
+            };
+        }
+    ]);
+
     module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'seriesParams', 'SeriesTagsService', 'SeriesAttributesService',
         function ($scope, $log, MetadataService, ModalService, seriesParams, SeriesTagsService, SeriesAttributesService) {
 

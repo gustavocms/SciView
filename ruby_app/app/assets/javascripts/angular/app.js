@@ -15,7 +15,15 @@
                     url: "/charts/multiple",
                     views: {
                         "saveChart": {
-                            templateUrl: "/assets/save_chart.html"
+                            templateUrl: "/assets/save_chart.html",
+                            controller: 'SaveChartController',
+                            resolve: {
+                                // looking for the parameters on the hidden field to inject on the controller
+                                seriesParams: function () {
+                                    var seriesParams = JSON.parse($('#chartSeries').text());
+                                    return seriesParams;
+                                }
+                            }
                         },
                         "metadata": {
                             templateUrl: "/assets/metadata.html",

@@ -4,8 +4,11 @@
 <% if current_user %>
   <%= link_to "Save this chart", [:charts, series: chart.series], method: :post, remote: true, class: 'ui submit button' %>
 
+
       <div ui-view="saveChart">
       </div>
+      <span><%= chart.name %></span>
+      <span><%= chart.series %></span>
 <% end %>
 
 <div class="ui segment">
