@@ -1,3 +1,11 @@
+jQuery.fn.d3Click = ->
+  @each (i, e) ->
+    evt = document.createEvent("MouseEvents")
+    evt.initMouseEvent "click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null
+    e.dispatchEvent evt
+    return
+
+  return
 
 # Top-level namespace
 window.SciView = {}
@@ -17,7 +25,7 @@ class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
     @_dataURL     = options.url
-    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime }
+    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
     @x            = d3.time.scale().range([0, @width])
     @x2           = d3.time.scale().range([0, @width])
     @y            = d3.scale.linear().range([@height, 0])
@@ -57,7 +65,7 @@ class SciView.FocusChart extends SciView.BasicChart
       if @_data # initial data set has already been loaded, and should be kept as the low-fi data set
         @zoomData(d)
       else
-        @_data = preprocess(d)
+        @_data = preprocess(d, @zoom_options['disabledSeries'])
 
       return @
     @_data
@@ -65,7 +73,7 @@ class SciView.FocusChart extends SciView.BasicChart
   # higher-fidelity data over a narrower domain
   zoomData: (d) ->
     if d
-      @_zoomData = preprocess(d)
+      @_zoomData = preprocess(d, @zoom_options['disabledSeries'])
       @isZoomed  = true
       return @
     @_zoomData
@@ -78,25 +86,37 @@ class SciView.FocusChart extends SciView.BasicChart
       success: (response) =>
         @data(response.data)
         @render()
-        window.history.replaceState({}, null, response.permalink)
+        @replaceState(response)
     })
+
+  
+  #replace browser history state
+  replaceState: (response)->
+    data = @_zoomData || @_data
+    disabled_series = data.map((d)-> d.key if d.disabled ).filter( (e)-> return typeof(e) is 'string' )
+    disabled_series_params = if disabled_series.length then "&disabled=#{disabled_series.join(',')}" else ''
+
+    window.history.replaceState({}, null, response.permalink + disabled_series_params)
+
+ 
 
   # Stores the data in a renderable format:
   # [ { key: "some key", values: [ { x: 10, y: 20 }, { x: 20, y: 30 } ]} ... ]
-  preprocess = (data) ->
+  preprocess = (data, disabledSeries) ->
     for _, s of data
+      
       disabled = false
       legend = d3.select("#legend_#{s.key}")
       try
         disabled = legend.attr('data-disabled') is 'disabled'
       catch e
         #sometimes this is null need to figure this out
-        
       {
         key: s.key
         values: ( if disabled then {} else { x: new Date(d.ts), y: d.value } for d in s.values )
         tags: s.tags
         attributes: s.attributes
+        disabled: disabled
       }
 
   dataURL: (string) ->
@@ -232,6 +252,10 @@ class SciView.FocusChart extends SciView.BasicChart
       @_renderInitialData()
 
   zoomIt: ->
+    if @zoom_options['disabledSeries'].length
+      for s in @zoom_options['disabledSeries']
+        $("#legend_#{s}").d3Click()
+    
     if @zoom_options['startTime'] && @zoom_options['stopTime']
       @brush.extent([new Date(1000*@zoom_options['startTime']), new Date(1000*@zoom_options['stopTime'])])
       @context.select('.brush').call(@brush)
@@ -317,19 +341,17 @@ class SciView.FocusChart extends SciView.BasicChart
       
 
     legend.on "click", (d)=>
-        # Determine if current line is visible
-        active  = (if this.active then false else true)
-        disable = (if active then 'disabled' else 'enabled')
-        newLegendOpacity = (if active then 0.5 else 1)
-        newGraphOpacity = (if active then 0 else 1)
-        # Hide or show the elements
-        d3.select("##{d.key}").style "opacity", newGraphOpacity
-        d3.select("#legend_#{d.key}").style("opacity", newLegendOpacity).attr('data-disabled', disable)
-        # Update whether or not the elements are active
-        d3.select("##{d.key}").active = active
-        this.active = active
-        @getData()
-        return false
-
+      # Determine if current line is visible
+      active  = (if this.active then false else true)
+      disable = (if active then 'disabled' else 'enabled')
+      newLegendOpacity = (if active then 0.5 else 1)
+      newGraphOpacity = (if active then 0 else 1)
+      # Hide or show the elements
+      d3.select("##{d.key}").style "opacity", newGraphOpacity
+      d3.select("#legend_#{d.key}").style("opacity", newLegendOpacity).attr('data-disabled', disable)
+      # Update whether or not the elements are active
+      d3.select("##{d.key}").active = active
+      this.active = active
+      @getData()
 
     @zoomIt()

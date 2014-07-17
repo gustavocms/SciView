@@ -5,7 +5,10 @@
 
 <div class="ui segment">
   <div id="<%= chart.name.parameterize %>" class="chart with-3d-shadow with-transitions"
-    data-source-url="<%= multiple_datasets_path(chart.series) %>" data-stop-time="<%= params[:stop_time] %>" data-start-time="<%= params[:start_time] %>">
+    data-source-url="<%= multiple_datasets_path(chart.series) %>" 
+    data-disabled-series="<%= params[:disabled] %>" 
+    data-stop-time="<%= params[:stop_time] %>" 
+    data-start-time="<%= params[:start_time] %>">
     <hidden id="chartSeries"><%= chart.series.to_json %></hidden>
   </div>
 </div>
