@@ -73,6 +73,7 @@ group :development do
   gem 'guard-rails'
   gem 'guard-jshint-on-rails'
   gem 'terminal-notifier-guard'
+  gem 'quiet_assets'
 end
 
 group :development, :test do
