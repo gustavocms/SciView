@@ -9,7 +9,7 @@ class Dataset
     def multiple_series(start, stop, series, count=nil)
       start = fix_times(start)
       stop  = fix_times(stop)
-      
+    
       new_start = start || Time.utc(1999, 1, 1)
       new_stop  = stop || Time.utc(2020, 1, 1)
 

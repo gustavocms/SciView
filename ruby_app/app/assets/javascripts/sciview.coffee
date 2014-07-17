@@ -17,8 +17,7 @@ class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
     @_dataURL     = options.url
-    @_permalink   = ''
-    @zoom_options = { start: options.start_time, stop: options.stop_time }
+    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime }
     @x            = d3.time.scale().range([0, @width])
     @x2           = d3.time.scale().range([0, @width])
     @y            = d3.scale.linear().range([@height, 0])
@@ -71,9 +70,6 @@ class SciView.FocusChart extends SciView.BasicChart
       return @
     @_zoomData
 
-  permalink: (permalink)->
-    @_permalink = permalink || ''
-
   # Trigger the ajax call.
   getData: ->
     get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
@@ -81,8 +77,8 @@ class SciView.FocusChart extends SciView.BasicChart
       url: get_data_url
       success: (response) =>
         @data(response.data)
-        @permalink(response.permalink)
         @render()
+        window.history.replaceState({}, null, response.permalink)
     })
 
   # Stores the data in a renderable format:
@@ -123,7 +119,6 @@ class SciView.FocusChart extends SciView.BasicChart
   brushEnd: =>
     unless @brush.empty()
       @getData()
-      window.history.replaceState {}, null, @_permalink
 
   # This functions as a single-item queue. If the countdown
   # is already active, it is reset.
@@ -231,8 +226,8 @@ class SciView.FocusChart extends SciView.BasicChart
   
 
   zoomIt: ->
-    if @zoom_options
-      @brush.extent([new Date(1000*1388627761), new Date(1000*1388634028)])
+    if @zoom_options['startTime'] && @zoom_options['stopTime']
+      @brush.extent([new Date(1000*@zoom_options['startTime']), new Date(1000*@zoom_options['stopTime'])])
       @context.select('.brush').call(@brush)
       @brushed()
       @brushEnd()
