@@ -113,7 +113,7 @@ class SciView.FocusChart extends SciView.BasicChart
         #sometimes this is null need to figure this out
       {
         key: s.key
-        values: ( if disabled then {} else { x: new Date(d.ts), y: d.value } for d in s.values )
+        values: ( { x: new Date(d.ts), y: d.value } for d in s.values )
         tags: s.tags
         attributes: s.attributes
         disabled: disabled
@@ -271,7 +271,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('id', (d) -> d.key )
       .attr('clip-path', "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
-      .style('opacity', (d)-> d3.select("#legend_#{d.key}").active)
+      .style('opacity', (d)-> if d.disabled then 0 else 1 )
     zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
   
@@ -347,11 +347,12 @@ class SciView.FocusChart extends SciView.BasicChart
       newLegendOpacity = (if active then 0.5 else 1)
       newGraphOpacity = (if active then 0 else 1)
       # Hide or show the elements
-      d3.select("##{d.key}").style "opacity", newGraphOpacity
+      
       d3.select("#legend_#{d.key}").style("opacity", newLegendOpacity).attr('data-disabled', disable)
       # Update whether or not the elements are active
       d3.select("##{d.key}").active = active
       this.active = active
       @getData()
+      d3.selectAll("##{d.key}").style "opacity", newGraphOpacity
 
     @zoomIt()

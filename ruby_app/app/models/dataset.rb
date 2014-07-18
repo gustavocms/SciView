@@ -97,8 +97,8 @@ class Dataset
   def permalink
     params = {}
     params.merge!(series)
-    params.merge!(start_time: start.to_i) if start
-    params.merge!(stop_time: stop.to_i)   if stop
+    params.merge!(start_time: start.to_f) if start
+    params.merge!(stop_time: stop.to_f)   if stop
     Rails.application.routes.url_helpers.multiple_charts_path(params)
   end
 
