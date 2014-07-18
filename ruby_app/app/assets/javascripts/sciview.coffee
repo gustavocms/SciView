@@ -268,7 +268,7 @@ class SciView.FocusChart extends SciView.BasicChart
     zoomFocusPaths.enter()
       .append('path')
       .attr('class', 'line focus zoom')
-      .attr('id', (d) -> d.key )
+      .attr('id', (d) -> "zoomed_#{d.key}" )
       .attr('clip-path', "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
       .style('opacity', (d)-> if d.disabled then 0 else 1 )
@@ -352,7 +352,8 @@ class SciView.FocusChart extends SciView.BasicChart
       # Update whether or not the elements are active
       d3.select("##{d.key}").active = active
       this.active = active
+      d3.select("##{d.key}").style "opacity", newGraphOpacity
       @getData()
-      d3.selectAll("##{d.key}").style "opacity", newGraphOpacity
+      d3.select("#zoomed_#{d.key}").style "opacity", newGraphOpacity
 
     @zoomIt()

@@ -108,7 +108,7 @@ class Dataset
   def self.fix_times(time)
     return if time.blank?
     if time !~ /\d{4,}\-/ 
-      Time.at(time.to_i)
+      Time.at(time.to_f)
     else
       Time.parse(time)
     end
