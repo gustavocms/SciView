@@ -90,13 +90,15 @@ class SciView.FocusChart extends SciView.BasicChart
     })
 
   
-  #replace browser history state
-  replaceState: (response)->
+  
+  disabledSeriesParams: ->
     data = @_zoomData || @_data
     disabled_series = data.map((d)-> d.key if d.disabled ).filter( (e)-> return typeof(e) is 'string' )
-    disabled_series_params = if disabled_series.length then "&disabled=#{disabled_series.join(',')}" else ''
+    if disabled_series.length then "&disabled=#{disabled_series.join(',')}" else ''
 
-    window.history.replaceState({}, null, response.permalink + disabled_series_params)
+  #replace browser history state
+  replaceState: (response)->
+    window.history.replaceState {}, null, response.permalink + @disabledSeriesParams()
 
  
 
@@ -151,6 +153,8 @@ class SciView.FocusChart extends SciView.BasicChart
   # This functions as a single-item queue. If the countdown
   # is already active, it is reset.
   brushEndDelayed: =>
+    if @brush.empty()
+      @clearTimestamps()
     if @_brushEndTimer
       clearTimeout(@_brushEndTimer)
     @_brushEndTimer = setTimeout((=> @_brushEndTimer = null; @brushEnd()), @brushEndDelayInterval())
@@ -166,6 +170,11 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Zooming and Dragging
   ###############################################
+
+  clearTimestamps: ->
+    params = window.location.search.split('&').filter (el)->
+      !(/start|stop+_time/.test(el))
+    window.history.replaceState({}, null,  params.join('&'))
 
   zoomEnd: ->
     d3.event.sourceEvent?.stopPropagation()
@@ -338,7 +347,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("x", @width + 35)
       .attr("y", (d, i) -> (i * 20) + 9)
       .text((d) -> d.key)
-      
 
     legend.on "click", (d)=>
       # Determine if current line is visible
