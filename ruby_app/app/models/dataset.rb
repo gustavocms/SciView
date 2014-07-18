@@ -113,13 +113,64 @@ class Dataset
       end
     end
   end
+end
 
+class DatasetSummary
+  attr_reader :series_names
+
+  include Concerns::Tempo
+
+  attr_reader :series_names, :query_start, :query_stop
+  def initialize(series_names, start, stop)
+    @series_names = Array(series_names)
+    @query_start  = start
+    @query_stop   = stop
+  end
+
+  def rollup_period(desired_number_of_segments)
+    length_in_seconds / desired_number_of_segments
+  end
+
+  def length_in_seconds
+    (stop - start).to_f
+  end
+
+  def time_extents
+    [start, stop]
+  end
+
+  def start
+    starts.min
+  end
+
+  def stop
+    stops.max
+  end
+
+  private
+
+  def starts
+    @starts ||= extents(query_start, 'after')
+  end
+
+  def stops
+    @stops ||= extents(query_stop, 'before')
+  end
+
+  def extents(time, direction)
+    tempodb_client.multi_series_single_value({
+      keys: series_names,
+      ts: time,
+      direction: direction
+    }).map {|t| t.data.ts }
+  end
 end
 
 require 'forwardable'
 class SeriesSummary
   extend Forwardable
-
+  include Concerns::Tempo
+# 
   class << self
     def hash_attr(accessor, *args)
       args.each do |arg|
@@ -130,96 +181,28 @@ class SeriesSummary
     end
   end
 
-  def initialize(summary)
-    @summary = summary # expects TempoDB::SeriesSummary object / duck
+  attr_reader :series_name, :_start, :_stop
+  # _start and _stop are the query extents, NOT the actual data extents.
+  def initialize(series_name, start, stop)
+    @series_name = series_name
+    @_start = start
+    @_stop = stop
   end
 
-  def_delegators :@summary, :summary, :series, :start, :stop
+  def_delegators :_summary, :summary, :series
   hash_attr :summary, :count, :mean, :min, :max, :stddev, :sum
   hash_attr :series, :id, :key, :name, :tags, :attributes
 
-  # The time between datapoints, assuming an even distribution.
-  # Unit: seconds
-  def average_period
-    time_extents / count
-  end
-
-  # Length of dataset in seconds
-  def time_extents
-    (stop - start).to_f
-  end
-
-  def rollup_period(desired_number_of_segments)
-    time_extents / desired_number_of_segments
-  end
-end
-
-class DatasetSummary
-  def initialize(series_summaries)
-    @series_summaries = Array(series_summaries)
-  end
-
-  def min
-    _min :min
-  end
-
-  def max
-    _max :max
-  end
-
-  def max_count
-    _max :count
-  end
-
-  def count
-    series_summaries.inject(0) {|sum, summary| sum + summary.count }
-  end
-
-  def keys
-    _attr :key
-  end
-
-  def names
-    _attr :name
-  end
-
-  def start
-    _min :start
-  end
-
-  def stop
-    _max :stop
-  end
-
-  def time_extents
-    stop - start
-  end
-
-  # returns duration in seconds
-  def rollup_period(desired_number_of_segments)
-    time_extents / desired_number_of_segments
-  end
-
   private
 
-  attr_reader :series_summaries
-
-  def _min(attribute)
-    _attr(attribute).min
-  end
-
-  def _max(attribute)
-    _attr(attribute).max
-  end
-
-  def _attr(attribute)
-    series_summaries.map(&attribute)
+  def _summary
+    @summary ||= tempodb_client.get_summary(series_name, start, stop)
   end
 end
 
 class Iso8601Duration
   attr_reader :seconds
-
+ 
   def initialize(seconds)
     @seconds = seconds
   end
@@ -228,5 +211,4 @@ class Iso8601Duration
     ""
   end
   alias_method :to_str, :to_s
-
 end
