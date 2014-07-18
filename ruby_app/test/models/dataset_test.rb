@@ -5,7 +5,7 @@ require 'rr'
 describe Dataset do
   let(:meta) do
     [OpenStruct.new({
-      summary: { 
+      _summary: { 
         'count' => 1024,
         'min'   => -100,
         'max'   => 200,
@@ -22,7 +22,7 @@ describe Dataset do
       stop: Time.new(2014, 1, 3)
     }),
     OpenStruct.new({
-      summary: { 
+      _summary: { 
         'count' => 204800,
         'min'   => 0,
         'max'   => 400,
@@ -37,21 +37,18 @@ describe Dataset do
       },
       start: Time.new(2013, 12, 31),
       stop: Time.new(2014, 1, 2)
-    })]
+    })].map do |s|
+      _s = SeriesSummary.new(s.series['key'], Time.utc(1999), Time.utc(2020))
+      _s.instance_variable_set(:@_summary, s)
+      _s
+    end
   end
 
-  let(:series_summary) { SeriesSummary.new(meta[0]) }
+  let(:series_names){ %w[series_key series_2_key] }
 
-  specify { series_summary.count.must_equal 1024 }
-  specify { series_summary.min.must_equal -100 }
-  specify { series_summary.max.must_equal 200 }
-  specify { series_summary.id.must_equal 'abcd' }
-  specify { series_summary.key.must_equal 'series_key' }
-  specify { series_summary.start.must_equal Time.new(2014, 1, 1) }
-  specify { series_summary.average_period.must_equal (86400.0 * 2 / 1024) }
-  specify { series_summary.rollup_period(64).must_equal (86400.0 * 2 / 64) }
-
-  let(:dataset_summary) { DatasetSummary.new(meta.map {|m| SeriesSummary.new(m) }) }
+  let(:dataset_summary) { DatasetSummary.new(series_names, Time.utc(1999), Time.utc(2020)) }
+  before { dataset_summary.instance_variable_set(:@series_summaries, meta) }
+  specify { puts dataset_summary.send(:_attr, :count).inspect }
   specify { dataset_summary.count.must_equal 205824 }
   specify { dataset_summary.min.must_equal -100 }
   specify { dataset_summary.max.must_equal 400 }

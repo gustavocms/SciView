@@ -60,9 +60,7 @@ class Dataset
   end
 
   def summary
-    @summary ||= DatasetSummary.new(series_names.map do |key| 
-      SeriesSummary.new(tempodb_client.get_summary(key, start, stop))
-    end)
+    @summary ||= DatasetSummary.new(series_names, start, stop)
   end
   
   def to_hash
@@ -147,6 +145,18 @@ class DatasetSummary
     stops.max
   end
 
+  def count
+    _attr(:count).inject(:+)
+  end
+
+  def max
+    _max(:max)
+  end
+
+  def min
+    _min(:min)
+  end
+
   private
 
   def starts
@@ -163,6 +173,24 @@ class DatasetSummary
       ts: time,
       direction: direction
     }).map {|t| t.data.ts }
+  end
+
+  def series_summaries
+    @series_summaries ||= series_names.map do |name|
+      SeriesSummary.new(name, query_start, query_stop)
+    end
+  end
+
+  def _min(attribute)
+    _attr(attribute).min
+  end
+
+  def _max(attribute)
+    _attr(attribute).max
+  end
+
+  def _attr(attribute)
+    series_summaries.map(&attribute)
   end
 end
 
@@ -181,12 +209,11 @@ class SeriesSummary
     end
   end
 
-  attr_reader :series_name, :_start, :_stop
-  # _start and _stop are the query extents, NOT the actual data extents.
+  attr_reader :series_name, :query_start, :query_stop
   def initialize(series_name, start, stop)
     @series_name = series_name
-    @_start = start
-    @_stop = stop
+    @query_start = start
+    @query_stop = stop
   end
 
   def_delegators :_summary, :summary, :series
@@ -196,7 +223,7 @@ class SeriesSummary
   private
 
   def _summary
-    @summary ||= tempodb_client.get_summary(series_name, start, stop)
+    @summary ||= tempodb_client.get_summary(series_name, query_start, query_stop)
   end
 end
 
