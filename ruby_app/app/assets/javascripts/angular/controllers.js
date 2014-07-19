@@ -1,26 +1,39 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('SaveChartController', ['$scope', '$log', 'seriesParams',
-        function ($scope, $log, seriesParams) {
+    module.controller('SaveChartController', ['$scope', '$log', '$state', '$stateParams',
+        function ($scope, $log, $state, $stateParams) {
 
+            var seriesList = JSON.parse($('#chartSeries').text());
             var chartName = "Chart for ";
-            angular.forEach(seriesParams,
+            angular.forEach(seriesList,
                 function(value, key) {
                     chartName += value + ",";
                 });
 
             $scope.chart = {
                 name: chartName.slice(0,-1),
-                series: seriesParams
+                series: seriesList
+            };
+
+            $scope.edit = function() {
+                $state.go('multiChart.edit', $stateParams);
+            };
+
+            $scope.confirm = function() {
+
+            };
+
+            $scope.cancel = function() {
+                $state.go('^', $stateParams);
             };
         }
     ]);
 
-    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'seriesParams', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $log, MetadataService, ModalService, seriesParams, SeriesTagsService, SeriesAttributesService) {
+    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $log, MetadataService, ModalService, SeriesTagsService, SeriesAttributesService) {
 
-            $scope.parameters = seriesParams;
+            $scope.parameters = JSON.parse($('#chartSeries').text());
 
             $scope.seriesList = MetadataService.query($scope.parameters);
 
