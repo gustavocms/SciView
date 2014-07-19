@@ -1,10 +1,11 @@
 (function() {
     var module = angular.module('metadataControllers', ['ngRoute']);
 
-    module.controller('SaveChartController', ['$scope', '$log', '$state', '$stateParams',
-        function ($scope, $log, $state, $stateParams) {
+    module.controller('SaveChartController', ['$scope', '$log', '$state', 'ChartsService',
+        function ($scope, $log, $state, ChartsService) {
 
             var seriesList = JSON.parse($('#chartSeries').text());
+
             var chartName = "Chart for ";
             angular.forEach(seriesList,
                 function(value, key) {
@@ -16,16 +17,29 @@
                 series: seriesList
             };
 
-            $scope.edit = function() {
-                $state.go('multiChart.edit', $stateParams);
-            };
-
             $scope.confirm = function() {
 
+                //ajax call
+                ChartsService.save({}, $scope.chart,
+                    //onSuccess promise function
+                    function() {
+                        $state.go('multiChart.saved');
+                    },
+                    //onError promise function
+                    function(error) {
+                        $scope.addAlert('danger', error.data.base.join('\n'));
+                    });
             };
 
-            $scope.cancel = function() {
-                $state.go('^', $stateParams);
+
+            $scope.alerts = [];
+
+            $scope.addAlert = function(type, msg) {
+                $scope.alerts.push({type: type, msg: msg});
+            };
+
+            $scope.closeAlert = function(index) {
+                $scope.alerts.splice(index, 1);
             };
         }
     ]);

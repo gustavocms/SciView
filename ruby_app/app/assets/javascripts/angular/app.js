@@ -33,21 +33,27 @@
                             controller: 'MetadataController'
                         }
                     }
-
                 })
-
-                // Notice that this state has no 'url'. States do not require a url. You can use them
-                // simply to organize your application into "places" where each "place" can configure
-                // only what it needs. The only way to get to this state is via $state.go (or transitionTo)
+                //nested state. More on this:
+                //https://github.com/angular-ui/ui-router/wiki/Nested-States-%26-Nested-Views
                 .state('multiChart.edit', {
                     parent: 'multiChart',
                     views: {
+                        //relative views naming. More on this:
+                        //https://github.com/angular-ui/ui-router/wiki/Multiple-Named-Views#view-names---relative-vs-absolute-names
                         'saveChart@': {
                             templateUrl: "/assets/save_chart.edit.html",
                             controller: 'SaveChartController'
                         }
                     }
-
+                })
+                .state('multiChart.saved', {
+                    parent: 'multiChart',
+                    views: {
+                        'saveChart@': {
+                            template:  '<h4>Saved</h4>'
+                        }
+                    }
                 })
                 .state('singleChart', {
                     url: "/charts/:chartId",

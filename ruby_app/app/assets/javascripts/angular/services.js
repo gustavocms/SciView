@@ -1,6 +1,11 @@
 (function() {
     var module = angular.module('metadataServices', ['ngResource']);
 
+    module.factory('ChartsService', ['$resource',
+        function ($resource) {
+            return $resource('/charts');
+        }]);
+
     module.factory('MetadataService', ['$resource',
         function ($resource) {
             return $resource('/datasets/metadata');
