@@ -6,7 +6,7 @@ class Dataset
       tempodb_client.list_series
     end
 
-    def multiple_series(start, stop, series, count=nil)
+    def multiple_series(start, stop, series, count = nil)
       new(series, { start: start, stop: stop, count: count }).to_hash
     end
 
@@ -82,13 +82,7 @@ class Dataset
   end
 
   def cursor
-    @cursor ||= _get_cursor #tempodb_client.read_multi(start, stop, options.merge(rollup_options))
-  end
-
-  def _get_cursor
-    puts "OPTIONS: #{options.merge(rollup_options)}"
-    c = tempodb_client.read_multi(start, stop, options.merge(rollup_options))
-    return c
+    @cursor ||= tempodb_client.read_multi(start, stop, options.merge(rollup_options))
   end
 
   def rollup_options
