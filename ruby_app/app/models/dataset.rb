@@ -32,6 +32,12 @@ class Dataset
       raise('this method is deprecated')
     end
 
+    def multiple_series_metadata(series)
+      series.values.map do |key|
+        tempodb_client.get_series(key)
+      end
+    end
+
     private
 
     # Performs a get-update-save transaction
@@ -111,8 +117,6 @@ end
 # including real start and stop times (not currently available as an API endpoint).
 # Used internally in Dataset.
 class DatasetSummary
-  attr_reader :series_names
-
   include Concerns::Tempo
 
   attr_reader :series_names, :query_start, :query_stop

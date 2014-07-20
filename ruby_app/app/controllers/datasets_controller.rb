@@ -24,6 +24,10 @@ class DatasetsController < ApplicationController
     end)
   end
 
+  def metadata
+    render json: Dataset.multiple_series_metadata(params.select { |k,v| k.to_s =~ /series/ && v.present? })
+  end
+
   def show
     raise('this method is deprecated')
     # dataset = Dataset.for_series(params[:id])
