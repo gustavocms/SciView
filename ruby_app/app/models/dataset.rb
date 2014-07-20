@@ -42,8 +42,12 @@ class Dataset
     end
   end
 
-  attr_reader :series_names, :client, :options, :count, :start, :stop,
-    :function, :interval
+  attr_reader :series_names, :client, :options, :count,
+    :function, :interval, :query_start, :query_stop
+
+  extend Forwardable
+
+  def_delegators :summary, :start, :stop
 
   # series: a hash of the form { series_1: 'sample_abcdef123' }
   # options: start
@@ -51,16 +55,16 @@ class Dataset
   #          count
   def initialize(series, opts = {})
     @series_names = series.values
-    @start        = opts[:start] || Time.utc(1999)
-    @stop         = opts[:stop]  || Time.utc(2020)
+    @query_start        = opts[:start] || Time.utc(1999)
+    @query_stop         = opts[:stop]  || Time.utc(2020)
     @count        = Integer(opts[:count] || 2000)
-    @options      = { keys: series_names, count: count }.select {|_,v| v }
+    @options      = { keys: series_names }.select {|_,v| v }
     @function     = opts[:function] || "mean"
-    @interval     = opts[:interval] || "1min"
+    @interval     = opts[:interval] || "PT0.01S"
   end
 
   def summary
-    @summary ||= DatasetSummary.new(series_names, start, stop)
+    @summary ||= DatasetSummary.new(series_names, query_start, query_stop)
   end
   
   def to_hash
@@ -79,6 +83,9 @@ class Dataset
 
   def _get_cursor
     puts "GET CURSOR #{t = Time.now}..."
+    puts options.merge(rollup_options)
+    puts start.inspect
+    puts stop.inspect
     c = tempodb_client.read_multi(start, stop, options.merge(rollup_options))
     puts "CURSOR GOT #{Time.now - t}"
     return c
