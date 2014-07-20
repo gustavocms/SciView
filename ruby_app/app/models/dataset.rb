@@ -113,6 +113,9 @@ class Dataset
   end
 end
 
+# Provides a simple interface to query metadata about time series,
+# including real start and stop times (not currently available as an API endpoint).
+# Used internally in Dataset.
 class DatasetSummary
   attr_reader :series_names
 
@@ -156,6 +159,7 @@ class DatasetSummary
   def min
     _min(:min)
   end
+  alias_method :keys, :series_names
 
   private
 
@@ -223,7 +227,7 @@ class SeriesSummary
   private
 
   def _summary
-    @summary ||= tempodb_client.get_summary(series_name, query_start, query_stop)
+    @_summary ||= tempodb_client.get_summary(series_name, query_start, query_stop)
   end
 end
 
