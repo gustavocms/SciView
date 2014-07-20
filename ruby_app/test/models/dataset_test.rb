@@ -46,6 +46,9 @@ describe Dataset do
     end
   end
 
+  let(:starts) { [Time.new(2014, 1, 1), Time.new(2013, 12, 31)] }
+  let(:stops)  { [Time.new(2014, 1, 3), Time.new(2014, 1, 2)] }
+
   let(:series_names){ %w[series_key series_2_key] }
 
   describe SeriesSummary do
@@ -66,9 +69,21 @@ describe Dataset do
     end
   end
 
+  let(:dataset_summary) { 
+    DatasetSummary.new(series_names, Time.utc(1999), Time.utc(2020)).tap do |summary|
+      summary.instance_variable_set(:@starts, starts)
+      summary.instance_variable_set(:@stops, stops)
+    end
+  }
+
   describe DatasetSummary do
-    let(:dataset_summary) { DatasetSummary.new(series_names, Time.utc(1999), Time.utc(2020)) }
     before { dataset_summary.instance_variable_set(:@series_summaries, meta) }
+
+    let(:dataset) do
+      Dataset.new(series_1: "series_key", series_2: "series_2_key").tap do |ds|
+        ds.instance_variable_set(:@summary, dataset_summary)
+      end
+    end
 
     [
       [:count, 205824],
@@ -78,37 +93,24 @@ describe Dataset do
       [:start, Time.new(2013, 12, 31) ],
       [:stop, Time.new(2014, 1, 3) ],
       [:time_extents, [Time.new(2013, 12, 31), Time.new(2014, 1, 3)]],
-      # [:max_count, 204800],
       [:length_in_seconds, 3.days]
     ].each do |attr, expectation|
       specify("dataset #{attr}") { dataset_summary.public_send(attr).must_equal expectation }
     end
-  end
 
-#j  describe "dataset methods" do
-#j    let(:dataset){ Dataset.new(series_1: "series_key", series_2: "series_2_key") }
-#j
-#j    before do
-#j      # `stub` wasn't working here for some reason.
-#j      dataset.instance_variable_set(:@summary, dataset_summary)
-#j    end
-#j
-#j    specify 'summary count' do 
-#j      dataset.summary.count.must_equal 205824
-#j    end
-#j
-#j    describe 'rollup options' do
-#j      let(:rollup){ -> (count){ 
-#j        dataset.tap do |d| 
-#j          d.instance_variable_set(:@count, count) 
-#j        end.send(:rollup_options) }
-#j      }
-#j      specify("count is greater than number of datapoints") { rollup.(400000).must_equal({}) }
-#j      specify("count is less than number of datapoints") { }
-#j    end
-#j  end
+    describe 'rollup options' do
+      let(:rollup){ -> (count){ 
+        dataset.tap do |d| 
+          d.instance_variable_set(:@count, count) 
+        end.send(:rollup_options) }
+      }
+      specify("count is greater than number of datapoints") { rollup.(400000).must_equal({}) }
+      specify("count is less than number of datapoints") do
+        rollup.(100000).must_equal({ rollup_function: 'mean', rollup_period: 'PT2.592S' })
+      end
+    end
+  end
 end
 
 describe Iso8601Duration do
-
 end

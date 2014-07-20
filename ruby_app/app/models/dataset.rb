@@ -43,11 +43,11 @@ class Dataset
   end
 
   attr_reader :series_names, :client, :options, :count,
-    :function, :interval, :query_start, :query_stop
+    :function, :query_start, :query_stop
 
   extend Forwardable
 
-  def_delegators :summary, :start, :stop
+  def_delegators :summary, :start, :stop, :rollup_period
 
   # series: a hash of the form { series_1: 'sample_abcdef123' }
   # options: start
@@ -60,7 +60,7 @@ class Dataset
     @count        = Integer(opts[:count] || 2000)
     @options      = { keys: series_names }.select {|_,v| v }
     @function     = opts[:function] || "mean"
-    @interval     = opts[:interval] || "PT0.01S"
+    @interval     = opts[:interval]
   end
 
   def summary
@@ -69,6 +69,10 @@ class Dataset
   
   def to_hash
     return_hash
+  end
+
+  def interval
+    @interval ||= Iso8601Duration.new(rollup_period(count)).to_s
   end
 
   private
@@ -82,40 +86,29 @@ class Dataset
   end
 
   def _get_cursor
-    puts "GET CURSOR #{t = Time.now}..."
-    puts options.merge(rollup_options)
-    puts start.inspect
-    puts stop.inspect
+    puts "OPTIONS: #{options.merge(rollup_options)}"
     c = tempodb_client.read_multi(start, stop, options.merge(rollup_options))
-    puts "CURSOR GOT #{Time.now - t}"
     return c
   end
 
   def rollup_options
-    #return {} if count >= summary.max_count
+    return {} if count >= summary.max_count
     { rollup_function: function, rollup_period: interval }
   end
 
   def return_hash
     @return_hash ||= {}.tap do |hash|
-      puts "SETTING SERIES... #{s = Time.now}"
       cursor['series'].each { |sn| hash["#{sn['key']}"] = series(sn) }
-      puts "SERIES SET #{Time.now - s}"
-
-      puts "RETRIEVING DATA... #{r = Time.now}"
       cursor.each do |datapoint|
         datapoint.value.each do |key, value|
           hash[key][:values] << { value: value, ts: datapoint.ts }
         end
       end
-      puts "DATA RETRIEVED #{Time.now - r}"
 
-      hash.each do |_, series|
-        t = Time.now
-        puts "SAMPLING STARTED..."
-        series[:values] = Sampling::RandomSample.sample(series[:values], 2000)
-        puts "SAMPLING ENDED (#{Time.now - t} seconds)"
-      end
+      # Sampling disabled (prefer tdb rollups)
+      #hash.each do |_, series|
+        #series[:values] = Sampling::RandomSample.sample(series[:values], 2000)
+      #end
     end
   end
 end
@@ -157,6 +150,10 @@ class DatasetSummary
 
   def count
     _attr(:count).inject(:+)
+  end
+
+  def max_count
+    _max(:count)
   end
 
   def max
@@ -246,7 +243,7 @@ class Iso8601Duration
   end
 
   def to_s
-    ""
+    "PT#{seconds.round(3)}S"
   end
   alias_method :to_str, :to_s
 end
