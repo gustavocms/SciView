@@ -31,7 +31,7 @@ class CSVSample
   def sample_datapoints
     FakeData.generate({
       generator: FakeData::Generators::VolatilityGenerator,
-      count: 2000
+      count: 10000
     })
   end
 end

@@ -1,6 +1,6 @@
 class Dataset
   include Concerns::Tempo
-  class<<self
+  class << self
 
     def all
       tempodb_client.list_series
@@ -21,16 +21,34 @@ class Dataset
       return_hash = {}
 
       cursor['series'].each do |sn|
-        return_hash.merge!(sn['key'].to_s => {key: sn['key'].to_s, values: [], tags: sn['tags'], attributes: sn['attributes']})
+        return_hash[sn['key'].to_s] = { key: sn['key'].to_s, values: [], tags: sn['tags'], attributes: sn['attributes'] }
       end
 
+
       cursor.each do |datapoint|
-        j = datapoint.as_json
-        serie = return_hash[j['value'].keys[0]]
-        serie[:values] << { value: j['value'].values[0], ts: j['ts'] }
+        datapoint.value.each do |key, value|
+          return_hash[key][:values] << { value: value, ts: datapoint.ts } 
+        end
+      end
+
+      return_hash.each do |_, series|
+        t = Time.now
+        puts "SAMPLING STARTED..."
+        series[:values] = Sampling::RandomSample.sample(series[:values], 2000)
+        puts "SAMPLING ENDED (#{Time.now - t} seconds)"
       end
 
       return_hash
+    end
+
+    def multiple_series_metadata(series)
+      series_data = []
+
+      series.values.each do |key|
+        series_data << tempodb_client.get_series(key)
+      end
+
+      series_data
     end
 
     def update_attribute(series_key, attribute, value)
@@ -83,6 +101,9 @@ class Dataset
       opts[:rollup_function] = 'mean'
     end
 
-    [{ key: @key, values: tempodb_client.read_data(@key, @start, @stop, opts)}]
+    [{ 
+       key: @key, 
+       values: Sampling::RandomSample(tempodb_client.read_data(@key, @start, @stop, opts), 500)
+    }]
   end
 end
