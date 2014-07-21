@@ -41,7 +41,8 @@ class Dataset
         puts "SAMPLING ENDED (#{Time.now - t} seconds)"
       end
 
-      new(return_hash, series, start, stop)
+
+      DatasetPresenter.new(return_hash, series, start, stop)
     end
 
     def multiple_series_metadata(series)
@@ -84,25 +85,6 @@ class Dataset
     end
   end
 
-  attr_accessor :start, :stop, :data, :permalink, :series
-
-  def initialize(data, series, start, stop)
-    @series = series
-    @data = data
-    @start = start
-    @stop = stop
-    @permalink = permalink
-  end
-
-  def permalink
-    params = {}
-    params.merge!(series)
-    params.merge!(start_time: start.to_f) if start
-    params.merge!(stop_time: stop.to_f)   if stop
-    Rails.application.routes.url_helpers.multiple_charts_path(params)
-  end
-
-
   private
 
   def self.fix_times(time)
@@ -113,5 +95,28 @@ class Dataset
       Time.parse(time)
     end
   end
+
+end
+
+
+class DatasetPresenter
+
+  attr_reader :permalink, :data, :series, :start, :stop
+
+  def initialize(data, series, start, stop)
+    @series = series
+    @data = data
+    @start = start
+    @stop = stop
+    @permalink = permalink
+  end
+  
+  def permalink
+    params = {}
+    params.merge!(series)
+    params.merge!(start_time: start.to_f) if start
+    params.merge!(stop_time: stop.to_f)   if stop
+    Rails.application.routes.url_helpers.multiple_charts_path(params)
+  end   
 
 end
