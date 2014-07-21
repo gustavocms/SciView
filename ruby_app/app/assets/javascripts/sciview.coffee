@@ -1,12 +1,3 @@
-jQuery.fn.d3Click = ->
-  @each (i, e) ->
-    evt = document.createEvent("MouseEvents")
-    evt.initMouseEvent "click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null
-    e.dispatchEvent evt
-    return
-
-  return
-
 # Top-level namespace
 window.SciView = {}
 
@@ -263,7 +254,7 @@ class SciView.FocusChart extends SciView.BasicChart
   zoomIt: ->
     if @zoom_options['disabledSeries'].length
       for s in @zoom_options['disabledSeries']
-        $("#legend_#{s}").d3Click()
+        @setSeriesOpacity(s)
     
     if @zoom_options['startTime'] && @zoom_options['stopTime']
       @brush.extent([new Date(1000*@zoom_options['startTime']), new Date(1000*@zoom_options['stopTime'])])
@@ -348,20 +339,22 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("y", (d, i) -> (i * 20) + 9)
       .text((d) -> d.key)
 
-    legend.on "click", (d)=>
-      # Determine if current line is visible
-      active  = (if this.active then false else true)
-      disable = (if active then 'disabled' else 'enabled')
-      newLegendOpacity = (if active then 0.5 else 1)
-      newGraphOpacity = (if active then 0 else 1)
-      # Hide or show the elements
-      
-      d3.select("#legend_#{d.key}").style("opacity", newLegendOpacity).attr('data-disabled', disable)
-      # Update whether or not the elements are active
-      d3.select("##{d.key}").active = active
-      this.active = active
-      d3.select("##{d.key}").style "opacity", newGraphOpacity
-      @getData()
-      d3.select("#zoomed_#{d.key}").style "opacity", newGraphOpacity
+    legend.on "click", (d) => @setSeriesOpacity(d.key)
 
     @zoomIt()
+
+  setSeriesOpacity: (key) =>
+    # Determine if current line is visible
+    legendElement    = d3.select("#legend_#{key}")
+    active           = (if legendElement.attr('active') is "true" then false else true)
+    disable          = (if active then 'disabled' else 'enabled')
+    newLegendOpacity = (if active then 0.5 else 1)
+    newGraphOpacity  = (if active then 0 else 1)
+    # Hide or show the elements
+    legendElement.style("opacity", newLegendOpacity).attr('data-disabled', disable)
+    # Update whether or not the elements are active
+    legendElement.attr('active', active)
+    d3.select("##{key}").style "opacity", newGraphOpacity
+    @getData()
+    d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
+
