@@ -27,6 +27,20 @@ class CsvToTempoDb
     end
   end
 
+  # returns true when a certain threshold of points has been processed
+  # by tempodb. Times out after 10 seconds.
+  #
+  # This is intended to be called by a background worker.
+  def wait_for_tempo_db(proportion = 0.1) # note: 100% will probably not work
+    20.times do
+      sleep(0.5)
+      tempodb_client.get_summary(series_name, Time.utc(1999), Time.utc(2020)).tap do |s|
+        puts "#{series_name}: #{s.summary['count']} out of #{raw_data.length}"
+        return true if s.summary['count'] >= raw_data.length * proportion
+      end
+    end
+  end
+
   private
 
   def iso8601(time, decimal_digits = 3)

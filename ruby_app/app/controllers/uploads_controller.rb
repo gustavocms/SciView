@@ -11,7 +11,8 @@ class UploadsController < ApplicationController
     FileUtils.mkdir_p 'tmp/uploads'
     tmp = File.new(filepath, 'w')
     tmp.write(csv.read)
-    CsvUploadWorker.perform_async(series_name, filepath)
+    job_id = CsvUploadWorker.perform_async(series_name, filepath)
+    puts "JOB_ID #{job_id}"
     redirect_to_temp_chart
   end
 
