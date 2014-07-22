@@ -1,4 +1,3 @@
-
 # Top-level namespace
 window.SciView = {}
 
@@ -16,14 +15,15 @@ class SciView.BasicChart
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
-    @_dataURL  = options.url
-    @x         = d3.time.scale().range([0, @width])
-    @x2        = d3.time.scale().range([0, @width])
-    @y         = d3.scale.linear().range([@height, 0])
-    @y2        = d3.scale.linear().range([@height2, 0])
-    @xAxis     = d3.svg.axis().scale(@x).orient("bottom")
-    @xAxis2    = d3.svg.axis().scale(@x2).orient("bottom")
-    @yAxis     = d3.svg.axis().scale(@y).orient("left")
+    @_dataURL     = options.url
+    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
+    @x            = d3.time.scale().range([0, @width])
+    @x2           = d3.time.scale().range([0, @width])
+    @y            = d3.scale.linear().range([@height, 0])
+    @y2           = d3.scale.linear().range([@height2, 0])
+    @xAxis        = d3.svg.axis().scale(@x).orient("bottom")
+    @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
+    @yAxis        = d3.svg.axis().scale(@y).orient("left")
 
     @brush = d3.svg.brush()
       .x(@x2)
@@ -56,36 +56,61 @@ class SciView.FocusChart extends SciView.BasicChart
       if @_data # initial data set has already been loaded, and should be kept as the low-fi data set
         @zoomData(d)
       else
-        @_data = preprocess(d)
+        @_data = preprocess(d, @zoom_options['disabledSeries'])
+
       return @
     @_data
 
   # higher-fidelity data over a narrower domain
   zoomData: (d) ->
     if d
-      @_zoomData = preprocess(d)
+      @_zoomData = preprocess(d, @zoom_options['disabledSeries'])
       @isZoomed  = true
       return @
     @_zoomData
 
   # Trigger the ajax call.
   getData: ->
+    get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
-      url: "#{@dataURL()}#{@startStopQuery()}&count=960"
-      success: (data) =>
-        @data(data)
+      url: get_data_url
+      success: (response) =>
+        @data(response.data)
         @render()
+        @replaceState(response)
     })
+
+  
+  
+  disabledSeriesParams: ->
+    data = @_zoomData || @_data
+    disabled_series = data.map((d)-> d.key if d.disabled ).filter( (e)-> return typeof(e) is 'string' )
+    if disabled_series.length then "&disabled=#{disabled_series.join(',')}" else ''
+
+  #replace browser history state
+  replaceState: (response)->
+    window.history.replaceState {}, null, response.permalink + @disabledSeriesParams()
+
+ 
 
   # Stores the data in a renderable format:
   # [ { key: "some key", values: [ { x: 10, y: 20 }, { x: 20, y: 30 } ]} ... ]
-  preprocess = (data) ->
-    {
-      key: s.key
-      values: ({ x: new Date(d.ts), y: d.value } for d in s.values )
-      tags: s.tags
-      attributes: s.attributes
-    } for _, s of data
+  preprocess = (data, disabledSeries) ->
+    for _, s of data
+      
+      disabled = false
+      legend = d3.select("#legend_#{s.key}")
+      try
+        disabled = legend.attr('data-disabled') is 'disabled'
+      catch e
+        #sometimes this is null need to figure this out
+      {
+        key: s.key
+        values: ( { x: new Date(d.ts), y: d.value } for d in s.values )
+        tags: s.tags
+        attributes: s.attributes
+        disabled: disabled
+      }
 
   dataURL: (string) ->
     if string
@@ -109,14 +134,18 @@ class SciView.FocusChart extends SciView.BasicChart
     @focus.selectAll(".line.focus")
       .attr('opacity', 1)
       .attr("d", (d) => @lineFocus(d.values))
+    
     @focus.select(".x.axis").call(@xAxis)
 
   brushEnd: =>
-    @getData() unless @brush.empty()
+    unless @brush.empty()
+      @getData()
 
   # This functions as a single-item queue. If the countdown
   # is already active, it is reset.
   brushEndDelayed: =>
+    if @brush.empty()
+      @clearTimestamps()
     if @_brushEndTimer
       clearTimeout(@_brushEndTimer)
     @_brushEndTimer = setTimeout((=> @_brushEndTimer = null; @brushEnd()), @brushEndDelayInterval())
@@ -132,6 +161,11 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Zooming and Dragging
   ###############################################
+
+  clearTimestamps: ->
+    params = window.location.search.split('&').filter (el)->
+      !(/start|stop+_time/.test(el))
+    window.history.replaceState({}, null,  params.join('&'))
 
   zoomEnd: ->
     d3.event.sourceEvent?.stopPropagation()
@@ -213,9 +247,20 @@ class SciView.FocusChart extends SciView.BasicChart
 
   render: ->
     if @_zoomData
-      @_renderZoomData()
+     @_renderZoomData()
     else
       @_renderInitialData()
+
+  zoomIt: ->
+    if @zoom_options['disabledSeries'].length
+      for s in @zoom_options['disabledSeries']
+        @setSeriesOpacity(s)
+    
+    if @zoom_options['startTime'] && @zoom_options['stopTime']
+      @brush.extent([new Date(1000*@zoom_options['startTime']), new Date(1000*@zoom_options['stopTime'])])
+      @context.select('.brush').call(@brush)
+      @brushed()
+      @brushEnd()
 
   _renderZoomData: ->
     @focus.selectAll('.init').attr('opacity', 0)
@@ -223,8 +268,10 @@ class SciView.FocusChart extends SciView.BasicChart
     zoomFocusPaths.enter()
       .append('path')
       .attr('class', 'line focus zoom')
+      .attr('id', (d) -> "zoomed_#{d.key}" )
       .attr('clip-path', "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
+      .style('opacity', (d)-> if d.disabled then 0 else 1 )
     zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
   
@@ -235,7 +282,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
-
 
     @focusTarget = @focus.append('rect')
       .attr('class', 'focusTarget')
@@ -250,6 +296,7 @@ class SciView.FocusChart extends SciView.BasicChart
     focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
+      .attr('id', (d) -> d.key )
       .attr('d', (d) => @lineFocus(d.values))
       .attr("clip-path", "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
@@ -262,11 +309,13 @@ class SciView.FocusChart extends SciView.BasicChart
       .call(@yAxis)
 
     contextPaths = @context.selectAll("path.context").data(@_data)
+    
     contextPaths.enter()
       .append('path')
       .attr("class", "line context")
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
+    
     @context.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + @height2 + ")")
@@ -277,3 +326,35 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+
+    legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
+    
+    legend.append("rect")
+      .attr("x", @width + 20)
+      .attr("y", (d, i) -> i * 20 )
+      .attr("width", 10).attr("height", 10).style "fill", (d) -> lineColor(d.key)
+
+    legend.append("text")
+      .attr("x", @width + 35)
+      .attr("y", (d, i) -> (i * 20) + 9)
+      .text((d) -> d.key)
+
+    legend.on "click", (d) => @setSeriesOpacity(d.key)
+
+    @zoomIt()
+
+  setSeriesOpacity: (key) =>
+    # Determine if current line is visible
+    legendElement    = d3.select("#legend_#{key}")
+    active           = (if legendElement.attr('active') is "true" then false else true)
+    disable          = (if active then 'disabled' else 'enabled')
+    newLegendOpacity = (if active then 0.5 else 1)
+    newGraphOpacity  = (if active then 0 else 1)
+    # Hide or show the elements
+    legendElement.style("opacity", newLegendOpacity).attr('data-disabled', disable)
+    # Update whether or not the elements are active
+    legendElement.attr('active', active)
+    d3.select("##{key}").style "opacity", newGraphOpacity
+    @getData()
+    d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
+
