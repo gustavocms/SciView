@@ -7,6 +7,7 @@ SciView::Application.routes.draw do
       get :multiple
     end
   end
+  
   resources :datasets, only: [:index, :show] do
     collection do
       get :multiple
