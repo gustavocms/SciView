@@ -8,10 +8,12 @@ class DatasetsController < ApplicationController
   end
 
   def multiple
-    start = Time.parse(params[:start_time]) if params[:start_time]
-    stop = Time.parse(params[:stop_time]) if params[:stop_time]
-    dataset = Dataset.multiple_series(start, stop, params.select { |k,v| k.to_s =~ /series/ && v.present? }, params[:count])
-    respond_with dataset    
+    dataset = Dataset.multiple_series(params[:start_time], params[:stop_time], params.select { |k,v| k.to_s =~ /series/ && v.present? }, params[:count])
+    respond_with dataset
+  end
+
+  def metadata
+    render json: Dataset.multiple_series_metadata(params.select { |k,v| k.to_s =~ /series/ && v.present? })
   end
 
   def show

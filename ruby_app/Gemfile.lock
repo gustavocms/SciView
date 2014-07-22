@@ -36,10 +36,18 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    angular-ui-bootstrap-rails (0.11.0)
+    angular_rails_csrf (1.0.1)
+      rails (>= 3, < 5)
+    angularjs-rails (1.2.18)
     arel (5.0.1.20140414130214)
     ast (2.0.0)
+    autoprefixer-rails (2.1.0.20140628)
+      execjs
     awesome_print (1.2.0)
     bcrypt (3.1.7)
+    bootstrap-sass (3.2.0.0)
+      sass (~> 3.2)
     builder (3.2.2)
     cancancan (1.8.4)
     celluloid (0.15.2)
@@ -233,7 +241,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  angular-ui-bootstrap-rails
+  angular_rails_csrf
+  angularjs-rails (~> 1.2.18)
+  autoprefixer-rails
   awesome_print
+  bootstrap-sass (~> 3.2.0.0)
   cancancan
   chronic
   coffee-rails (~> 4.0.0)
