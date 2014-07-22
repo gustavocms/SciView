@@ -93,7 +93,11 @@ end
 group :test do
   gem 'minitest-spec-rails'
   gem 'rr'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 gem 'sidekiq', '~> 3.2.0'
 gem 'sinatra', '>= 1.3.0', :require => nil
+
+gem 'active_model_serializers'

@@ -1,6 +1,13 @@
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
+require 'vcr'
+
+VCR.configure do |config|
+  config.cassette_library_dir = "fixtures/cassettes"
+  config.hook_into :webmock
+  config.allow_http_connections_when_no_cassette = true
+end
 
 class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
@@ -21,4 +28,3 @@ class ActionController::TestCase
     @test_user ||= User.create!(email: "testuser@sciview.com", password: "password!")
   end
 end
-
