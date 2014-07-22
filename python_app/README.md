@@ -27,6 +27,11 @@ http://hackercodex.com/guide/python-development-environment-on-mac-osx/
 ### Validate your environment works by running a simple TDMS viewer 
     $ python tdms-snippets.py
 
+### Import a .tdms file to TempoDB 
+Note: importing the EXAMPLE.tdms file could take a long time since there are millions of points in it
+
+    $ python import-tdms.py ../data/EXAMPLE.tdms
+
 ## Useful Links
 
 ### Background info on Diadem and TDMS file format
