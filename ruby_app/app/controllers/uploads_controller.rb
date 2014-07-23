@@ -1,4 +1,5 @@
 require 'rake' # provides 'pathmap'
+require 'fileutils'
 
 class UploadsController < ApplicationController
   before_filter :authenticate_user!
@@ -7,11 +8,11 @@ class UploadsController < ApplicationController
   end
 
   def create
-    CsvToTempoDb.new(csv.path).tap do |c|
-      c.series_name = series_name
-      c.save!
-    end
-
+    FileUtils.mkdir_p 'tmp/uploads'
+    tmp = File.new(filepath, 'w')
+    tmp.write(csv.read)
+    job_id = CsvUploadWorker.perform_async(series_name, filepath)
+    puts "JOB_ID #{job_id}"
     redirect_to_temp_chart
   end
 
@@ -27,6 +28,18 @@ class UploadsController < ApplicationController
       chart.save
       redirect_to chart
     end
+  end
+
+  def filename
+    @filename ||= SecureRandom.hex(32)
+  end
+
+  def filepath
+    "#{uploads_dir}/#{filename}"
+  end
+
+  def uploads_dir
+    "tmp/uploads"
   end
 
   def csv
