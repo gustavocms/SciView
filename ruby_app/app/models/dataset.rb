@@ -7,8 +7,11 @@ class Dataset
     end
 
     def multiple_series(start, stop, series, count=nil)
-      start ||= Time.utc(1999, 1, 1)
-      stop ||= Time.utc(2020, 1, 1)
+      start = fix_times(start)
+      stop  = fix_times(stop)
+    
+      new_start = start || Time.utc(1999, 1, 1)
+      new_stop  = stop || Time.utc(2020, 1, 1)
 
       series_names = series.values
 
@@ -16,7 +19,7 @@ class Dataset
 
       options.merge!(keys: series_names)
       options.merge!(count: count) if count
-      cursor = tempodb_client.read_multi(start, stop, options)
+      cursor = tempodb_client.read_multi(new_start, new_stop, options)
 
       return_hash = {}
 
@@ -38,7 +41,8 @@ class Dataset
         puts "SAMPLING ENDED (#{Time.now - t} seconds)"
       end
 
-      return_hash
+
+      DatasetPresenter.new(return_hash, series, start, stop)
     end
 
     def multiple_series_metadata(series)
@@ -81,29 +85,38 @@ class Dataset
     end
   end
 
-  attr_accessor :start, :stop, :count
+  private
 
-  def initialize(series_name)
-    @client = tempodb_client
-    @key = URI.decode(series_name)
-
-    # Find start and stop times based on first and last single values
-    past = Time.utc(1999, 1, 1)
-    future = Time.utc(2020, 1, 1)
-    @start = @client.single_value(@key, ts: past, direction: 'after').data.ts
-    @stop = @client.single_value(@key, ts: future, direction: 'before').data.ts
-  end
-
-
-  def as_json(opts = {})
-    if count
-      opts[:rollup_period] = "PT#{"%.2f" % ((@stop - @start) / count)}S"
-      opts[:rollup_function] = 'mean'
+  def self.fix_times(time)
+    return if time.blank?
+    if time !~ /\d{4,}\-/ 
+      Time.at(time.to_f)
+    else
+      Time.parse(time)
     end
-
-    [{ 
-       key: @key, 
-       values: Sampling::RandomSample(tempodb_client.read_data(@key, @start, @stop, opts), 500)
-    }]
   end
+
+end
+
+
+class DatasetPresenter
+
+  attr_reader :permalink, :data, :series, :start, :stop
+
+  def initialize(data, series, start, stop)
+    @series = series
+    @data = data
+    @start = start
+    @stop = stop
+    @permalink = permalink
+  end
+  
+  def permalink
+    params = {}
+    params.merge!(series)
+    params.merge!(start_time: start.to_f) if start
+    params.merge!(stop_time: stop.to_f)   if stop
+    Rails.application.routes.url_helpers.multiple_charts_path(params)
+  end   
+
 end
