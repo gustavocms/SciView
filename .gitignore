@@ -8,7 +8,7 @@
 */**/.DS_Store
 
 # Ignore bundler config.
-/.bundle
+**/.bundle
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -20,9 +20,8 @@
 .idea
 .gitignore
 log
-!/bin
-/bin/*
-!/bin/close
+**!/bin
+**/bin/*
 !/bin/rails
 !/bin/rake
 !/bin/spring
