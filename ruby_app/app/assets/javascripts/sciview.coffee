@@ -110,6 +110,7 @@ class SciView.FocusChart extends SciView.BasicChart
         tags: s.tags
         attributes: s.attributes
         disabled: disabled
+        annotations: s.annotations
       }
 
   dataURL: (string) ->
@@ -357,4 +358,22 @@ class SciView.FocusChart extends SciView.BasicChart
     d3.select("##{key}").style "opacity", newGraphOpacity
     @getData()
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
+
+  renderAnnotations: ->
+    annotation_groups = @focus.selectAll('g.annotations').data(@data())
+    annotation_groups.enter()
+      .append('g')
+      .attr('class', 'annotations')
+
+    annotations = annotation_groups.selectAll('g.annotation').data((d) -> d.annotations)
+    annotations.enter()
+      .append('g').attr('class', 'annotation')
+      .append('circle')
+      .attr('cx', (d) => 
+        date = new Date(d.timestamp)
+        console.log(date)
+        @x(date)
+      )
+      .attr('cy', 0)
+      .attr('r', 5)
 
