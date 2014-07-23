@@ -128,24 +128,3 @@ class Dataset
     end
   end
 end
-
-class DatasetPresenter
-  attr_reader :permalink, :data, :series, :start, :stop
-
-  def initialize(data, series, start, stop)
-    @series = series
-    @data = data
-    @start = start
-    @stop = stop
-    @permalink = permalink
-  end
-  
-  def permalink
-    params = {}
-    params.merge!(series)
-    params.merge!(start_time: start.to_f) if start
-    params.merge!(stop_time: stop.to_f)   if stop
-    Rails.application.routes.url_helpers.multiple_charts_path(params)
-  end   
-
-end

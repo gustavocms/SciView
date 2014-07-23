@@ -59,15 +59,16 @@ class DatasetsController < ApplicationController
     Time.parse(params[:stop_time]) if params[:stop_time]
   end
 
-  def permalink_params(data)
+  def permalink_params
     {}.tap do |p_params|
       p_params.merge!(series)
-      p_params.merge(start_time: start.to_f) if start
-      p_params.merge(stop_time: stop.to_f) if stop
+      p_params.merge!(start_time: start.to_f) if start
+      p_params.merge!(stop_time: stop.to_f) if stop
     end
   end
 
   def permalink(data)
-    multiple_charts_path(permalink_params(data))
+    puts permalink_params.inspect
+    multiple_charts_path(permalink_params)
   end
 end
