@@ -8,7 +8,11 @@ class DatasetsController < ApplicationController
   end
 
   def multiple
-    respond_with Dataset.multiple_series(start, stop, series, params[:count])
+    Dataset.multiple_series(start, stop, series, params[:count]).tap do |data|
+      respond_with({ 
+        data: data 
+      })
+    end
   end
 
   def profile
