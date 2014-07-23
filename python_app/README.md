@@ -9,14 +9,16 @@ This is a useful guide for setting up Python on a Mac:
 http://hackercodex.com/guide/python-development-environment-on-mac-osx/
 
 ### Setup a virtualenv for sciview-python with all of the necessary 3rd party libraries:
-$ cd python_app
-$ mkdir ~/virtualenvs
-$ virtualenv ~/virtualenvs/sciview-python
-$ source ~/virtualenvs/sciview-python/bin/activate
-$ pip install -r requirements.txt
+
+    $ cd python_app
+    $ mkdir ~/virtualenvs
+    $ virtualenv ~/virtualenvs/sciview-python
+    $ source ~/virtualenvs/sciview-python/bin/activate
+    $ pip install -r requirements.txt
 
 ### Validate your environment works by running a simple TDMS viewer 
-$ python tdms-snippets.py
+
+    $ python tdms-snippets.py
 
 ## Useful Links
 
