@@ -8,7 +8,15 @@ class DatasetsController < ApplicationController
   end
 
   def multiple
-    respond_with Dataset.multiple_series(start, stop, series, params[:count])
+    Dataset.multiple_series(start, stop, series, params[:count]).tap do |data|
+      respond_with({ 
+        data: data,
+        permalink: permalink(data),
+        series: series,
+        start: start,
+        stop: stop
+      })
+    end
   end
 
   def profile
@@ -49,5 +57,18 @@ class DatasetsController < ApplicationController
 
   def stop
     Time.parse(params[:stop_time]) if params[:stop_time]
+  end
+
+  def permalink_params
+    {}.tap do |p_params|
+      p_params.merge!(series)
+      p_params.merge!(start_time: start.to_f) if start
+      p_params.merge!(stop_time: stop.to_f) if stop
+    end
+  end
+
+  def permalink(data)
+    puts permalink_params.inspect
+    multiple_charts_path(permalink_params)
   end
 end
