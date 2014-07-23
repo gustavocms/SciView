@@ -137,6 +137,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineFocus(d.values))
     
     @focus.select(".x.axis").call(@xAxis)
+    @renderAnnotations()
 
   brushEnd: =>
     unless @brush.empty()
@@ -342,6 +343,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
     legend.on "click", (d) => @setSeriesOpacity(d.key)
 
+    @renderAnnotations()
     @zoomIt()
 
   setSeriesOpacity: (key) =>
@@ -366,14 +368,13 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('class', 'annotations')
 
     annotations = annotation_groups.selectAll('g.annotation').data((d) -> d.annotations)
-    annotations.enter()
-      .append('g').attr('class', 'annotation')
-      .append('circle')
-      .attr('cx', (d) => 
-        date = new Date(d.timestamp)
-        console.log(date)
-        @x(date)
-      )
+    groups = annotations.enter().append('g').attr('class', 'annotation')
+    groups.append('circle')
+      .attr('cx', 0)
       .attr('cy', 0)
-      .attr('r', 5)
+      .attr('r', 3)
+    groups.append('line').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', @height)
+      .style('stroke', 'red')
+    groups.append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
 
+    annotations.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
