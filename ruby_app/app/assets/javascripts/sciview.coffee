@@ -292,7 +292,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('height', @height)
       .attr('width', @width)
       .style('fill', 'white')
-    @focusTarget.call(@zoom)
+    @focus.call(@zoom)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
@@ -328,6 +328,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+    thisChart = @
+    @focus.on('mousemove', -> thisChart.annotationCursor(d3.mouse(this)))
 
     legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
@@ -362,19 +364,42 @@ class SciView.FocusChart extends SciView.BasicChart
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
 
   renderAnnotations: ->
+    color = (d) -> lineColor(d.series_key)
+    # 1 annotation_group per series
     annotation_groups = @focus.selectAll('g.annotations').data(@data())
     annotation_groups.enter()
       .append('g')
       .attr('class', 'annotations')
-
-    annotations = annotation_groups.selectAll('g.annotation').data((d) -> d.annotations)
-    groups = annotations.enter().append('g').attr('class', 'annotation')
+    # 1 annotation per annotation in the series
+    annotations = annotation_groups.selectAll('g.annotation')
+      .data((d) -> d.annotations or [])
+    groups = annotations.enter()
+      .append('g')
+      .attr('class', 'annotation')
     groups.append('circle')
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', 3)
+      .style('stroke', 'none')
+      .style('fill', color)
     groups.append('line').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', @height)
-      .style('stroke', 'red')
+      .style('stroke', color)
+      .attr('stroke-dasharray', '1,3')
     groups.append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
+      .style('fill', color)
+      .style('font-weight', 'bold')
 
+    window.annotations = annotations
     annotations.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
+
+  annotationCursor: (coords) ->
+    x = (coords or [0, 0])[0]
+    @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
+      .style('opacity', 0.5)
+      .style('stroke', 'black')
+    @focusCursor.attr('x1', x)
+      .attr('x2', x)
+      .attr('y1', 0)
+      .attr('y2', @height)
+
+
