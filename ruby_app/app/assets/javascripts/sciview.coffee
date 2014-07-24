@@ -240,10 +240,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("height", @height)
     @focus = @svg.append("g")
       .attr("class", "focus")
-      .attr("transform", "translate(" + @margin.left + "," + @margin.top + ")")
+      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
     @context = @svg.append("g")
       .attr("class", "context")
-      .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
+      .attr("transform", "translate(#{@margin2.left},#{@margin2.top})")
 
   lineColor = d3.scale.category10()
 
@@ -304,7 +304,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('stroke', (d) -> lineColor(d.key))
     @focus.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + @height + ")")
+      .attr("transform", "translate(0,#{@height})")
       .call(@xAxis)
     @focus.append("g")
       .attr("class", "y axis")
@@ -320,7 +320,7 @@ class SciView.FocusChart extends SciView.BasicChart
     
     @context.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + @height2 + ")")
+      .attr("transform", "translate(0,#{@height2})")
       .call(@xAxis2)
     @context.append("g")
       .attr("class", "x brush")
@@ -330,8 +330,13 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("height", @height2 + 7)
     thisChart = @
     @focus.on('mousemove', -> thisChart.annotationCursor(d3.mouse(this)))
+    @focus.on('dblclick', -> 
+      d3.event.stopPropagation()
+      console.log('double click')
+    )
 
-    legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
+    legend = @svg.selectAll('g.legend').data(@_data)
+    legend.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
     legend.append("rect")
       .attr("x", @width + 20)
@@ -360,7 +365,7 @@ class SciView.FocusChart extends SciView.BasicChart
     # Update whether or not the elements are active
     legendElement.attr('active', active)
     d3.select("##{key}").style "opacity", newGraphOpacity
-    @getData()
+    #@getData()
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
 
   renderAnnotations: ->
