@@ -171,12 +171,15 @@ class SciView.FocusChart extends SciView.BasicChart
 
   zoomEnd: ->
     d3.event.sourceEvent?.stopPropagation()
+    if d3.event.sourceEvent?.type is "dblclick"
+      return clearTimeout(@_brushEndTimer)
     @zoom.scale(1).translate([0, 0]) # keep movements relative
     @_dx_prev = 0
     @brushEndDelayed()
 
   zoomed: =>
     d3.event.sourceEvent.stopPropagation()
+    console.log('zoomed', d3.event.sourceEvent)
     ({ # event types (MouseEvent or WheelEvent)
       mousemove: @_zoomed_pan
       wheel: @_zoomed_zoom
