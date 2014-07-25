@@ -87,6 +87,19 @@ class Dataset
     @summary ||= DatasetSupport::DatasetSummary.new(series_names, query_start, query_stop)
   end
   
+  # constructs the json-ifiable response as a ruby hash (also aliased as :as_json).
+  # For each series, includes annotations, tags, attributes, and values.
+  # i.e., 
+  #  { 'sample_0a3803_1405960534' => {
+  #
+  #     :key         => 'sample_0a3803_1405960534',
+  #     :values      => [... time series data here...],
+  #     :attributes  => {...},
+  #     :tags        => [...]
+  #     :annotations => [ { :message => "Hello", :series_key => "sample_0a3803_1405960534", :id => 1 }]
+  #   }
+  # }
+  #
   def to_hash
     #DatasetPresenter.new(return_hash, series, start, stop)
     return_hash

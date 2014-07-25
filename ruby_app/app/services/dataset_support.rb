@@ -1,7 +1,7 @@
 module DatasetSupport
 
   # Provides a simple interface to query metadata about time series,
-  # including real start and stop times (not currently available as an API endpoint).
+  # including real start and stop times (not currently available as a TempoDB API endpoint).
   # Used internally in Dataset.
   class DatasetSummary
     include Concerns::Tempo
