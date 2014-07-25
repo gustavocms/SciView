@@ -79,6 +79,9 @@ group :development do
   gem 'guard-rails'
   gem 'guard-jshint-on-rails'
   gem 'terminal-notifier-guard'
+  gem 'quiet_assets'
+  gem 'rack-mini-profiler', require: false
+  gem 'flamegraph'
 end
 
 group :development, :test do
