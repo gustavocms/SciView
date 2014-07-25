@@ -303,6 +303,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('fill', 'white')
     @focus.call(@zoom)
 
+    @annotationCursor()
+
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
       .append('path')
@@ -339,9 +341,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("height", @height2 + 7)
     thisChart = @
     @focus.on('mousemove', -> thisChart.annotationCursor(d3.mouse(this)))
-    @focus.on('dblclick', -> 
+    @focus.on('dblclick', ->
+      window.e = d3.select(d3.event.srcElement)
+      console.log('double click', d3.select(d3.event.srcElement).datum().key)
       d3.event.stopPropagation()
-      console.log('double click')
     )
 
     legend = @svg.selectAll('g.legend').data(@_data)
@@ -402,8 +405,6 @@ class SciView.FocusChart extends SciView.BasicChart
     groups.append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
       .style('fill', color)
       .style('font-weight', 'bold')
-
-    window.annotations = annotations
     annotations.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
 
   annotationCursor: (coords) ->
@@ -411,9 +412,16 @@ class SciView.FocusChart extends SciView.BasicChart
     @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
       .style('opacity', 0.5)
       .style('stroke', 'black')
-    @focusCursor.attr('x1', x)
-      .attr('x2', x)
       .attr('y1', 0)
       .attr('y2', @height)
+
+    @contextCursor or= @context.append('line').attr('id', 'contextCursor')
+      .style('opacity', 0.5)
+      .style('stroke', 'black')
+      .attr('y1', 0).attr('y2', @height2)
+
+    x2 = @x2(@x.invert(x))
+    @focusCursor.attr('x1', x).attr('x2', x)
+    @contextCursor.attr('x1', x2).attr('x2', x2)
 
 
