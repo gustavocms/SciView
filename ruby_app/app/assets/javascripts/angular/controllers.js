@@ -111,8 +111,8 @@
         }
     ]);
 
-    module.controller('NewMetadataController', ['$scope', '$modalInstance', '$log', 'series', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $modalInstance, $log, series, SeriesTagsService, SeriesAttributesService) {
+    module.controller('NewMetadataController', ['$scope', '$modalInstance', '$log', '$q', 'series', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $modalInstance, $log, $q, series, SeriesTagsService, SeriesAttributesService) {
             $scope.newMetadata = {
                 series: series,
                 tag: "",
@@ -120,50 +120,74 @@
                 value: ""
             };
 
-            //TODO: duplicate calling $modalInstance.close
-            $scope.ok = function (metadataForm) {
-                if (metadataForm.$valid) {
-
-                    if ($scope.newMetadata.tag.length > 0) {
-
-                        var tagData = {tag: $scope.newMetadata.tag};
-
-                        //ajax call
-                        SeriesTagsService.save(
-                            {seriesId: $scope.newMetadata.series.key}, tagData,
-                            //onSuccess promise function
-                            function() {
-                                //update scope with new object
-                                $scope.newMetadata.series.tags.push(tagData.tag);
-
-                                $modalInstance.close($scope.newMetadata);
-                            });
-                    };
-
-                    if ($scope.newMetadata.attribute.length > 0) {
-
-                        var attrData = {
-                            attribute: $scope.newMetadata.attribute,
-                            value: $scope.newMetadata.value
-                        };
-
-                        //ajax call
-                        SeriesAttributesService.save(
-                            {seriesId: $scope.newMetadata.series.key}, attrData,
-                            //onSuccess promise function
-                            function() {
-                                //update scope with new object
-                                $scope.newMetadata.series.attributes[attrData.attribute] = attrData.value;
-
-                                $modalInstance.close($scope.newMetadata);
-                            });
-                    };
-                }
-            };
-
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
+
+            $scope.ok = function (metadataForm) {
+                if (metadataForm.$valid) {
+
+                    var promises = [];
+
+                    if ($scope.newMetadata.tag.length > 0) {
+                        //asynchronous saving
+                        var promise = saveNewTag();
+
+                        //add the promise to the array to wait for all to complete
+                        promises.push(promise);
+                    };
+
+                    if ($scope.newMetadata.attribute.length > 0) {
+                        //asynchronous saving
+                        var promise = saveNewAttribute();
+
+                        //add the promise to the array to wait for all to complete
+                        promises.push(promise);
+                    };
+
+                    //wait for all saving to be completed and then closes.
+                    //defining finally as a string for IE compatibility (https://docs.angularjs.org/api/ng/service/$q)
+                    $q.all(promises)['finally'](function() {
+                        $modalInstance.close($scope.newMetadata);
+                    });
+                }
+            };
+
+            function saveNewTag() {
+                var tagData = {tag: $scope.newMetadata.tag};
+
+                //ajax call
+                var promise = SeriesTagsService.save(
+                    {seriesId: $scope.newMetadata.series.key}, tagData,
+                    //onSuccess promise function
+                    function () {
+                        //update scope with new object
+                        $scope.newMetadata.series.tags.push(tagData.tag);
+                    }).$promise;
+
+                //return promise of the saving call
+                return promise;
+            }
+
+            function saveNewAttribute() {
+                var attrData = {
+                    attribute: $scope.newMetadata.attribute,
+                    value: $scope.newMetadata.value
+                };
+
+                //ajax call
+                var promise = SeriesAttributesService.save(
+                    {seriesId: $scope.newMetadata.series.key}, attrData,
+                    //onSuccess promise function
+                    function () {
+                        //update scope with new object
+                        $scope.newMetadata.series.attributes[attrData.attribute] = attrData.value;
+                    }).$promise;
+
+                //return promise of the saving call
+                return promise;
+            };
+
         }
     ]);
 })();
