@@ -30,3 +30,36 @@ Append 1,000,000 data points to test-key (do not overwrite whatever exists) and 
 <tt>bin/datagen create test-key --count=1000000 --append >> ./log/test-key.log</tt>
 
 <tt>tail -f ./log/test-key.log</tt>
+
+Benchmark rollup functions over different intervals on TempoDB (Primarily useful as an experimentation tool, feel free to change).
+
+<tt>rake data:benchmark</tt>
+
+== App Setup
+
+=== Prerequisites
+
+* Setup Heroku
+* Setup Postgre
+* Setup Redis
+* Setup Bower
+
+on Ubuntu: <tt>http://www.euperia.com/development/install-nodejs-and-bower-on-ubuntu-12-04-precise/1269</tt>
+
+* Install bower dependencies
+
+Add your dependencies inside ruby_app/Bowerfile, like the following:
+
+<tt>asset 'bootstrap'</tt>
+
+Run bower install to download dependencies (the files will be downloaded to vendor/assets/bower_components):
+
+<tt>rake bower:install</tt>
+
+Add the library to the asset pipeline:
+
+<tt>//= require bootstrap/dist/js/bootstrap</tt>
+
+== Runnig the app
+
+<tt>foreman start -p 3000</tt>
