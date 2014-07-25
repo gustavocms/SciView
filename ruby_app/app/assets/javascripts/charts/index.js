@@ -60,7 +60,7 @@ $(document).ready(function() {
     });
 
 
-    autocomplete_data("#chart_dataset"); 
+    $("#chart_dataset").each(function(i, e){ autocomplete_data(e); });
 
     $("#view_chart").click(function(e) {
         e.preventDefault();
