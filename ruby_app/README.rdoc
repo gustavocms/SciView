@@ -30,3 +30,7 @@ Append 1,000,000 data points to test-key (do not overwrite whatever exists) and 
 <tt>bin/datagen create test-key --count=1000000 --append >> ./log/test-key.log</tt>
 
 <tt>tail -f ./log/test-key.log</tt>
+
+Benchmark rollup functions over different intervals on TempoDB (Primarily useful as an experimentation tool, feel free to change).
+
+<tt>rake data:benchmark</tt>
