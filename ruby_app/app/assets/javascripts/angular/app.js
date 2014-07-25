@@ -3,10 +3,14 @@
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
-        'metadataServices',
-        'metadataControllers'
+        'sv.common.services',
+        'sv.charts.metadata.services',
+        'sv.charts.metadata.controllers',
+        'sv.charts.save.services',
+        'sv.charts.save.controllers'
     ]);
 
+    // first thing to run after loading
     app.run(['$rootScope', '$state', '$stateParams',
         function ($rootScope, $state, $stateParams) {
             // It's very handy to add references to $state and $stateParams to the $rootScope
@@ -17,19 +21,27 @@
             $rootScope.$stateParams = $stateParams;
         }]);
 
+    // app configuration
+    app.config(['$locationProvider',
+        function ($locationProvider) {
 
-    app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
-        function ($stateProvider, $urlRouterProvider, $locationProvider) {
+            $locationProvider.html5Mode(true);
+        }]);
 
+    //routing configuration
+    app.config(['$stateProvider',
+        function ($stateProvider) {
+
+            //page /charts/multiple routing states
             $stateProvider
                 .state('multiChart', {
                     url: "/charts/multiple",
                     views: {
                         'saveChart@': {
-                            templateUrl: "/assets/save_chart.html"
+                            templateUrl: "/assets/charts/save/save_chart.html"
                         },
                         'metadata@': {
-                            templateUrl: "/assets/metadata.html",
+                            templateUrl: "/assets/charts/metadata/metadata.html",
                             controller: 'MetadataController'
                         }
                     }
@@ -42,7 +54,7 @@
                         //relative views naming. More on this:
                         //https://github.com/angular-ui/ui-router/wiki/Multiple-Named-Views#view-names---relative-vs-absolute-names
                         'saveChart@': {
-                            templateUrl: "/assets/save_chart.edit.html",
+                            templateUrl: "/assets/charts/save/save_chart.edit.html",
                             controller: 'SaveChartController'
                         }
                     }
@@ -54,15 +66,15 @@
                             template:  '<h4>Saved</h4>'
                         }
                     }
-                })
-                .state('singleChart', {
-                    url: "/charts/:chartId",
-                    templateUrl: "/assets/metadata.html",
-                    controller: 'MetadataController'
                 });
 
-            // configure html5 to get links working on jsfiddle
-            $locationProvider.html5Mode(true);
+            //page /charts/:chartId routing states
+            $stateProvider
+                .state('singleChart', {
+                    url: "/charts/:chartId",
+                    templateUrl: "/assets/charts/metadata/metadata.html",
+                    controller: 'MetadataController'
+                });
         }]);
 
 })();

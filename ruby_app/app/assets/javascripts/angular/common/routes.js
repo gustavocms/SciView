@@ -1,5 +1,5 @@
 (function() {
-    var module = angular.module('metadataRoutes', ['ngRoute']);
+//    var module = angular.module('metadataRoutes', ['ngRoute']);
 
 //    module.config(['$routeProvider', '$locationProvider',
 //        function ($routeProvider, $locationProvider) {

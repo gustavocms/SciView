@@ -25,4 +25,4 @@
 //= require charts/index
 //= require sciview
 //= require stream_layers
-//= require_directory ./angular
+//= require_tree ./angular

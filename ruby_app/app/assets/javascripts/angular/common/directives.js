@@ -1,5 +1,5 @@
 (function() {
-    var module = angular.module('metadataDirectives', []);
+//    var module = angular.module('metadataDirectives', []);
 
 
 //    module.directive('addMetadataForm', function () {
