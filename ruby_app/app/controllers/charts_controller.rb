@@ -1,13 +1,19 @@
 class ChartsController < ApplicationController
-  respond_to :html
+  respond_to :json , :html
 
   def index
   end
 
   def create
-    @chart = Chart.for_datasets(params[:series])
+    @chart = Chart.new()
+    @chart.name = params[:name]
+    @chart.series = params[:series]
     @chart.user = current_user
-    @chart.save
+    if @chart.save
+      render json:  @chart
+    else
+      render json:  @chart.errors, :status => 400
+    end
   end
 
   def multiple

@@ -1,17 +1,17 @@
 (function() {
-    var module = angular.module('metadataControllers', ['ngRoute']);
+    var module = angular.module('sv.charts.metadata.controllers', []);
 
-    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'seriesParams', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $log, MetadataService, ModalService, seriesParams, SeriesTagsService, SeriesAttributesService) {
+    module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $log, MetadataService, ModalService, SeriesTagsService, SeriesAttributesService) {
 
-            $scope.parameters = seriesParams;
+            $scope.parameters = JSON.parse($('#chartSeries').text());
 
             $scope.seriesList = MetadataService.query($scope.parameters);
 
             $scope.addMetadata = function(series) {
                 var result = ModalService.showModal({
                     controller: 'NewMetadataController',
-                    templateUrl: '/assets/add_metadata_form.html',
+                    templateUrl: '/assets/charts/metadata/add_metadata_form.html',
                     resolve: {
                         series: function () {
                             return series;

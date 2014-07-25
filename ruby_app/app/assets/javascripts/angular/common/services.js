@@ -1,20 +1,5 @@
 (function() {
-    var module = angular.module('metadataServices', ['ngResource']);
-
-    module.factory('MetadataService', ['$resource',
-        function ($resource) {
-            return $resource('/datasets/metadata');
-        }]);
-
-    module.factory('SeriesTagsService', ['$resource',
-        function ($resource) {
-            return $resource('/datasets/:seriesId/tags/:tagId');
-        }]);
-
-    module.factory('SeriesAttributesService', ['$resource',
-        function ($resource) {
-            return $resource('/datasets/:seriesId/attributes/:attributeId');
-        }]);
+    var module = angular.module('sv.common.services', []);
 
     module.service('ModalService', ['$modal',
         function ($modal) {
@@ -23,7 +8,7 @@
                 backdrop: true,
                 keyboard: true,
                 modalFade: true,
-                templateUrl: '/assets/confirmation.html'
+                templateUrl: '/assets/common/confirmation.html'
             };
 
             var modalOptions = {
