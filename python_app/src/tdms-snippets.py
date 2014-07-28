@@ -2,6 +2,8 @@ __author__ = 'paulmestemaker'
 
 from nptdms import TdmsFile
 import os
+from datetime import datetime, timedelta
+
 
 
 def display_properties(tdms_object, level):
@@ -33,8 +35,9 @@ tdmsfile = TdmsFile(file_path)
 # data = channel.data
 # time = channel.time_track()
 
-show_properties = True
-show_data = True
+show_properties = False
+show_data = False
+show_time_track = False
 
 level = 0
 root = tdmsfile.object()
@@ -54,6 +57,13 @@ for group in tdmsfile.groups():
             level = 3
             display("data type: %s" % channel.data_type.name, level)
             display_properties(channel, level)
+        if show_time_track:
+            level = 3
+            try:
+                time_track = channel.time_track()
+                print time_track
+            except KeyError:
+                print "no time track"
         if show_data:
             level = 3
             data = channel.data
@@ -64,8 +74,30 @@ for group in tdmsfile.groups():
 
 # g = 'QT_42-4_Lower'
 # c = 'Temp_J'
-# ch = tdmsfile.object(g, c)
-# display_properties(ch, 3)
+g = 'Room temperatures'
+c = 'Temperature_1'
+ch = tdmsfile.object(g, c)
+display_properties(ch, 3)
+time_track = ch.time_track()
+data = ch.data
+wf_start_time = ch.properties['wf_start_time']
+# print wf_start_time
+# print type(wf_start_time)
+# date_object = datetime.strptime('Jun 1 2005  1:33PM', '%b %d %Y %I:%M%p')
+# date_object = datetime.strptime(wf_start_time, '%Y-%m-%d %H:%M:%S%p')
+
+# print date_object
+offset_units = ch.properties['wf_xunit_string']
+offset_units = 'h'
+for t in time_track:
+    if offset_units == 'h':
+        print wf_start_time + timedelta(hours=t)
+    elif offset_units == 's':
+        print wf_start_time + timedelta(seconds=t)
+
+
+
+
 #
 # print ch.properties['root_datetime']  # UTC time
 # print ch.data
