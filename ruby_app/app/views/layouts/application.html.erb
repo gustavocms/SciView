@@ -66,16 +66,16 @@
   <div id="page-alert">
     <div class="column">
       <% if notice %>
-          <div class="ui info message">
+          <div class="alert alert-dismissable alert-success">
             <i class="close icon"></i>
-            <div class="notice header"><%= notice %></div>
+            <strong><%= notice %></strong>
           </div>
       <% end %>
 
       <% if alert %>
-          <div class="ui error message">
+          <div class="alert alert-dismissable alert-danger">
             <i class="close icon"></i>
-            <div class="alert header"><%= alert %></div>
+            <strong><%= alert %></strong>
           </div>
       <% end %>
     </div>
