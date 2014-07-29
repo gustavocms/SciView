@@ -1,0 +1,11 @@
+{
+  "name": "sciview",
+  "version": "0.0.1",
+  "dependencies": {
+    "bower": "~1.2"
+  },
+  "scripts": {
+    "postinstall": "rake bower:install"
+  }
+}
+
