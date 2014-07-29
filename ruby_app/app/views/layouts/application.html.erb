@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>SciView</title>
-  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= stylesheet_link_tag "application", media: "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
@@ -42,6 +42,12 @@
 
         <% else %>
             <li>
+              <%= link_to [:charts] do %>
+                  <i class='fa fa-bar-chart-o '></i> Charts
+              <% end %>
+            </li>
+            <li class="divider-vertical"></li>
+            <li>
               <%= link_to new_user_registration_path do %>
                   <i class='fa fa-user '></i> Sign Up
               <% end %>
@@ -57,25 +63,25 @@
     </div>
   </nav>
 
-  <div class="ui one column row">
+  <div id="page-alert">
     <div class="column">
       <% if notice %>
-        <div class="ui info message">
-          <i class="close icon"></i>
-          <div class="notice header"><%= notice %></div>
-        </div>
+          <div class="ui info message">
+            <i class="close icon"></i>
+            <div class="notice header"><%= notice %></div>
+          </div>
       <% end %>
 
       <% if alert %>
-        <div class="ui error message">
-          <i class="close icon"></i>
-          <div class="alert header"><%= alert %></div>
-        </div>
+          <div class="ui error message">
+            <i class="close icon"></i>
+            <div class="alert header"><%= alert %></div>
+          </div>
       <% end %>
     </div>
   </div>
 
-  <div class="ui one column row" id="page-wrapper">
+  <div id="page-wrapper">
     <%= yield %>
   </div>
 
