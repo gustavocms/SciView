@@ -64,6 +64,7 @@ gem 'semantic-ui-sass'
 
 gem 'parallel'
 
+gem 'bootstrap-sass'
 gem 'bower-rails'
 
 gem 'angular_rails_csrf'
