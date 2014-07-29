@@ -9,7 +9,6 @@
     "npm": "1.3.x"
   },
   "scripts": {
-    "postinstall": "rake bower:install"
   }
 }
 
