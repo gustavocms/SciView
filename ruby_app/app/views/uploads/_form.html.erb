@@ -1,13 +1,11 @@
-<%= form_tag uploads_path, html: {method: :create}, multipart: true do |f| %>
-    <div class="form-group">
-      <label>File input</label>
-      <%= file_field_tag :csv %>
-    </div>
-    <div class="form-group">
-      <label>Series name (optional)</label>
-      <%= text_field_tag :series_name, nil, placeholder: 'sensor1-temperature', class: 'form-control' %>
-    </div>
-    <div class="form-group">
-      <%= submit_tag "Upload file", class: "btn btn-primary" %>
-    </div>
+<%= form_tag uploads_path, class: "directUpload", method: :create, multipart: true do |f| %>
+  <div class="form-group">
+    <%= file_field_tag :csv, data: { :s3_url => s3_post_url, :s3_host => s3_host, :s3_fields => s3_direct_post.fields.to_json } %>
+  </div>
+  <div class="form-group">
+    <%= text_field_tag :series_name, nil, placeholder: '(optional) series name', class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= submit_tag %>
+  </div>
 <% end %>

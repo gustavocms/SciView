@@ -70,7 +70,8 @@ class SciView.FocusChart extends SciView.BasicChart
     @_zoomData
 
   # Trigger the ajax call.
-  getData: ->
+  getData: (retryCount = 0) ->
+    console.log('getData', retryCount)
     get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
       url: get_data_url
@@ -78,6 +79,9 @@ class SciView.FocusChart extends SciView.BasicChart
         @data(response.data)
         @render()
         @replaceState(response)
+      error: =>
+        if retryCount < 3
+          setTimeout((=> @getData(retryCount + 1)), 2000)
     })
 
   
