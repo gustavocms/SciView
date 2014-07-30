@@ -20,7 +20,7 @@
 //= require angular-resource/angular-resource
 //= require angular-ui-bootstrap-bower/ui-bootstrap-tpls
 //= require angular-ui-utils/ui-utils
-//= require angular-ui-router/release/angular-ui-router
+//= require angular-ui-router
 //= require charts/multiple
 //= require charts/index
 //= require sciview
