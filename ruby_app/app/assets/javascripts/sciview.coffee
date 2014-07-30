@@ -247,7 +247,31 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
 
-  lineColor = d3.scale.category10()
+  #lineColor = d3.scale.category10()
+  # lineColor = d3.scale.ordinal().range([
+  #   '#8dd3c7'
+  #   '#ffffb3'
+  #   '#bebada'
+  #   '#fb8072'
+  #   '#80b1d3'
+  #   '#fdb462'
+  #   '#b3de69'
+  #   '#fccde5'
+  #   '#d9d9d9'
+  # ])
+
+  lineColor = d3.scale.ordinal().range(value for name, value of {
+    'TURQUOISE': '#1ABC9C'
+    'SUN FLOWER': '#F1C40F'
+    'AMETHYST': '#9B59B6'
+    'ORANGE': '#F39C12'
+    'EMERALD': '#2ECC71'
+    'ALIZARIN': '#E74C3C'
+    'SILVER': '#BDC3C7'
+    'PETER RIVER': '#3498DB'
+    'CARROT': '#E67E22'
+    'CLOUDS': '#ECF0F1'
+  })
 
   render: ->
     if @_zoomData
@@ -293,8 +317,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('y', 0)
       .attr('height', @height)
       .attr('width', @width)
-      .style('fill', 'white')
-      .style('opacity', 0)
+      .style('fill', 'black')
+      .style('fill-opacity', 0.15)
     @focusTarget.call(@zoom)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
@@ -321,6 +345,14 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
     
+    @context.append("rect")
+      .attr('id', 'contextBg')
+      .attr('x', 0)
+      .attr('width', @width)
+      .attr('y', 0)
+      .attr('height', @height2)
+      .style('fill', 'black')
+      .style('fill-opacity', 0.15)
     @context.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + @height2 + ")")

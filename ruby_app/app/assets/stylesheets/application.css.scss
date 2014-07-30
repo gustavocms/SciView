@@ -22,11 +22,6 @@ body {
   font-family: "Open Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
 
-
-* {
-  position: relative;
-}
-
 body,html {
   margin: 0;
   padding: 0;
@@ -36,7 +31,6 @@ body,html {
 
 body {
 
-  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
@@ -110,22 +104,6 @@ button:hover {
   background-color: rgba(255,255,255, 0.075);
   color: rgba(255,255,255, 1);
 }
-
-.main {
-  z-index: 1;
-  max-width: 52em;
-  margin: auto;
-  padding: 12% 5% 12% 5%;
-}
-
-.graph {
-  z-index: 0;
-  opacity: 0.5;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-}
-
 
 
 
