@@ -294,6 +294,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('height', @height)
       .attr('width', @width)
       .style('fill', 'white')
+      .style('opacity', 0)
     @focusTarget.call(@zoom)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
