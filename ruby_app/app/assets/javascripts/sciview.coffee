@@ -81,7 +81,7 @@ class SciView.FocusChart extends SciView.BasicChart
         @replaceState(response)
       error: =>
         if retryCount < 3
-          setTimeout((=> @getData(retryCount + 1)), 1500)
+          setTimeout((=> @getData(retryCount + 1)), 2000)
     })
 
   
