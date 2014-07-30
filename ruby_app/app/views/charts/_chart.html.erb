@@ -1,8 +1,9 @@
 <div ng-app="sciViewApp">
 
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-12">
       <h2 class="ui header"><%= chart.name %></h2>
+      <hidden id="chartSeries"><%= chart.series.to_json %></hidden>
     </div>
   </div>
 
@@ -10,16 +11,16 @@
       <div ui-view="saveChart"></div>
   <% end %>
 
-  <div class="row ui segment">
-    <div id="<%= chart.name.parameterize %>" class="chart with-3d-shadow with-transitions"
-         data-source-url="<%= multiple_datasets_path(chart.series) %>"
-         data-disabled-series="<%= params[:disabled] %>"
-         data-stop-time="<%= params[:stop_time] %>"
-         data-start-time="<%= params[:start_time] %>">
-      <hidden id="chartSeries"><%= chart.series.to_json %></hidden>
+  <div class="row">
+    <div class="col-sm-10">
+      <div id="<%= chart.name.parameterize %>" class="chart with-3d-shadow with-transitions"
+           data-source-url="<%= multiple_datasets_path(chart.series) %>"
+           data-disabled-series="<%= params[:disabled] %>"
+           data-stop-time="<%= params[:stop_time] %>"
+           data-start-time="<%= params[:start_time] %>">
+      </div>
     </div>
-  </div>
-
-  <div ui-view="metadata">
+    <div class="col-sm-2" ui-view="metadata">
+    </div>
   </div>
 </div>
