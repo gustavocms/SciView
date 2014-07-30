@@ -19,6 +19,14 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def status
+    if Dataset.new(series).summary.count > 0
+      respond_with "ready"
+    else
+      respond_with "pending"
+    end
+  end
+
   def profile
     render text: (Flamegraph.generate do
       #Dataset.multiple_series(start, stop, series, params[:count])

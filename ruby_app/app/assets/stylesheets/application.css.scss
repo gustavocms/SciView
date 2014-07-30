@@ -11,9 +11,10 @@
  *= require_self
  *= require_tree .
  *= require jquery-ui/all
- *= require bootstrap/dist/css/bootstrap
- *= require bootstrap/dist/css/bootstrap-theme.css
  */
+
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
 
 body {
   font-family: "Open Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
