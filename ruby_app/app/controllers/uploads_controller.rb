@@ -15,7 +15,7 @@ class UploadsController < ApplicationController
   end
 
   def create
-    job_id = CsvUploadWorker.perform_async(series_name, s3_path)
+    job_id = CsvUploadWorker.perform_async(series_name, csv)
     puts "JOB_ID #{job_id}"
     redirect_to_temp_chart
   end
