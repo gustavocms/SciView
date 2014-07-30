@@ -10,11 +10,14 @@ class UploadsController < ApplicationController
       success_action_status: 201,
       acl: :private
     )
-    puts @s3_direct_post.url.to_s.inspect
+    @s3_post_url = @s3_direct_post.url.to_s
+    @s3_host = @s3_direct_post.url.host
   end
 
   def create
-
+    job_id = CsvUploadWorker.perform_async(series_name, s3_path)
+    puts "JOB_ID #{job_id}"
+    redirect_to_temp_chart
   end
 
   def old_create
@@ -56,11 +59,19 @@ class UploadsController < ApplicationController
     @csv ||= params[:csv]
   end
 
+  def s3_path
+    "//#{s3_host}/#{csv}"
+  end
+
   def series_name
     @series_name ||= params[:series_name].presence || csv.original_filename.pathmap("%n")
   end
 
   def s3_post_key
     "uploads/#{SecureRandom.uuid}/${filename}"
+  end
+
+  def s3_host
+    URI(S3_BUCKET.url).host
   end
 end

@@ -1,14 +1,6 @@
 <%= form_tag uploads_path, class: "directUpload", method: :create, multipart: true do |f| %>
- <pre> <%= @s3_direct_post.inspect %> </pre>
-<pre>
- <%= @s3_direct_post.url.to_s.inspect %>
-</pre>
-<pre>
- <%= @s3_direct_post.fields.to_json.inspect %>
-</pre>
-
   <p>
-    <%= file_field_tag :csv, data: { :s3_url => @s3_direct_post.url.to_s, :s3_fields => @s3_direct_post.fields.to_json } %>
+    <%= file_field_tag :csv, data: { :s3_url => @s3_post_url, :s3_host => @s3_host, :s3_fields => @s3_direct_post.fields.to_json } %>
   </p>
   <p>
     <%= text_field_tag :series_name, nil, placeholder: '(optional) series name', style: "width:200px" %>
