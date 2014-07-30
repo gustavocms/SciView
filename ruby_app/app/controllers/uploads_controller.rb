@@ -64,7 +64,7 @@ class UploadsController < ApplicationController
   end
 
   def series_name
-    @series_name ||= params[:series_name].presence || csv.original_filename.pathmap("%n")
+    @series_name ||= params[:series_name].presence || csv.pathmap("%n")
   end
 
   def s3_post_key
