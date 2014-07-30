@@ -5,9 +5,19 @@ class UploadsController < ApplicationController
   before_filter :authenticate_user!
 
   def new
+    @s3_direct_post = S3_BUCKET.presigned_post(
+      key: s3_post_key,
+      success_action_status: 201,
+      acl: :private
+    )
+    puts @s3_direct_post.url.to_s.inspect
   end
 
   def create
+
+  end
+
+  def old_create
     FileUtils.mkdir_p 'tmp/uploads'
     tmp = File.new(filepath, 'w')
     tmp.write(csv.read)
@@ -48,5 +58,9 @@ class UploadsController < ApplicationController
 
   def series_name
     @series_name ||= params[:series_name].presence || csv.original_filename.pathmap("%n")
+  end
+
+  def s3_post_key
+    "uploads/#{SecureRandom.uuid}/${filename}"
   end
 end
