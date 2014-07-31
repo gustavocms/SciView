@@ -2,7 +2,7 @@ require 'benchmark'
 
 namespace :data do
 
-  desc 'benchmark'
+  desc 'benchmarks TempoDB API Rollup functions using different intervals over wide time extents'
   task :benchmark do
     s = tempodb_client.get_series('sample_0a75cf_1404935738')
     summary = tempodb_client.get_summary('sample_0a75cf_1404935738', Time.utc(1999), Time.utc(2020))
