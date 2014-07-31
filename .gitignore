@@ -30,7 +30,7 @@ python_app/env
 ruby_app/.generators
 ruby_app/.rakeTasks
 ruby_app/ruby_app.iml
-ruby_app/vendor/assets/bower_components
+ruby_app/public/assets/
 python_app/.ipynb_checkpoints
 python_app/out
 *.pyc
