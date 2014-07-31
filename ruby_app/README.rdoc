@@ -63,3 +63,8 @@ Add the library to the asset pipeline:
 == Runnig the app
 
 <tt>foreman start -p 3000</tt>
+
+== DEPLOYING
+
+<tt>git push heroku `git subtree split --prefix ruby_app branch_to_deploy`:master --force</tt>
+Replace `heroku` with the correct remote name and `branch_to_deploy` with your current active branch.
