@@ -67,6 +67,7 @@ gem 'semantic-ui-sass'
 gem 'parallel'
 
 gem 'bootstrap-sass'
+gem 'font-awesome-sass'
 # gem 'bower-rails'
 
 gem 'rails-assets-angular'

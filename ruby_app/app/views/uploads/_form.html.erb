@@ -1,11 +1,11 @@
 <%= form_tag uploads_path, class: "directUpload", method: :create, multipart: true do |f| %>
-  <p>
+  <div class="form-group">
     <%= file_field_tag :csv, data: { :s3_url => s3_post_url, :s3_host => s3_host, :s3_fields => s3_direct_post.fields.to_json } %>
-  </p>
-  <p>
-    <%= text_field_tag :series_name, nil, placeholder: '(optional) series name', style: "width:200px" %>
-  </p>
-  <p>
-    <%= submit_tag %>
-  </p>
+  </div>
+  <div class="form-group">
+    <%= text_field_tag :series_name, nil, placeholder: '(optional) series name', class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= submit_tag nil, :class => "btn btn-primary" %>
+  </div>
 <% end %>

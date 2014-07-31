@@ -11,11 +11,102 @@
  *= require_self
  *= require_tree .
  *= require jquery-ui/all
- */
+ *= require dark_admin_bootstrap_theme.css
+ *= require font-awesome
+*/
 
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
 
 body {
   font-family: "Open Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
+}
+
+body,html {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+body {
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  font-size: 16px;
+  font-family: "pt-sans", "Avenir", Helvetica;
+
+  color: #fff;
+  color: white;
+
+  background: rgb(14,23,73); /* Old browsers */
+  background: -moz-linear-gradient(45deg,  rgba(14,23,73,1) 0%, rgba(11,17,56,1) 0%, rgba(15,45,84,1) 42%, rgba(54,35,63,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(14,23,73,1)), color-stop(0%,rgba(11,17,56,1)), color-stop(42%,rgba(15,45,84,1)), color-stop(100%,rgba(54,35,63,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(45deg,  rgba(14,23,73,1) 0%,rgba(11,17,56,1) 0%,rgba(15,45,84,1) 42%,rgba(54,35,63,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(45deg,  rgba(14,23,73,1) 0%,rgba(11,17,56,1) 0%,rgba(15,45,84,1) 42%,rgba(54,35,63,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(45deg,  rgba(14,23,73,1) 0%,rgba(11,17,56,1) 0%,rgba(15,45,84,1) 42%,rgba(54,35,63,1) 100%); /* IE10+ */
+  background: linear-gradient(45deg,  rgba(14,23,73,1) 0%,rgba(11,17,56,1) 0%,rgba(15,45,84,1) 42%,rgba(54,35,63,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0e1749', endColorstr='#36233f',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+h1 {
+  padding-left: 1.5em;
+  font-weight: 700;
+  font-size: 3em;
+  margin-bottom: .25em;
+}
+
+h1::before {
+  content: '';
+  background-repeat: no-repeat;
+  background-image: url('../images/SciviewLogo.png');
+  background-image: url('/images/SciviewLogo.svg');
+  height: 3em;
+  width: 3em;
+  position: absolute;
+  left: 0;
+}
+
+h2 {
+  font-weight: 300;
+  font-size: 1em;
+  opacity: 0.5;
+  margin-bottom: .25em;
+}
+
+h3 {
+  opacity: 0.5;
+}
+
+button {
+  font-family: "pt-sans", "Avenir", Helvetica;
+  font-size: 0.75em;
+  -webkit-display: none;
+  border: none;
+  color: #fff;
+  color: white;
+  color: rgba(255,255,255, 0.7);
+  background-color: rgba(255,255,255, 0.05);
+  padding: 1em 3em;
+  border-radius: 2em;
+  border: 1px solid rgba(255,255,255, 0);
+  outline: 0;
+  margin: 5em 0;
+  margin-left: 5.5em;
+}
+
+button:hover {
+  border: 1px solid rgba(255,255,255, 0.2);
+  cursor: pointer;
+  background-color: rgba(255,255,255, 0.075);
+  color: rgba(255,255,255, 1);
+}
+
+
+
+hidden {
+  display:none;
 }
