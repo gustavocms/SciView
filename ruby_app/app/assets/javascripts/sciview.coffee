@@ -457,13 +457,13 @@ class SciView.FocusChart extends SciView.BasicChart
     x = (coords or [0, 0])[0]
     @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
       .style('opacity', 0.5)
-      .style('stroke', 'black')
+      .style('stroke', 'white')
       .attr('y1', 0)
       .attr('y2', @height)
 
     @contextCursor or= @context.append('line').attr('id', 'contextCursor')
       .style('opacity', 0.5)
-      .style('stroke', 'black')
+      .style('stroke', 'white')
       .attr('y1', 0).attr('y2', @height2)
 
     x2 = @x2(@x.invert(x))
