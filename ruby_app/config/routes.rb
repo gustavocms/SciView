@@ -18,6 +18,7 @@ SciView::Application.routes.draw do
 
     resources :tags, only: [:create, :destroy]
     resources :attributes, only: [:create, :destroy]
+    resources :annotations, only: [:create, :update, :destroy]
   end
 
   resources :coffee_charts, only: [:show]
