@@ -43,6 +43,10 @@ class SciView.FocusChart extends SciView.BasicChart
     @lineContext = d3.svg.line()
       .x((d) => @x2(d.x))
       .y((d) => @y2(d.y))
+    @pleaseWait = d3.select(@element).append('div').attr('id', 'pleaseWait')
+    @pleaseWait.append('i')
+      .attr('class', 'fa fa-circle-o-notch fa-spin')
+    @pleaseWait.append('span').text(' Data loading...')
 
     @initializeSvg()
 
@@ -76,7 +80,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Trigger the ajax call.
   getData: (retryCount = 0) ->
-    console.log('getData', retryCount)
+    @pleaseWait.style('visibility', 'visible')
     get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
       url: get_data_url
@@ -84,9 +88,14 @@ class SciView.FocusChart extends SciView.BasicChart
         @data(response.data)
         @render()
         @replaceState(response)
+        @pleaseWait.style('visibility', 'hidden')
       error: =>
-        if retryCount < 3
-          setTimeout((=> @getData(retryCount + 1)), 2000)
+        if retryCount < 6
+          setTimeout((=> @getData(retryCount + 1)), 1500)
+        else
+          @pleaseWait.style('visibility', 'hidden')
+          msg = "Data could not be retrieved (tried #{retryCount} times). Please check the series names and try again."
+          alert(msg)
     })
 
   
