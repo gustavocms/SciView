@@ -387,13 +387,16 @@ class SciView.FocusChart extends SciView.BasicChart
     legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
     legend.append("rect")
-      .attr("x", @width + 20)
-      .attr("y", (d, i) -> i * 20 )
+      .attr("x", 20)
+      .attr("y", (d, i) -> 20 + i * 20 )
       .attr("width", 10).attr("height", 10).style "fill", (d) -> lineColor(d.key)
 
     legend.append("text")
-      .attr("x", @width + 35)
-      .attr("y", (d, i) -> (i * 20) + 9)
+      .attr("x", 35)
+      .attr("y", (d, i) -> 29 + (i * 20))
+      .style('font-weight', 'normal')
+      .style('fill', (d) -> lineColor(d.key))
+      .style('stroke', 'none')
       .text((d) -> d.key)
 
     legend.on "click", (d) => @setSeriesOpacity(d.key)
