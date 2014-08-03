@@ -248,7 +248,9 @@ class SciView.FocusChart extends SciView.BasicChart
   initializeSvg: =>
     @svg = d3.select(@element).append("svg")
       .attr("width", @width + @margin.left + @margin.right)
-      .attr("height", @height + @margin.top + @margin.bottom)
+      #.attr("height", @height + @margin.top + @margin.bottom)
+      .attr("preserveAspectRatio", "none")
+      .attr("viewBox", "0 0 #{@width + @margin.right + @margin.left} #{@height + @margin.top + @margin.bottom}")
     @svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
