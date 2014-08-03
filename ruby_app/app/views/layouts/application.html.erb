@@ -63,35 +63,28 @@
   </div>
 </nav>
 
-<div class="row">
-  <div class="col-sm-1"></div>
+<div class="container">
+  <div class="row" id="page-alert">
+    <div class="col-sm-12">
+      <% if notice %>
+          <div class="alert alert-dismissable alert-success">
+            <i class="close icon"></i>
+            <strong><%= notice %></strong>
+          </div>
+      <% end %>
 
-  <div class="col-sm-11">
-
-    <div class="row" id="page-alert">
-      <div class="col-sm-11">
-        <% if notice %>
-            <div class="alert alert-dismissable alert-success">
-              <i class="close icon"></i>
-              <strong><%= notice %></strong>
-            </div>
-        <% end %>
-
-        <% if alert %>
-            <div class="alert alert-dismissable alert-danger">
-              <i class="close icon"></i>
-              <strong><%= alert %></strong>
-            </div>
-        <% end %>
-      </div>
+      <% if alert %>
+          <div class="alert alert-dismissable alert-danger">
+            <i class="close icon"></i>
+            <strong><%= alert %></strong>
+          </div>
+      <% end %>
     </div>
-
-    <div class="row" id="page-wrapper">
-      <%= yield %>
-    </div>
-
   </div>
 
+  <div id="page-wrapper">
+    <%= yield %>
+  </div>
 </div>
 
 </body>
