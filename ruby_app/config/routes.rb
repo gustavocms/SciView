@@ -2,6 +2,11 @@ SciView::Application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
+  namespace :ng do
+    root 'base#home'
+  end
+  
+
   resources :charts, only: [:index, :show, :create] do
     collection do
       get :multiple
