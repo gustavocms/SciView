@@ -1,5 +1,6 @@
 %view-layout {
-  @extend span-columns(10);
-  @extend shift(1);
+  // TODO: sass claims this is invalid
+  //@extend span-columns(10);
+  //@extend shift(1);
   height: 32em;
 }

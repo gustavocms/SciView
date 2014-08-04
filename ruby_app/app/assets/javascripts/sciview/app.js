@@ -11,27 +11,27 @@ var app = angular.module('sciview', [
     $stateProvider      
         .state('data-sets', {
             url: '/data-sets',
-            templateUrl: '/templates/data_sets.html',
+            templateUrl: '/assets/sciview/data_sets.html',
             controller: 'DataSetController'
         })         
         .state('data-sets.single', {
             url: '/:dataSetId',
-            templateUrl: '/templates/data_set.html',
+            templateUrl: '/assets/sciview/data_set.html',
             controller: 'DataSetController'
         })          
         .state('data-sets.single.discuss', {
             url: '/discuss',
-            templateUrl: '/templates/discuss.html',
+            templateUrl: '/assets/sciview/discuss.html',
             controller: 'DiscussController'
         })                     
         .state('navigator', {
             url: '/navigator',
-            templateUrl: '/templates/navigator.html',
+            templateUrl: '/assets/sciview/navigator.html',
             controller: 'NavigatorController'
         })          
         .state('navigator.upload', {
             url: '/upload',
-            templateUrl: '/partials/upload.html',
+            templateUrl: '/assets/sciview/partials/upload.html',
             controller: 'UploadController'
         })        
         ;
