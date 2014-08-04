@@ -9,7 +9,8 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree .
+ *= require charts
+ *= require d3
  *= require jquery-ui/all
  *= require dark_admin_bootstrap_theme.css
  *= require font-awesome
