@@ -18,6 +18,8 @@
 //= require angular/angular
 //= require angular-route/angular-route
 //= require angular-resource/angular-resource
+//= require angular-animate/angular-animate
+//= require angular-cookies/angular-cookies
 //= require angular-ui-bootstrap-bower/ui-bootstrap-tpls
 //= require angular-ui-utils/ui-utils
 //= require angular-ui-router
