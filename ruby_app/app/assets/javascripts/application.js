@@ -27,4 +27,5 @@
 //= require stream_layers
 //= require jquery.fileupload
 //= require uploads
+//= require_tree ./sciview
 //= require_tree ./angular
