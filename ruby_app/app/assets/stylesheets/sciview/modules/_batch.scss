@@ -1,0 +1,94 @@
+.batch {
+  background-color: rgba($white, 0.01);
+  &:nth-child(odd) {
+    background-color: rgba($white, 0.025);
+  }
+}
+
+.batch__sidebar {
+  background-color: rgba($interface_color, 0.025);
+  border: 1px solid rgba($interface_color, 0.1);
+  height: 100%;
+}
+
+.batch__header {
+  @include span-columns(12);
+  border-bottom: 2px solid rgba($interface_color, 0.05);
+}
+
+.batch__title {
+  @extend %batch-item-title;
+  font-style: italic;
+  color: rgba($font_color, 0.5);
+}
+
+.batch__title-icon {
+  @extend %batch-icon-mini;
+  &::before {
+    background: url('../img/graph-title.svg') center center no-repeat;
+  }
+}
+
+.batch__add-channel-action {
+  @extend %batch-icon-mini;
+  &::before {
+    background: url('../img/add-channel.svg') center center no-repeat;
+  }
+}
+
+// List of Data
+.batch__data {
+  @extend %ul-reset;
+}
+
+// List of Channels in a group
+.batch__data-group {
+  @extend %ul-reset;
+  @include span-columns(12);
+  @extend %batch-expand-animation;
+}
+
+// If / When Group
+// - Title of Group
+.batch__data-group-title {
+  @extend %monospaced-style;
+  @extend %batch-item-title;
+  @include span-columns(10);
+}
+// - Expand Group w/ chevron
+.batch__data-group-expand {
+  @extend %batch-icon-chevron;
+  @extend %user-select-none;
+  &:hover {
+    cursor: pointer;
+    &::before {
+      opacity: 1;
+    }
+  }
+  &::before {
+    opacity: 0.5;
+    background: url('../img/chevron.svg') center center no-repeat;
+  }
+}
+
+// Dummy SVG Chart
+.batch__chart-svg {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
