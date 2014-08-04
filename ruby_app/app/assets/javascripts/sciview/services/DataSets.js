@@ -9,7 +9,7 @@ app.service('DataSets', function($http, $cookieStore, $state) {
                 batch: [
                     {
                         title: 'Pressure',
-                        chart: './img/graph_1.svg',
+                        chart: 'assets/graph_1.svg',
                         channel: [
                             {
                                 title: 'Pressure Sensors',
@@ -36,7 +36,7 @@ app.service('DataSets', function($http, $cookieStore, $state) {
                     },                    
                     {
                         title: 'Speed',
-                        chart: './img/graph_2.svg',
+                        chart: 'assets/graph_2.svg',
                         channel: [
                             {
                                 title: 'Pressure Sensors',
