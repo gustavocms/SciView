@@ -28,7 +28,7 @@ app.controller('DataSetController', [
         };
 
         $scope.addBatch = function() {
-          this.current_data_set.add_batch();
+          this.current_data_set.addBatch();
         }
 
         // Function to change state of expanded or retracted object

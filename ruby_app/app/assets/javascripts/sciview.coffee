@@ -1,5 +1,5 @@
 # Top-level namespace
-window.SciView = {}
+window.SciView or= {}
 
 class SciView.BasicChart
   constructor: (options = {}) ->
