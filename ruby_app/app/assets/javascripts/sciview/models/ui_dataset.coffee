@@ -22,7 +22,11 @@ class SciView.Models.UIChart
   addSeries: (series_title) ->
     @channels.push(new SciView.Models.UISeries(series_title, "default category"))
 
-  serialize: () -> # TODO
+  serialize: ->
+    title: @title
+    channels: @channels
+    # TODO: UISeries needs a serializer
+    # class for UIChannel
 
   @deserialize: (obj) ->
     chart = new @()
