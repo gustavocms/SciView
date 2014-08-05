@@ -32,24 +32,3 @@ app.service('DataSets', function($http, $cookieStore, $state) {
 
     return DataSets;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

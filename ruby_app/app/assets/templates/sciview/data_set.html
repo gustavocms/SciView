@@ -11,9 +11,6 @@
 <section class="data-set__current">
   <ul class="batches">
     <!-- First Graph -->
-    <li>
-      <a href="#">+ Add batch...</a>
-    </li>
     <li class="batch" ng-repeat="batch in current_data_set.batch">
       <!-- Sidebar / Data representation for gjkkraph -->
       <section class="batch__sidebar">
@@ -68,6 +65,11 @@
       </section>
     </li> 
 
+    <li>
+      <section class="batch__header">
+        <a class="batch__title" href="#" ng-click="addBatch()">+ Add batch...</a>
+      </section>
+    </li>
 </ul>
 </section>
 

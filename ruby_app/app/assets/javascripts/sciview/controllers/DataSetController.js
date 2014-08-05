@@ -27,6 +27,10 @@ app.controller('DataSetController', [
             toggleExpandRetract(channel);
         };
 
+        $scope.addBatch = function() {
+          this.current_data_set.add_batch();
+        }
+
         // Function to change state of expanded or retracted object
         var toggleExpandRetract = function(obj) {
             if(obj.state === "retracted") 
