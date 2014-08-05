@@ -31,6 +31,8 @@ app.controller('DataSetController', [
           this.current_data_set.addChart();
         }
 
+        $scope.addSeries = function(name) { console.log('addSeries', name); };
+
         // Function to change state of expanded or retracted object
         var toggleExpandRetract = function(obj) {
             if(obj.state === "retracted") 

@@ -22,6 +22,10 @@
         <ul class="batch__data">
 
           <!-- Each data item -->
+          <li class="batch__data-item">
+            <input ng-model="new_series_title">
+            <a href="#" ng-click="addSeries(new_series_title)">Add Series</a>
+          </li>
           <li class="batch__data-item" ng-repeat="channel in chart.channels">
             <!-- If the data item is NOT a group -->
             <section class="channel" ng-if="!channel.group">
