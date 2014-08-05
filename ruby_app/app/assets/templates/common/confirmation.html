@@ -2,7 +2,7 @@
     <h3 class="modal-title">{{modalOptions.headerText}}</h3>
 </div>
 <div class="modal-body">
-    <p>{{modalOptions.bodyText}}</p>
+    <div ng-bind-html="modalOptions.bodyText"></div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary"
