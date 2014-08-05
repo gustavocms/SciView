@@ -1,0 +1,45 @@
+<form name="metadataForm" novalidate class="css-form">
+    <div class="modal-header">
+        <h3 class="modal-title">Add a tag or attribute for {{newMetadata.series.key}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-row">
+            <label>Tag</label>
+            <input name="tag" type="text" class="form-control" placeholder="Ex: humidity" title="Tag"
+                   ng-model="newMetadata.tag" ng-maxlength=255
+                   ui-validate="{tagRequired : '$value.length > 0 || newMetadata.attribute.length > 0'}"
+                   ui-validate-watch=" 'newMetadata.attribute' ">
+            <span ng-show="metadataForm.tag.$error.tagRequired">Required.</span>
+            <span ng-show="metadataForm.tag.$error.maxlength">Max length 255.</span>
+        </div>
+        <h5>or</h5>
+        <div class="form-row">
+            <label>Attribute</label>
+            <input name="attribute" type="text" class="form-control" placeholder="Ex: thermostat" title="Attribute"
+                   ng-model="newMetadata.attribute" ng-maxlength=255
+                   ui-validate="{attributeRequired : '$value.length > 0 || newMetadata.tag.length > 0'}"
+                   ui-validate-watch=" 'newMetadata.tag' ">
+            <span ng-show="metadataForm.attribute.$error.attributeRequired">Required.</span>
+            <span ng-show="metadataForm.attribute.$error.maxlength">Max length 255.</span>
+        </div>
+        <div class="form-row">
+            <label>Value</label>
+            <input name="value" type="text" class="form-control" placeholder="Ex: 5" title="Value"
+                   ng-model="newMetadata.value" ng-maxlength=255
+                   ui-validate="{valueRequired : '$value.length > 0 || newMetadata.attribute.length == 0'}"
+                   ui-validate-watch=" 'newMetadata.attribute' ">
+            <span ng-show="metadataForm.value.$error.valueRequired">Required.</span>
+            <span ng-show="metadataForm.value.$error.maxlength">Max length 255.</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok(metadataForm)">Confirm</button>
+        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
+
+<style type="text/css">
+    .css-form input.ng-invalid {
+        border: 1px solid red;
+    }
+</style>
