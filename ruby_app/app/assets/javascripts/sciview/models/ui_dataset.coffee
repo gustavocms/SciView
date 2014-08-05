@@ -18,18 +18,16 @@ class SciView.Models.UIChannel
 
 class SciView.Models.UIChart
   constructor: (@title) ->
-    @channels = [
-      new SciView.Models.UIChannel('default channel')
-    ]
-
-
+    @channels = []
+    @_computeDataUrl()
+    #@initializeChart()
 
   chart: "assets/graph_1.svg" # TODO - replace this
 
   initializeChart: (element) ->
     @chart = new SciView.FocusChart(
       element: element
-      url: 'default-url'
+      url: @dataUrl
     )
 
   addChannel: -> # TODO
@@ -40,10 +38,15 @@ class SciView.Models.UIChart
   addSeries: (series_title) ->
     @channels.push(new SciView.Models.UISeries(series_title, "default category"))
     @_computeDataUrl()
+    @chart.dataURL(@dataUrl)
 
   dataUrl: "--"
 
-  _computeDataUrl: -> @dataUrl = @_allSeriesKeys()
+  _computeDataUrl: ->
+    @dataUrl = "/api/v1/datasets/multiple?#{@_seriesQueryString()}"
+
+  _seriesQueryString: ->
+    ("series_#{i}=#{k}" for k, i in @_allSeriesKeys()).join("&")
 
   _allSeriesKeys: ->
     seriesKeys = []
