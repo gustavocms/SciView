@@ -1,7 +1,10 @@
 workers Integer(ENV['PUMA_WORKERS'] || 1)
 threads Integer(ENV['MIN_THREADS'] || 1), Integer(ENV['MAX_THREADS'] || 16)
 
-directory 'ruby_app' unless Dir.getwd == 'ruby_app'
+
+if Dir.getwd !~ /ruby_app/
+  directory(Dir.getwd + '/ruby_app')
+end
 
 preload_app!
 
