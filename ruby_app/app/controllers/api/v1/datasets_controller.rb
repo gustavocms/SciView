@@ -6,7 +6,13 @@
 class Api::V1::DatasetsController < ::DatasetsController
   respond_to :json
 
+  # we need the `multiple` route to remain fairly similar to its counterpart in the original
+  # DatasetsController.
   def multiple
+    super
+  end
+  
+  def meta
     respond_with_series do |data|
       {
         id: '0',
