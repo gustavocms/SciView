@@ -22,6 +22,12 @@ class SciView.Models.UIChart
   addSeries: (series_title) ->
     @channels.push(new SciView.Models.UISeries(series_title, "default category"))
 
+  serialize: () -> # TODO
+
+  @deserialize: (obj) ->
+    chart = new @()
+    chart.channels = obj.channels if obj.channels
+
 
 
 class SciView.Models.UIDataset
@@ -35,3 +41,12 @@ class SciView.Models.UIDataset
 
   removeChart: -> # TODO
 
+  serialize: ->
+    id:    @id
+    title: @title
+    charts: (chart.serialize() for chart in @charts)
+
+  @deserialize: (obj) ->
+    dataset = new @(obj.id, obj.title)
+    dataset.charts = (SciView.Models.UIChart.deserialize(chart) for chart in (obj.charts or []))
+    return dataset

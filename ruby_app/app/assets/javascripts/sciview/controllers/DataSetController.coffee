@@ -22,4 +22,6 @@ app.controller('DataSetController', [
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
+
+    window.$scope = $scope
 ])
