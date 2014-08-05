@@ -1,106 +1,76 @@
 <section class="discussion">
-  <section  class="discussion__closed"
-            ng-if="$state.current.name !== 'data-sets.single.discuss'">
-    <i      class="discussion__cta-open"
-            ui-sref="data-sets.single.discuss"></i>
-    <i      class="discussion__tab--notification"></i>
-  </section>  
-  <section  class="discussion__open"
-            ng-if="$state.current.name === 'data-sets.single.discuss'">
-    <i      class="discussion__cta-close"
-            ui-sref="data-sets.single"></i>            
+  <section class="discussion__closed" ng-if="$state.current.name !== 'data-sets.single.discuss'">
+    <i class="discussion__cta-open" ui-sref="data-sets.single.discuss"></i>
+    <i class="discussion__tab--notification"></i>
+  </section> 
+  <section class="discussion__open" ng-if="$state.current.name === 'data-sets.single.discuss'">
+    <i class="discussion__cta-close" ui-sref="data-sets.single"></i> 
   </section>
 </section>
 
-<section  class="data-set__current">
-  <ul     class="batches">
+<section class="data-set__current">
+  <ul class="batches">
     <!-- First Graph -->
-    <li   class="batch"
-          ng-repeat="batch in current_data_set.batch">
+    <li class="batch" ng-repeat="batch in current_data_set.batch">
       <!-- Sidebar / Data representation for graph -->
-      <section    class="batch__sidebar">
-        <section  class="batch__header">
-          <i      class="batch__title-icon"></i>
-          <h4     class="batch__title"
-                  ng-bind="batch.title">
-          </h4>
-          <i      class="batch__add-channel-action"></i>
+      <section class="batch__sidebar">
+        <section class="batch__header">
+          <i class="batch__title-icon"></i>
+          <h4 class="batch__title" ng-bind="batch.title"> </h4>
+          <i class="batch__add-channel-action"></i>
         </section>
-        <ul       class="batch__data">
+        <ul class="batch__data">
 
           <!-- Each data item -->
-          <li     class="batch__data-item"
-                  ng-repeat="channel in batch.channel">
-              <!-- If the data item is NOT a group -->
-              <section    class="channel"
-                          ng-if="!channel.group">
-                    <i    class="channel__dropdown"></i>
-                    <span id="graph_{{$index}}" 
-                          class="channel__title"
-                          ng-bind="channel.title">
-                    </span> 
-                    <span class="channel__key"
-                          style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}">
-                    </span>
-                    <span class="channel__category"
-                          ng-bind="channel.category">
-                    </span>
-              </section>
-          
-              <!-- If the data item is a group -->
-              <section  class="channel__group"
-                        ng-if="channel.group"
-                        ng-class="{'is-retracted': channel.state === 'retracted'}">
-                    <!-- Retract group icon -->
-                    <i  class="batch__data-group-expand"
-                        ng-click="toggleGroup(channel)"></i>
-                    <!-- Group Title -->
-                    <h5 class="batch__data-group-title"
-                        ng-bind="channel.title">
-                    </h5>
-                    <!-- Group data list -->
-                    <ul class="batch__data-group">
-                          <!-- Channel item -->
-                          <li     class="channel is-group"
-                                  ng-repeat="channel in channel.group">
-                          <!-- Channel dropdown -->
-                            <i    class="channel__dropdown"></i>
-                          <!-- Channel title -->
-                            <span class="channel__title"
-                                  ng-bind="channel.title">
-                            </span>
-                            <span class="channel__key"
-                                  style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}">
-                            </span>
-                          <!-- Channel Category -->
-                            <span class="channel__category"
-                                  ng-bind="channel.category">
-                            </span>
-          
-                          </li>
-                    </ul>
-              </section>
+          <li class="batch__data-item" ng-repeat="channel in batch.channel">
+            <!-- If the data item is NOT a group -->
+            <section class="channel" ng-if="!channel.group">
+              <i class="channel__dropdown"></i>
+              <span id="graph_{{$index}}" class="channel__title" ng-bind="channel.title"> </span> 
+              <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
+              <span class="channel__category" ng-bind="channel.category"> </span>
+            </section>
+
+            <!-- If the data item is a group -->
+            <section class="channel__group" ng-if="channel.group" ng-class="{'is-retracted': channel.state === 'retracted'}">
+              <!-- Retract group icon -->
+              <i class="batch__data-group-expand" ng-click="toggleGroup(channel)"></i>
+              <!-- Group Title -->
+              <h5 class="batch__data-group-title" ng-bind="channel.title"> </h5>
+              <!-- Group data list -->
+              <ul class="batch__data-group">
+                <!-- Channel item -->
+                <li class="channel is-group" ng-repeat="channel in channel.group">
+                  <!-- Channel dropdown -->
+                  <i class="channel__dropdown"></i>
+                  <!-- Channel title -->
+                  <span class="channel__title" ng-bind="channel.title"> </span>
+                  <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
+                  <!-- Channel Category -->
+                  <span class="channel__category" ng-bind="channel.category"> </span>
+
+                </li>
+              </ul>
+            </section>
           </li>
 
-          </li>
-        </ul>
-      </section>
-      <!-- Visual chart representation for graph -->
-      <section class="batch__chart">
-        <div class="batch__chart-units-1">
-        </div>
-        <!-- Dummy Graph -->
-        <img class="batch__chart-svg" ng-src="{{batch.chart}}">
-      </section>
-    </li>      
+        </li>
+      </ul>
+    </section>
+    <!-- Visual chart representation for graph -->
+    <section class="batch__chart">
+      <div class="batch__chart-units-1">
+      </div>
+      <!-- Dummy Graph -->
+      <img class="batch__chart-svg" ng-src="{{batch.chart}}">
+    </section>
+  </li> 
 
-  </ul>
+</ul>
 </section>
 
 <section class="discuss" ui-view ng-class="{ 'is-discussing': $state.current.name === 'data-sets.single.discuss'}">
 </section>
 
-<section  class="tools" 
-        ng-controller="ToolController"
-        ng-include="'assets/sciview/partials/tool.html'">
+<section class="tools" ng-controller="ToolController" ng-include="'assets/sciview/partials/tool.html'">
 </section>
