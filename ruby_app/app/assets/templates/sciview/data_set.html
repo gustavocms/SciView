@@ -11,18 +11,18 @@
 <section class="data-set__current">
   <ul class="batches">
     <!-- First Graph -->
-    <li class="batch" ng-repeat="batch in current_data_set.batches">
+    <li class="batch" ng-repeat="chart in current_data_set.charts">
       <!-- Sidebar / Data representation for gjkkraph -->
       <section class="batch__sidebar">
         <section class="batch__header">
           <i class="batch__title-icon"></i>
-          <h4 class="batch__title" ng-bind="batch.title"> </h4>
+          <h4 class="batch__title" ng-bind="chart.title"> </h4>
           <i class="batch__add-channel-action"></i>
         </section>
         <ul class="batch__data">
 
           <!-- Each data item -->
-          <li class="batch__data-item" ng-repeat="channel in batch.channel">
+          <li class="batch__data-item" ng-repeat="channel in chart.channels">
             <!-- If the data item is NOT a group -->
             <section class="channel" ng-if="!channel.group">
               <i class="channel__dropdown"></i>
@@ -61,13 +61,13 @@
       <div class="batch__chart-units-1">
       </div>
       <!-- Dummy Graph -->
-      <img class="batch__chart-svg" ng-src="{{batch.chart}}">
+      <img class="batch__chart-svg" ng-src="{{chart.chart}}">
       </section>
     </li> 
 
     <li>
       <section class="batch__header">
-        <a class="batch__title" href="#" ng-click="addBatch()">+ Add batch...</a>
+        <a class="batch__title" href="#" ng-click="addChart()">+ Add chart...</a>
       </section>
     </li>
 </ul>
