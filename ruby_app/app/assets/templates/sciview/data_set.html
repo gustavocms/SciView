@@ -32,7 +32,7 @@
             </section>
 
             <!-- If the data item is a group -->
-            <section class="channel__group" ng-if="channel.group" ng-class="{'is-retracted': channel.state === 'retracted'}">
+            <section class="channel__group" ng-if="channel.group" ng-class="channel.state">
               <!-- Retract group icon -->
               <i class="batch__data-group-expand" ng-click="toggleGroup(channel)"></i>
               <!-- Group Title -->
