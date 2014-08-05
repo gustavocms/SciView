@@ -3,10 +3,8 @@ SciView.Models or= {}
 
 
 class SciView.Models.UISeries
-  constructor: (@title, @category, @key) ->
-
-
-
+  constructor: (@title, @category) ->
+    @key = { color: SciView.lineColor(@title), style: "solid" }
 
 class SciView.Models.UIChart
   constructor: (@title) ->
@@ -20,6 +18,9 @@ class SciView.Models.UIChart
   removeChannel: -> # TODO
   addGroup: -> # TODO
   removeGroup: -> # TODO
+
+  addSeries: (series_title) ->
+    @channels.push(new SciView.Models.UISeries(series_title, "default category"))
 
 
 

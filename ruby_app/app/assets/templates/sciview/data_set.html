@@ -11,7 +11,7 @@
 <section class="data-set__current">
   <ul class="batches">
     <!-- First Graph -->
-    <li class="batch" ng-repeat="chart in current_data_set.charts">
+    <li class="batch" ng-repeat="chart in current_data_set.charts" ng-controller="UIChartController">
       <!-- Sidebar / Data representation for gjkkraph -->
       <section class="batch__sidebar">
         <section class="batch__header">
@@ -24,9 +24,9 @@
           <!-- Each data item -->
           <li class="batch__data-item">
             <input ng-model="new_series_title">
-            <a href="#" ng-click="addSeries(new_series_title)">Add Series</a>
+            <a href="#" ng-click="addSeries(chart, new_series_title)">Add Series</a>
           </li>
-          <li class="batch__data-item" ng-repeat="channel in chart.channels">
+          <li class="batch__data-item" ng-repeat="channel in chart.channels" >
             <!-- If the data item is NOT a group -->
             <section class="channel" ng-if="!channel.group">
               <i class="channel__dropdown"></i>
@@ -71,7 +71,7 @@
 
     <li>
       <section class="batch__header">
-        <a class="batch__title" href="#" ng-click="addChart()">+ Add chart...</a>
+        <a class="batch__title" href="#" ng-click="addChart()">+ Add New Graph</a>
       </section>
     </li>
 </ul>

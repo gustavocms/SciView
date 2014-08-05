@@ -20,8 +20,6 @@ app.controller('DataSetController', [
 
     $scope.addChart = -> @current_data_set.addChart()
 
-    $scope.addSeries = (name) -> console.log('addSeries', name)
-
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
 ])

@@ -1,6 +1,19 @@
 # Top-level namespace
 window.SciView or= {}
 
+SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
+  'TURQUOISE': '#1ABC9C'
+  'SUN FLOWER': '#F1C40F'
+  'AMETHYST': '#9B59B6'
+  'ORANGE': '#F39C12'
+  'EMERALD': '#2ECC71'
+  'ALIZARIN': '#E74C3C'
+  'SILVER': '#BDC3C7'
+  'PETER RIVER': '#3498DB'
+  'CARROT': '#E67E22'
+  'CLOUDS': '#ECF0F1'
+})
+
 class SciView.BasicChart
   constructor: (options = {}) ->
     @element = options.element or 'body'
@@ -276,18 +289,7 @@ class SciView.FocusChart extends SciView.BasicChart
   #   '#d9d9d9'
   # ])
 
-  lineColor = d3.scale.ordinal().range(value for name, value of {
-    'TURQUOISE': '#1ABC9C'
-    'SUN FLOWER': '#F1C40F'
-    'AMETHYST': '#9B59B6'
-    'ORANGE': '#F39C12'
-    'EMERALD': '#2ECC71'
-    'ALIZARIN': '#E74C3C'
-    'SILVER': '#BDC3C7'
-    'PETER RIVER': '#3498DB'
-    'CARROT': '#E67E22'
-    'CLOUDS': '#ECF0F1'
-  })
+  lineColor = SciView.lineColor
 
   render: ->
     if @_zoomData
