@@ -37,4 +37,16 @@ SciView::Application.routes.draw do
   #get "welcome/index"
   resources :posts
   root 'welcome#index'
+
+  # JSON API for the angular app
+  # (will eventually replace the datasets resource above)
+  namespace :api do
+    namespace :v1 do
+      resources :datasets, only: [:show] do 
+        collection do
+          get :multiple
+        end
+      end
+    end
+  end
 end
