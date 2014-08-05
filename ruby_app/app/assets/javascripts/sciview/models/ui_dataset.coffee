@@ -38,7 +38,7 @@ class SciView.Models.UIChart
   addSeries: (series_title) ->
     @channels.push(new SciView.Models.UISeries(series_title, "default category"))
     @_computeDataUrl()
-    @chart.dataURL(@dataUrl)
+    @chart.dataURL(@dataUrl).getData()
 
   dataUrl: "--"
 
