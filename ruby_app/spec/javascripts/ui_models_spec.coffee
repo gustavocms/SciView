@@ -67,8 +67,9 @@ describe "UI Models", ->
 
     it 'tracks the data url', ->
       expect(chart.dataUrl).toEqual('/api/v1/datasets/multiple?series_0=series_A&series_1=series_B')
-      #chart.addSeries('new_title', false)
-      #expect(chart.dataUrl).toEqual('/api/v1/datasets/multiple?series_0=series_A&series_1=series_B&series_2=new_title')
+
+    it 'tracks all series keys', ->
+      expect(chart._allSeriesKeys()).toEqual(['series_A', 'series_B'])
 
     describe "serialization", ->
       chart2 = new svm.UIChart('chart 2')
