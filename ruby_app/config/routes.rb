@@ -47,6 +47,8 @@ SciView::Application.routes.draw do
           get :multiple
         end
       end
+
+      resources :view_states
     end
   end
 end

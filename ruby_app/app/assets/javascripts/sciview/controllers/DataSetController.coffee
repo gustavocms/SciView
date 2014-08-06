@@ -5,16 +5,27 @@ app.controller('DataSetController', [
   '$stateParams'
   '$state'
   'DataSets'
-  ($scope, $rootScope, $location, $stateParams, $state, DataSets)  ->
+  'ViewState'
+  ($scope, $rootScope, $location, $stateParams, $state, DataSets, ViewState) ->
     # Get all Data Sets        
-    $scope.data_sets = DataSets.getDataSets()
+    #$scope.data_sets = DataSets.getDataSets()
+    $scope.data_sets = []
 
-    setCurrentDataSet = () -> $scope.current_data_set = $scope.data_sets[$stateParams.dataSetId]
+    setCurrentDataSet = () -> $scope.current_data_set = $scope.data_sets[$stateParams.dataSetId] # TODO: fixme
     setCurrentDataSet()
+
+    window.v = ViewState
+    req = ViewState.get({ viewStateId: 1 })
+    req.$promise
+      .then((data) ->
+        $scope.data_sets = (SciView.Models.UIDataset.deserialize(d) for d in [data])
+        $scope.current_data_set = $scope.data_sets[0]
+      )
 
     # Make $state available in $scope
     $scope.$state = $state
 
+    window.s = $scope
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 

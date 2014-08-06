@@ -2,7 +2,8 @@ class CreateViewStates < ActiveRecord::Migration
   def change
     create_table :view_states do |t|
       t.references :user
-      t.json :state
+      t.string :title
+      t.json :charts
 
       t.timestamps
     end
