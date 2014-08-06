@@ -1,11 +1,44 @@
 window.SciView or= {}
 SciView.Models or= {}
 
-class SciView.Models.UISeries
+class SciView.Models.UIBase
+  # assigns a property is arg is present and defined, otherwise
+  # defaults to the function on _defaults with the same property name
+  default: (attr, arg) ->
+    @[attr] = ( arg or (@_defaults[attr] or @_noOp)())
+
+  _defaults:
+    title: -> "untitled"
+
+  _noOp: ->
+
+  # javascript primitives that don't need additional serialization
+  @serialized_attributes: []
+
+  @deserialize: (obj) ->
+    newObj = new @()
+    newObj.default(key, obj[key]) for key in @serialized_attributes
+    newObj
+
+  serialize: ->
+    serialized = {}
+    (serialized[key] = @[key]) for key in @constructor.serialized_attributes
+    serialized
+
+
+
+class SciView.Models.UISeries extends SciView.Models.UIBase
   constructor: (@title, @category) ->
-    @key = { color: SciView.lineColor(@title), style: "solid" }
+    @key = @default('key')
 
   seriesKeys: -> [@title]
+
+  _defaults:
+    key: -> { color: SciView.lineColor(@title), style: "solid" }
+    title: -> "untitled series"
+
+  @serialized_attributes: ['title', 'category', 'key']
+
 
 class SciView.Models.UIChannel
   constructor: (@title) ->
