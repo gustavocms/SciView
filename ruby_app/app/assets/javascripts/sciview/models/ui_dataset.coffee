@@ -12,6 +12,8 @@ class SciView.Models.UIBase
 
   _noOp: ->
 
+  afterDeserialize: ->
+
   # javascript primitives that don't need additional serialization
   @serialized_attributes: []
 
@@ -23,6 +25,7 @@ class SciView.Models.UIBase
     newObj.default(key, obj[key]) for key in @serialized_attributes
     for key, klass of @serializable_collections
       newObj[key] = (klass.deserialize(member) for member in obj[key])
+    newObj.afterDeserialize()
     newObj
 
   serialize: ->
@@ -61,9 +64,12 @@ class SciView.Models.UIChannel extends SciView.Models.UIBase
     series: SciView.Models.UISeries
 
 
-class SciView.Models.UIChart
+class SciView.Models.UIChart extends SciView.Models.UIBase
   constructor: (@title) ->
-    @channels = []
+    # default channel holds otherwise ungrouped series.
+    # TODO: is there a better way to reference this rather
+    # than just keeping it at channels[0]? (brittle)
+    @channels = [new SciView.Models.UIChannel('default channel')]
     @_computeDataUrl()
     #@initializeChart()
 
@@ -75,15 +81,21 @@ class SciView.Models.UIChart
       url: @dataUrl
     )
 
-  addChannel: -> # TODO
+  addChannel: (channel) ->
+    if channel
+      @channels.push(channel)
+    else
+      undefined # TODO - insert channel template
+    @_computeDataUrl()
+
   removeChannel: -> # TODO
   addGroup: -> # TODO
   removeGroup: -> # TODO
 
-  addSeries: (series_title) ->
-    @channels.push(new SciView.Models.UISeries(series_title, "default category"))
+  addSeries: (series_title, load_data = true) -> # load_data switch facilitates testing
+    @channels[0].series.push(new SciView.Models.UISeries(series_title, "default category"))
     @_computeDataUrl()
-    @chart.dataURL(@dataUrl).getData()
+    @chart.dataURL(@dataUrl).getData() if load_data
 
   dataUrl: "--"
 
@@ -99,15 +111,11 @@ class SciView.Models.UIChart
       seriesKeys.push(key) for key in channel.seriesKeys()
     return seriesKeys
 
-  serialize: ->
-    title: @title
-    channels: @channels
-    # TODO: UISeries needs a serializer
-    # class for UIChannel
+  @serialized_attributes: ['title']
+  @serializable_collections:
+    channels: SciView.Models.UIChannel
 
-  @deserialize: (obj) ->
-    chart = new @()
-    chart.channels = obj.channels if obj.channels
+  afterDeserialize: -> @_computeDataUrl()
 
 class SciView.Models.UIDataset
   constructor: (@id, @title) ->
