@@ -15,6 +15,9 @@ class SciView.Models.UIBase
   # javascript primitives that don't need additional serialization
   @serialized_attributes: []
 
+  # collections of objects that have their own serialization functions
+  @serializable_collections: []
+
   @deserialize: (obj) ->
     newObj = new @()
     newObj.default(key, obj[key]) for key in @serialized_attributes
@@ -23,6 +26,8 @@ class SciView.Models.UIBase
   serialize: ->
     serialized = {}
     (serialized[key] = @[key]) for key in @constructor.serialized_attributes
+    for key, klass of @constructor.serializable_collections
+      serialized[key] = (member.serialize() for member in @[key])
     serialized
 
 
@@ -40,13 +45,18 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
   @serialized_attributes: ['title', 'category', 'key']
 
 
-class SciView.Models.UIChannel
+class SciView.Models.UIChannel extends SciView.Models.UIBase
   constructor: (@title) ->
     @state = 'retracted'
-    @group = [new SciView.Models.UISeries('default', 'default category')]
+    #@group = [new SciView.Models.UISeries('default', 'default category')]
+    @series = []
 
   seriesKeys: ->
-    series.title for series in @group
+    series.title for series in @series
+
+  @serialized_attributes: ['title']
+  @serializable_collections:
+    series: SciView.Models.UISeries
 
 
 class SciView.Models.UIChart
