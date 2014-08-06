@@ -45,6 +45,7 @@ describe "UI Models", ->
   describe "UIChannel", ->
     serializedChannel =
       title: "channel title"
+      state: 'retracted'
       series: [
         { title: 'series_A', category: 'category A', key: { color: '#1ABC9C', style: 'solid' } }
         { title: 'series_B', category: 'category B', key: { color: '#1ABC9C', style: 'solid' } }
@@ -79,6 +80,7 @@ describe "UI Models", ->
         channels: [
           {
             title: 'default channel'
+            state: 'expanded'
             series: [
               {
                 title: 'new_series'
@@ -95,5 +97,3 @@ describe "UI Models", ->
 
 
   describe "UIDataset", ->
-
-

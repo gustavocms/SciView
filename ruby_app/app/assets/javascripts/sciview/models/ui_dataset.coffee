@@ -52,16 +52,21 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
 
 class SciView.Models.UIChannel extends SciView.Models.UIBase
   constructor: (@title) ->
-    @state = 'retracted'
+    @default('state')
+    @default('series')
     #@group = [new SciView.Models.UISeries('default', 'default category')]
-    @series = []
 
   seriesKeys: ->
     series.title for series in @series
 
-  @serialized_attributes: ['title']
+  @serialized_attributes: ['title', 'state']
   @serializable_collections:
     series: SciView.Models.UISeries
+
+  _defaults:
+    title: -> "Untitled Chart"
+    state: -> "retracted"
+    series: -> []
 
   _state: (state) ->
     @state = state
