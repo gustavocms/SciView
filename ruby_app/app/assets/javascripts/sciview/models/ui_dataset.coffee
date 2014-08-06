@@ -21,6 +21,8 @@ class SciView.Models.UIBase
   @deserialize: (obj) ->
     newObj = new @()
     newObj.default(key, obj[key]) for key in @serialized_attributes
+    for key, klass of @serializable_collections
+      newObj[key] = (klass.deserialize(member) for member in obj[key])
     newObj
 
   serialize: ->
