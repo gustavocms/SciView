@@ -28,16 +28,16 @@
             <a href="#" ng-click="addSeries(chart, new_series_title)">Add Series</a>
           </li>
           <li class="batch__data-item" ng-repeat="channel in chart.channels" >
-            <!-- If the data item is NOT a group -->
-            <section class="channel" ng-if="!channel.group">
+            <!-- If the data item is NOT a group ## NO LONGER VALID - series must belong to a channel
+            <section class="channel" ng-if="!channel.series">
               <i class="channel__dropdown"></i>
               <span id="graph_{{$index}}" class="channel__title" ng-bind="channel.title"> </span> 
               <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
               <span class="channel__category" ng-bind="channel.category"> </span>
-            </section>
+              </section> -->
 
             <!-- If the data item is a group -->
-            <section class="channel__group" ng-if="channel.group" ng-class="channel.state">
+            <section class="channel__group" ng-class="channel.state">
               <!-- Retract group icon -->
               <i class="batch__data-group-expand" ng-click="toggleGroup(channel)"></i>
               <!-- Group Title -->
@@ -45,7 +45,7 @@
               <!-- Group data list -->
               <ul class="batch__data-group">
                 <!-- Channel item -->
-                <li class="channel is-group" ng-repeat="channel in channel.group">
+                <li class="channel is-group" ng-repeat="channel in channel.series">
                   <!-- Channel dropdown -->
                   <i class="channel__dropdown"></i>
                   <!-- Channel title -->

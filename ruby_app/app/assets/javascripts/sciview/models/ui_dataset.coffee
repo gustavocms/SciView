@@ -63,13 +63,22 @@ class SciView.Models.UIChannel extends SciView.Models.UIBase
   @serializable_collections:
     series: SciView.Models.UISeries
 
+  _state: (state) ->
+    @state = state
+    @
 
+  expand: -> @_state('expanded')
+  retract: -> @_state('retracted')
+
+
+# UIChart provides an interface to the D3 chart and stores
+# references to channels/series.
 class SciView.Models.UIChart extends SciView.Models.UIBase
   constructor: (@title) ->
     # default channel holds otherwise ungrouped series.
     # TODO: is there a better way to reference this rather
     # than just keeping it at channels[0]? (brittle)
-    @channels = [new SciView.Models.UIChannel('default channel')]
+    @channels = [new SciView.Models.UIChannel('default channel').expand()]
     @_computeDataUrl()
     #@initializeChart()
 
@@ -117,7 +126,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
 
   afterDeserialize: -> @_computeDataUrl()
 
-class SciView.Models.UIDataset
+class SciView.Models.UIDataset extends SciView.Models.UIBase
   constructor: (@id, @title) ->
     @charts = []
 
@@ -128,12 +137,3 @@ class SciView.Models.UIDataset
 
   removeChart: -> # TODO
 
-  serialize: ->
-    id:    @id
-    title: @title
-    charts: (chart.serialize() for chart in @charts)
-
-  @deserialize: (obj) ->
-    dataset = new @(obj.id, obj.title)
-    dataset.charts = (SciView.Models.UIChart.deserialize(chart) for chart in (obj.charts or []))
-    return dataset
