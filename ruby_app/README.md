@@ -1,58 +1,46 @@
-## SciView
+# SciView
 
 ## Local Environment Setup
 
 ### Prerequisites
 
-#### Setup Heroku
-You will only need to setup the Heroku toolkit if you plan on publishing to Heroku. Otherwise, it is not necessary for your local environment.
+#### PostgreSQL
 
-https://toolbelt.heroku.com/
-
-#### Setup PostgreSQL
-
-On Mac:
+Mac:
     $ brew install postgres
 
-#### Setup Redis
+#### Redis
 
-On Mac:
+Mac:
     $ brew install redis
 
-#### Setup Bower (I don't think we're using Bower any more ... so probably skip this section)
+#### Bower
+(I don't think we're using Bower any more ... so probably skip this section... otherwise see the bottom of this readme for more details on how to setup Bower.)
 
-On Mac:
-    # Pre-reqs (Node.JS and Node Package Manager)
+#### Update your bundle
 
-    $ brew install node npm
+    $ bundle install
     
-    # Install bower
-    $ npm install bower
+#### Create the SciView database
 
-
-On Ubuntu: 
-http://www.euperia.com/development/install-nodejs-and-bower-on-ubuntu-12-04-precise/1269
-
-* Install bower dependencies
-
-Add your dependencies inside ruby_app/Bowerfile, like the following:
-
-    asset 'bootstrap'
-
-Run bower install to download dependencies (the files will be downloaded to vendor/assets/bower_components):
-
-    $ rake bower:install
-
-Add the library to the asset pipeline:
-
-    //= require bootstrap/dist/js/bootstrap
+    $ rake db:setup
 
 ### Running the app
+
+#### Launch the web server and redis
 
     $ cd ruby_app
     $ foreman start -p 3000
 
 ## Deploying to Heroku
+
+### Setup Heroku Toolbelt
+You will only need to setup the Heroku toolkit if you plan on publishing to Heroku. Otherwise, it is not necessary for your local environment.
+
+https://toolbelt.heroku.com/
+
+### Command line
+We have a weird project structure, so you need a special command to deploy a subdirectory to Heroku.
 
     git push heroku `git subtree split --prefix ruby_app branch_to_deploy`:master --force
 
@@ -93,3 +81,35 @@ Append 1,000,000 data points to test-key (do not overwrite whatever exists) and 
 Benchmark rollup functions over different intervals on TempoDB (Primarily useful as an experimentation tool, feel free to change).
 
     $ rake data:benchmark
+
+
+
+## Appendix
+
+### Setting up Bower
+
+Mac:
+    
+    # Pre-reqs (Node.JS and Node Package Manager)
+    $ brew install node npm
+    
+    # Install bower
+    $ npm install bower
+
+
+Ubuntu: 
+http://www.euperia.com/development/install-nodejs-and-bower-on-ubuntu-12-04-precise/1269
+
+* Install bower dependencies
+
+Add your dependencies inside ruby_app/Bowerfile, like the following:
+
+    asset 'bootstrap'
+
+Run bower install to download dependencies (the files will be downloaded to vendor/assets/bower_components):
+
+    $ rake bower:install
+
+Add the library to the asset pipeline:
+
+    //= require bootstrap/dist/js/bootstrap
