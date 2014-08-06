@@ -80,6 +80,8 @@ gem 'rails-assets-angular-ui-bootstrap-bower'
 gem 'rails-assets-angular-ui-router'
 gem 'rails-assets-angular-ui-utils'
 
+gem "jasmine", github: "pivotal/jasmine-gem"
+
 gem 'angular_rails_csrf'
 
 gem 'autoprefixer-rails'
@@ -113,3 +115,4 @@ gem 'sinatra', '>= 1.3.0', :require => nil
 
 
 gem 'aws-sdk'
+
