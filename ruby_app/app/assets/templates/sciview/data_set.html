@@ -16,8 +16,7 @@
       <section class="batch__sidebar">
         <section class="batch__header">
           <i class="batch__title-icon"></i>
-          <h4 class="batch__title" ng-bind="chart.title"> </h4>
-          <pre>{{ chart.dataUrl | json }}</pre>
+          <h4 class="batch__title" ng-click="chart.refresh()" ng-bind="chart.title"></h4>
           <i class="batch__add-channel-action"></i>
         </section>
         <ul class="batch__data">
@@ -72,6 +71,11 @@
     <li>
       <section class="batch__header">
         <a class="batch__title" href="#" ng-click="addChart()">+ Add New Graph</a>
+      </section>
+    </li>
+    <li>
+      <section class="batch__header">
+        <a class="batch__title" href="#" ng-click="logDataset()">+ Serialize DataSet</a>
       </section>
     </li>
 </ul>

@@ -108,10 +108,13 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
 
   addSeries: (series_title, load_data = true) -> # load_data switch facilitates testing
     @channels[0].series.push(new SciView.Models.UISeries(series_title, "default category"))
-    @_computeDataUrl()
-    @chart.dataURL(@dataUrl).getData() if load_data
+    @refresh() if load_data
 
   dataUrl: "--"
+
+  refresh: ->
+    @_computeDataUrl()
+    @chart.dataURL(@dataUrl).getData() 
 
   _computeDataUrl: ->
     @dataUrl = "/api/v1/datasets/multiple?#{@_seriesQueryString()}"
@@ -141,4 +144,8 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
   _newChart: -> new SciView.Models.UIChart("Untitled Chart")
 
   removeChart: -> # TODO
+
+  @serialized_attributes: ['id', 'title']
+  @serializable_collections:
+    charts: SciView.Models.UIChart
 

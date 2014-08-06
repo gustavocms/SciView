@@ -97,3 +97,8 @@ describe "UI Models", ->
 
 
   describe "UIDataset", ->
+    dataset = new svm.UIDataset('0', 'test dataset')
+    dataset.charts = [chart]
+
+    it 'serializes to a basic object', ->
+      console.log(dataset.serialize())

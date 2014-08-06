@@ -19,9 +19,11 @@ app.controller('DataSetController', [
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
     $scope.addChart = -> @current_data_set.addChart()
+    $scope.logDataset = ->
+      console.log(@current_data_set)
+      console.log(angular.toJson(@current_data_set.serialize()))
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
 
-    window.$scope = $scope
 ])
