@@ -7,11 +7,13 @@
 #### PostgreSQL
 
 Mac:
+
     $ brew install postgres
 
 #### Redis
 
 Mac:
+
     $ brew install redis
 
 #### Bower
