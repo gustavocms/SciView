@@ -292,10 +292,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .append("rect")
       .attr("width", @width)
       .attr("height", @height)
-    @focus = @svg.append("g")
+    @focus or= @svg.append("g")
       .attr("class", "focus")
       .attr("transform", "translate(" + @margin.left + "," + @margin.top + ")")
-    @context = @svg.append("g")
+    @context or= @svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
   setSvgAttributes: ->
@@ -388,7 +388,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .call(@xAxis)
     @yAxisGroup or= @focus.append("g")
       .attr("class", "y axis")
+    @yAxisMinorGroup or= @focus.append('g')
+      .attr('class', 'y axis minor')
     @yAxisGroup.call(@yAxis)
+    @yAxisMinorGroup.call(@yAxisMinor)
 
     contextPaths = @context.selectAll("path.context").data(@_data)
     
@@ -398,7 +401,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
     
-    @context.append("rect")
+    @contextBg or= @context.append("rect")
       .attr('id', 'contextBg')
       .attr('x', 0)
       .attr('width', @width)
@@ -473,11 +476,35 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     bh = @baseHeight()
     h1 = bh * 0.85
     h2 = bh - h1
-    @margin  = {top: 0, right: 0, bottom: h2 + 10, left: 40}
-    @margin2 = {top: h1 + 10, right: 0, bottom: 0, left: 40}
+    @margin  = {top: 0, right: 0, bottom: h2 + 10, left: 0}
+    @margin2 = {top: h1 + 10, right: 0, bottom: 0, left: 0}
     @width   = @baseWidth() - @margin.left - @margin.right
     @height  = @baseHeight() - @margin.top - @margin.bottom
     @height2 = @baseHeight() - @margin2.top - @margin2.bottom
+
+  initializeChartVariables: (options) ->
+    @_dataURL     = options.url
+    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
+    @x            = d3.time.scale().range([0, @width])
+    @x2           = d3.time.scale().range([0, @width])
+    @y            = d3.scale.linear().range([@height, 0])
+    @y2           = d3.scale.linear().range([@height2, 0])
+    @xAxis        = d3.svg.axis().scale(@x).orient("bottom")
+    @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
+    @yAxis        = d3.svg.axis()
+      .scale(@y)
+      .orient("right")
+      .tickFormat(d3.format(".0f"))
+      .ticks(10)
+      .tickSize(20, 10)
+    @yAxisMinor = d3.svg.axis()
+      .scale(@y)
+      .orient("right")
+      .tickFormat("")
+      .ticks((@y.ticks(10).length + 1) * 4)
+      .tickSize(20, 10)
+    window.y = @yAxis
+    window.ym = @yAxisMinor
 
   baseWidth: ->
     parseInt(@elementSelection().style('width'))

@@ -36,4 +36,11 @@
   .legend {
     cursor: pointer;
   }
+
+  .axis .tick line {
+    stroke-width: 1.5pt;
+  }
+  .minor .tick line {
+    stroke-width: 0.5pt;
+  }
 }
