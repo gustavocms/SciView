@@ -87,7 +87,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     @_computeDataUrl()
     #@initializeChart()
 
-  chart: "assets/graph_1.svg" # TODO - replace this
+  #chart: "assets/graph_1.svg" # TODO - replace this
 
   initializeChart: (element) ->
     @chart = new SciView.FocusChart(
@@ -113,8 +113,9 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
   dataUrl: "--"
 
   refresh: ->
+    @chart or @initializeChart()
     @_computeDataUrl()
-    @chart.dataURL(@dataUrl).getData() 
+    @chart.dataURL(@dataUrl).getData()
 
   _computeDataUrl: ->
     @dataUrl = "/api/v1/datasets/multiple?#{@_seriesQueryString()}"
@@ -138,12 +139,16 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
   constructor: (@id, @title) ->
     @charts = []
 
-  addChart: ->
-    @charts.push(@_newChart())
+  addChart: -> @charts.push(@_newChart())
 
   _newChart: -> new SciView.Models.UIChart("Untitled Chart")
 
   removeChart: -> # TODO
+
+  # Triggers a data load/d3 redraw
+  refresh: -> 
+    console.log(@charts)
+    chart.refresh() for chart in @charts
 
   @serialized_attributes: ['id', 'title']
   @serializable_collections:

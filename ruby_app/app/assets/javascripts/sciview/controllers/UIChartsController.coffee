@@ -10,5 +10,5 @@ app.controller("UIChartController", [
         ui_chart.addSeries(series_title)
 
     $scope.chart.initializeChart($element.find('.batch__chart')[0]) # TODO: any way not to need $element in the controller?
-    window.chart = $scope.chart
+    $scope.chart.refresh()
 ])

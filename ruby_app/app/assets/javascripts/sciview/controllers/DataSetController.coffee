@@ -11,16 +11,19 @@ app.controller('DataSetController', [
     #$scope.data_sets = DataSets.getDataSets()
     $scope.data_sets = []
 
-    setCurrentDataSet = () -> $scope.current_data_set = $scope.data_sets[$stateParams.dataSetId] # TODO: fixme
-    setCurrentDataSet()
 
-    window.v = ViewState
-    req = ViewState.get({ viewStateId: 1 })
-    req.$promise
-      .then((data) ->
-        $scope.data_sets = (SciView.Models.UIDataset.deserialize(d) for d in [data])
-        $scope.current_data_set = $scope.data_sets[0]
-      )
+    setCurrentDataSet = (dataset) ->
+      dataset or= $scope.data_sets[$stateParams.dataSetId] # TODO: fixme (shouldn't be array-indexed)
+      $scope.current_data_set = dataset
+
+    #setCurrentDataSet()
+
+    deserializeAndSetCurrent = (raw) ->
+      dataset = SciView.Models.UIDataset.deserialize(raw)
+      $scope.data_sets.push(dataset)
+      setCurrentDataSet(dataset)
+
+    ViewState.get({ viewStateId: 1 }).$promise.then(deserializeAndSetCurrent) # TODO: should not have a hard-coded id
 
     # Make $state available in $scope
     $scope.$state = $state
