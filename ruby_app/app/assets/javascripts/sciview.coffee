@@ -472,7 +472,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   initializeBaseVariables: (options) ->
     @element = options.element or 'body'
-    console.log('w', @baseWidth(), 'h', @baseHeight())
     bh = @baseHeight()
     h1 = bh * 0.85
     h2 = bh - h1
@@ -522,7 +521,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   # re-scales the chart based on the new dimensions of the chart's container
   redraw: =>
-    console.log(@baseWidth(),@baseHeight())
     @initializeBaseVariables(@options)
     @initializeChartVariables(@options)
     @initializeD3Components()
