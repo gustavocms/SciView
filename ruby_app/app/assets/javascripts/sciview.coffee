@@ -17,6 +17,10 @@ SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
 
 class SciView.BasicChart
   constructor: (options = {}) ->
+    @initializeBaseVariables(options)
+
+
+  initializeBaseVariables: (options) ->
     @element = options.element or 'body'
     @margin  = {top: 10, right: 10, bottom: 100, left: 40}
     @margin2 = {top: 430, right: 10, bottom: 20, left: 40}
@@ -29,7 +33,7 @@ noOp = -> # Nothing happens!
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
-    @initializeBaseVariables(options)
+    @initializeChartVariables(options)
     @initializeD3Components()
     @initializePleaseWait()
     @initializeSvg()
@@ -38,7 +42,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
                                     # (does not work without the anonymous wrapper)
                                     
-  initializeBaseVariables: (options) ->
+  initializeChartVariables: (options) ->
     @_dataURL     = options.url
     @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
     @x            = d3.time.scale().range([0, @width])
@@ -436,7 +440,6 @@ class SciView.FocusChart extends SciView.BasicChart
 
 # subclassing the chart for the Angular app (so the basic html app doesn't break)
 class SciView.D3.FocusChart extends SciView.FocusChart
-  # TODO:
   
   # TODO - move 'data loading' indicator elsewhere
   initializePleaseWait: noOp
