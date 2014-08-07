@@ -1,6 +1,7 @@
 # Top-level namespace
 window.SciView or= {}
 SciView.D3 or= {}
+SciView.D3.counter = 0
 
 SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
   'TURQUOISE': '#1ABC9C'
@@ -44,7 +45,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .on('zoom', @zoomed)
       .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
                                     # (does not work without the anonymous wrapper)
+    @postInitializeHook()
                                     
+  postInitializeHook: noOp
+
   initializeChartVariables: (options) ->
     @_dataURL     = options.url
     @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
@@ -281,10 +285,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
   initializeSvg: =>
     @svg = d3.select(@element).append("svg")
-      .attr("width", @width + @margin.left + @margin.right)
-      #.attr("height", @height + @margin.top + @margin.bottom)
       .attr("preserveAspectRatio", "none")
-      .attr("viewBox", "0 0 #{@width + @margin.right + @margin.left} #{@height + @margin.top + @margin.bottom}")
+    @setSvgAttributes()
     @svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
@@ -296,6 +298,9 @@ class SciView.FocusChart extends SciView.BasicChart
     @context = @svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
+  setSvgAttributes: ->
+    @svg.attr("width", @width + @margin.left + @margin.right)
+    .attr("viewBox", "0 0 #{@width + @margin.right + @margin.left} #{@height + @margin.top + @margin.bottom}")
 
   #lineColor = d3.scale.category10()
   # lineColor = d3.scale.ordinal().range([
@@ -352,7 +357,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
-    @focusTarget = @focus.append('rect')
+    @focusTarget or= @focus.append('rect')
       .attr('class', 'focusTarget')
       .attr('x', 0)
       .attr('y', 0)
@@ -367,7 +372,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .append('path')
       .attr('class', 'line focus init')
       .attr('id', (d) -> d.key )
-      .attr('d', (d) => @lineFocus(d.values))
+    focusPaths.attr('d', (d) => @lineFocus(d.values))
       .attr("clip-path", "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
       .style('fill-opacity', 0.2)
@@ -451,11 +456,45 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
+  constructor: (options) ->
+    @options = options
+    super(options)
+
+  initializeBaseVariables: (options) ->
+    @element = options.element or 'body'
+    @margin  = {top: 0, right: 0, bottom: 30, left: 40}
+    @margin2 = {top: 300, right: 0, bottom: 20, left: 40}
+    @width   = @baseWidth() - @margin.left - @margin.right
+    @height  = @baseHeight() - @margin.top - @margin.bottom
+    @height2 = @baseHeight() - @margin2.top - @margin2.bottom
+
   baseWidth: ->
     parseInt(@elementSelection().style('width'))
 
   baseHeight: ->
     parseInt(@elementSelection().style('height'))
+
+  postInitializeHook: ->
+    @registerResizeListener()
+
+  registerResizeListener: ->
+    @_listenerId or= "resize.chart#{SciView.D3.counter++}"
+    d3.select(window).on(@_listenerId, @redraw)
+
+
+  # re-scales the chart based on the new dimensions of the chart's container
+  redraw: =>
+    console.log(@baseWidth(),@baseHeight())
+    @initializeBaseVariables(@options)
+    @initializeChartVariables(@options)
+    @initializeD3Components()
+    @setSvgAttributes()
+    @svg.select('#clip')
+      .attr('width', @width)
+      .attr('height', @height)
+    @render()
+
+
 
 
 
