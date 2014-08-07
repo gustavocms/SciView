@@ -23,12 +23,11 @@ app.controller('DataSetController', [
       $scope.data_sets.push(dataset)
       setCurrentDataSet(dataset)
 
-    ViewState.get({ viewStateId: 1 }).$promise.then(deserializeAndSetCurrent) # TODO: should not have a hard-coded id
+    ViewState.get({ viewStateId: $stateParams.dataSetId }).$promise.then(deserializeAndSetCurrent)
 
     # Make $state available in $scope
     $scope.$state = $state
 
-    window.s = $scope
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
