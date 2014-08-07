@@ -1,4 +1,4 @@
-(function() {
+(function () {
     var module = angular.module('sv.charts.save.controllers', []);
 
     module.controller('SaveChartController', ['$scope', '$log', '$state', 'ChartsService',
@@ -8,37 +8,41 @@
 
             var chartName = "Chart for ";
             angular.forEach(seriesList,
-                function(value, key) {
+                function (value, key) {
                     chartName += value + ",";
                 });
 
             $scope.chart = {
-                name: chartName.slice(0,-1),
+                name: chartName.slice(0, -1),
                 series: seriesList
             };
 
-            $scope.confirm = function() {
+            $scope.confirm = function () {
 
                 //ajax call
                 ChartsService.save({}, $scope.chart,
                     //onSuccess promise function
-                    function() {
+                    function () {
                         $state.go('multiChart.saved');
                     },
                     //onError promise function
-                    function(error) {
-                        $scope.addAlert('danger', error.data.base.join('\n'));
+                    function (error) {
+                        angular.forEach(error.data, function (value, key) {
+                            value.map(function (msg) {
+                                $scope.addAlert('danger', key + ' ' + msg);
+                            });
+                        });
                     });
             };
 
 
             $scope.alerts = [];
 
-            $scope.addAlert = function(type, msg) {
+            $scope.addAlert = function (type, msg) {
                 $scope.alerts.push({type: type, msg: msg});
             };
 
-            $scope.closeAlert = function(index) {
+            $scope.closeAlert = function (index) {
                 $scope.alerts.splice(index, 1);
             };
         }
