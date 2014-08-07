@@ -3,6 +3,11 @@ var app = angular.module('sciview', [
     'ngCookies',
     'ngRoute',
     'ui.router',
+    'ui.bootstrap',
+    'ui.utils',
+    'sv.common.services',
+    'sv.charts.metadata.services',
+    'sv.ui.controllers.metadata',
     'sv.ui.services'
 ]).config(function($routeProvider, $locationProvider, $httpProvider, $stateProvider, $urlRouterProvider) {
 
