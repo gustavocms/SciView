@@ -29,6 +29,16 @@ class SciView.BasicChart
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
+    @initializeBaseVariables(options)
+    @initializeD3Components()
+    @initializePleaseWait()
+    @initializeSvg()
+    @zoom = d3.behavior.zoom()
+      .on('zoom', @zoomed)
+      .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
+                                    # (does not work without the anonymous wrapper)
+                                    
+  initializeBaseVariables: (options) ->
     @_dataURL     = options.url
     @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
     @x            = d3.time.scale().range([0, @width])
@@ -39,6 +49,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
     @yAxis        = d3.svg.axis().scale(@y).orient("left")
 
+  initializeD3Components: ->
     @brush = d3.svg.brush()
       .x(@x2)
       .on("brush", @brushed)
@@ -57,17 +68,13 @@ class SciView.FocusChart extends SciView.BasicChart
     @lineContext = d3.svg.line()
       .x((d) => @x2(d.x))
       .y((d) => @y2(d.y))
+
+
+  initializePleaseWait: ->
     @pleaseWait = d3.select(@element).append('div').attr('id', 'pleaseWait')
     @pleaseWait.append('i')
       .attr('class', 'fa fa-circle-o-notch fa-spin')
     @pleaseWait.append('span').text(' Data loading...')
-
-    @initializeSvg()
-
-    @zoom = d3.behavior.zoom()
-      .on('zoom', @zoomed)
-      .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
-                                    # (does not work without the anonymous wrapper)
 
   # Data loading
   # #################################################
@@ -423,3 +430,12 @@ class SciView.FocusChart extends SciView.BasicChart
 
 # subclassing the chart for the Angular app (so the basic html app doesn't break)
 class SciView.D3.FocusChart extends SciView.FocusChart
+  # TODO:
+  #  - move 'data loading' indicator elsewhere
+
+
+
+
+
+
+
