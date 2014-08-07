@@ -90,7 +90,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
   #chart: "assets/graph_1.svg" # TODO - replace this
 
   initializeChart: (element) ->
-    @chart = new SciView.FocusChart(
+    @chart = new SciView.D3.FocusChart(
       element: element
       url: @dataUrl
     )

@@ -1,5 +1,6 @@
 # Top-level namespace
 window.SciView or= {}
+SciView.D3 or= {}
 
 SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
   'TURQUOISE': '#1ABC9C'
@@ -420,3 +421,5 @@ class SciView.FocusChart extends SciView.BasicChart
     @getData()
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
 
+# subclassing the chart for the Angular app (so the basic html app doesn't break)
+class SciView.D3.FocusChart extends SciView.FocusChart
