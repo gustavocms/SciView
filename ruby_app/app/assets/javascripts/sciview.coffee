@@ -24,7 +24,7 @@ class SciView.BasicChart
     @height  = 500 - @margin.top - @margin.bottom
     @height2 = 500 - @margin2.top - @margin2.bottom
 
-
+noOp = -> # Nothing happens!
 
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
@@ -101,7 +101,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Trigger the ajax call.
   getData: (retryCount = 0) ->
-    @pleaseWait.style('visibility', 'visible')
+    @showPleaseWait()
     get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
       url: get_data_url
@@ -109,15 +109,21 @@ class SciView.FocusChart extends SciView.BasicChart
         @data(response.data)
         @render()
         @replaceState(response)
-        @pleaseWait.style('visibility', 'hidden')
+        @hidePleaseWait()
       error: =>
         if retryCount < 6
           setTimeout((=> @getData(retryCount + 1)), 1500)
         else
-          @pleaseWait.style('visibility', 'hidden')
+          @hidePleaseWait()
           msg = "Data could not be retrieved (tried #{retryCount} times). Please check the series names and try again."
           alert(msg)
     })
+  
+  showPleaseWait: ->
+    @pleaseWait.style('visibility', 'visible')
+
+  hidePleaseWait: ->
+    @pleaseWait.style('visibility', 'hidden')
 
   
   
@@ -431,7 +437,12 @@ class SciView.FocusChart extends SciView.BasicChart
 # subclassing the chart for the Angular app (so the basic html app doesn't break)
 class SciView.D3.FocusChart extends SciView.FocusChart
   # TODO:
-  #  - move 'data loading' indicator elsewhere
+  
+  # TODO - move 'data loading' indicator elsewhere
+  initializePleaseWait: noOp
+  showPleaseWait: noOp
+  hidePleaseWait: noOp
+
 
 
 
