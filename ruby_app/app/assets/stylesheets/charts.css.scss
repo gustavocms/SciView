@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.chart {
+.chart, .batch__chart {
 
   .line {
     stroke: red;
@@ -24,6 +24,8 @@
 
   .axis text {
     fill: white;
+    font-family: "fira-mono", Courier, sans-serif;
+    font-size: 9pt;
   }
 
   .brush .extent {
