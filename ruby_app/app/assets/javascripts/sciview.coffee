@@ -24,9 +24,12 @@ class SciView.BasicChart
     @element = options.element or 'body'
     @margin  = {top: 10, right: 10, bottom: 100, left: 40}
     @margin2 = {top: 430, right: 10, bottom: 20, left: 40}
-    @width   = 960 - @margin.left - @margin.right
-    @height  = 500 - @margin.top - @margin.bottom
-    @height2 = 500 - @margin2.top - @margin2.bottom
+    @width   = @baseWidth() - @margin.left - @margin.right
+    @height  = @baseHeight() - @margin.top - @margin.bottom
+    @height2 = @baseHeight() - @margin2.top - @margin2.bottom
+
+  baseWidth: -> 960
+  baseHeight: -> 500
 
 noOp = -> # Nothing happens!
 
@@ -445,6 +448,14 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   initializePleaseWait: noOp
   showPleaseWait: noOp
   hidePleaseWait: noOp
+
+  elementSelection: -> @_elementSelection or= d3.select(@element)
+
+  baseWidth: ->
+    parseInt(@elementSelection().style('width'))
+
+  baseHeight: ->
+    parseInt(@elementSelection().style('height'))
 
 
 
