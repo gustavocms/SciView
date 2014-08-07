@@ -348,42 +348,47 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('fill', (d) -> lineColor(d.key))
     zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
-  
-  _renderInitialData: ->
-    all_data = @_data.map((obj) -> obj.values).reduce((a, b) -> a.concat(b))
 
+  
+  setDomains: ->
+    all_data = @_data.map((obj) -> obj.values).reduce((a, b) -> a.concat(b))
     @x.domain(d3.extent(all_data.map((d) -> d.x )))
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
+  _renderInitialData: ->
+    @setDomains()
+
     @focusTarget or= @focus.append('rect')
       .attr('class', 'focusTarget')
       .attr('x', 0)
       .attr('y', 0)
-      .attr('height', @height)
-      .attr('width', @width)
       .style('fill', 'black')
       .style('fill-opacity', 0.15)
-    @focusTarget.call(@zoom)
+      .call(@zoom)
+    @focusTarget.attr('height', @height)
+      .attr('width', @width)
+    #@focusTarget.call(@zoom)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
       .attr('id', (d) -> d.key )
-    focusPaths.attr('d', (d) => @lineFocus(d.values))
-      .attr("clip-path", "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
       .style('fill-opacity', 0.2)
       .style('fill', (d) -> lineColor(d.key))
-    @focus.append("g")
+    focusPaths.attr('d', (d) => @lineFocus(d.values))
+      .attr("clip-path", "url(#clip)")
+    focusPaths.exit().remove()
+    @xAxisGroup or= @focus.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + @height + ")")
+    @xAxisGroup.attr("transform", "translate(0," + @height + ")")
       .call(@xAxis)
-    @focus.append("g")
+    @yAxisGroup or= @focus.append("g")
       .attr("class", "y axis")
-      .call(@yAxis)
+    @yAxisGroup.call(@yAxis)
 
     contextPaths = @context.selectAll("path.context").data(@_data)
     
@@ -401,11 +406,13 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('height', @height2)
       .style('fill', 'black')
       .style('fill-opacity', 0.15)
-    @context.append("g")
+    @xAxisContextGroup or= @context.append("g")
       .attr("class", "x axis")
+    @xAxisContextGroup
       .attr("transform", "translate(0," + @height2 + ")")
       .call(@xAxis2)
-    @context.append("g")
+    @brushGroup or= @context.append("g")
+    @brushGroup
       .attr("class", "x brush")
       .call(@brush)
       .selectAll("rect")
@@ -462,8 +469,12 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   initializeBaseVariables: (options) ->
     @element = options.element or 'body'
-    @margin  = {top: 0, right: 0, bottom: 30, left: 40}
-    @margin2 = {top: 300, right: 0, bottom: 20, left: 40}
+    console.log('w', @baseWidth(), 'h', @baseHeight())
+    bh = @baseHeight()
+    h1 = bh * 0.85
+    h2 = bh - h1
+    @margin  = {top: 0, right: 0, bottom: h2 + 10, left: 40}
+    @margin2 = {top: h1 + 10, right: 0, bottom: 0, left: 40}
     @width   = @baseWidth() - @margin.left - @margin.right
     @height  = @baseHeight() - @margin.top - @margin.bottom
     @height2 = @baseHeight() - @margin2.top - @margin2.bottom
