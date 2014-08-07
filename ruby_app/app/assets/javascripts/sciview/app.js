@@ -2,7 +2,8 @@ var app = angular.module('sciview', [
     'ngAnimate',
     'ngCookies',
     'ngRoute',
-    'ui.router'
+    'ui.router',
+    'sv.ui.services'
 ]).config(function($routeProvider, $locationProvider, $httpProvider, $stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise('/data-sets/0');

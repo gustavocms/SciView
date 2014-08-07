@@ -20,9 +20,29 @@ app.service('DataSets', function($http, $cookieStore, $state) {
       //   ]}
       // ];
 
-      ds1 = new SciView.Models.UIDataset('0', 'Data Set 1');
-      ds2 = new SciView.Models.UIDataset('1', 'Data Set 2');
-      return [ds1, ds2];
+      //ds1 = new SciView.Models.UIDataset('0', 'Data Set 1');
+      //ds2 = new SciView.Models.UIDataset('1', 'Data Set 2');
+      //return [ds1, ds2];
+      var json = {
+        "id":"0",
+        "title":"Data Set 1",
+        "charts":[
+          {
+            "title":"Untitled Chart",
+            "channels":[
+              {
+                "title":"default channel",
+                "state":"expanded",
+                "series":[
+                  {"title":"test","category":"default category","key":{"color":"#1ABC9C","style":"solid"}}
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      return [SciView.Models.UIDataset.deserialize(json)];
     }
 
     return DataSets;
