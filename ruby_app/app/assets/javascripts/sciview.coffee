@@ -365,7 +365,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('x', 0)
       .attr('y', 0)
       .style('fill', 'black')
-      .style('fill-opacity', 0.15)
+      .style('fill-opacity', 0)
       .call(@zoom)
     @focusTarget.attr('height', @height)
       .attr('width', @width)
@@ -408,7 +408,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('y', 0)
       .attr('height', @height2)
       .style('fill', 'black')
-      .style('fill-opacity', 0.15)
+      .style('fill-opacity', 0)
     @xAxisContextGroup or= @context.append("g")
       .attr("class", "x axis")
     @xAxisContextGroup
