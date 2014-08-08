@@ -463,8 +463,10 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   
   # TODO - move 'data loading' indicator elsewhere
   initializePleaseWait: noOp
-  showPleaseWait: noOp
-  hidePleaseWait: noOp
+  showPleaseWait:       noOp
+  hidePleaseWait:       noOp
+  renderLegend:         noOp
+  replaceState:         noOp
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
@@ -520,7 +522,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     @_listenerId or= "resize.chart#{SciView.D3.counter++}"
     d3.select(window).on(@_listenerId, @redraw)
   
-  renderLegend: noOp
 
 
   # re-scales the chart based on the new dimensions of the chart's container
