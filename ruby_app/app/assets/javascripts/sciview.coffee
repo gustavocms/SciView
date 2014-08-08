@@ -1,5 +1,7 @@
 # Top-level namespace
 window.SciView or= {}
+SciView.D3 or= {}
+SciView.D3.counter = 0
 
 SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
   'TURQUOISE': '#1ABC9C'
@@ -16,18 +18,38 @@ SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
 
 class SciView.BasicChart
   constructor: (options = {}) ->
+    @initializeBaseVariables(options)
+
+
+  initializeBaseVariables: (options) ->
     @element = options.element or 'body'
     @margin  = {top: 10, right: 10, bottom: 100, left: 40}
     @margin2 = {top: 430, right: 10, bottom: 20, left: 40}
-    @width   = 960 - @margin.left - @margin.right
-    @height  = 500 - @margin.top - @margin.bottom
-    @height2 = 500 - @margin2.top - @margin2.bottom
+    @width   = @baseWidth() - @margin.left - @margin.right
+    @height  = @baseHeight() - @margin.top - @margin.bottom
+    @height2 = @baseHeight() - @margin2.top - @margin2.bottom
 
+  baseWidth: -> 960
+  baseHeight: -> 500
 
+noOp = -> # Nothing happens!
 
 class SciView.FocusChart extends SciView.BasicChart
   constructor: (options = {}) ->
     super(options)
+    @initializeChartVariables(options)
+    @initializeD3Components()
+    @initializePleaseWait()
+    @initializeSvg()
+    @zoom = d3.behavior.zoom()
+      .on('zoom', @zoomed)
+      .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
+                                    # (does not work without the anonymous wrapper)
+    @postInitializeHook()
+                                    
+  postInitializeHook: noOp
+
+  initializeChartVariables: (options) ->
     @_dataURL     = options.url
     @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
     @x            = d3.time.scale().range([0, @width])
@@ -38,6 +60,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
     @yAxis        = d3.svg.axis().scale(@y).orient("left")
 
+  initializeD3Components: ->
     @brush = d3.svg.brush()
       .x(@x2)
       .on("brush", @brushed)
@@ -56,17 +79,13 @@ class SciView.FocusChart extends SciView.BasicChart
     @lineContext = d3.svg.line()
       .x((d) => @x2(d.x))
       .y((d) => @y2(d.y))
+
+
+  initializePleaseWait: ->
     @pleaseWait = d3.select(@element).append('div').attr('id', 'pleaseWait')
     @pleaseWait.append('i')
       .attr('class', 'fa fa-circle-o-notch fa-spin')
     @pleaseWait.append('span').text(' Data loading...')
-
-    @initializeSvg()
-
-    @zoom = d3.behavior.zoom()
-      .on('zoom', @zoomed)
-      .on('zoomend', => @zoomEnd()) # for some reason, it wants this local context binding.
-                                    # (does not work without the anonymous wrapper)
 
   # Data loading
   # #################################################
@@ -93,7 +112,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   # Trigger the ajax call.
   getData: (retryCount = 0) ->
-    @pleaseWait.style('visibility', 'visible')
+    @showPleaseWait()
     get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
       url: get_data_url
@@ -101,15 +120,21 @@ class SciView.FocusChart extends SciView.BasicChart
         @data(response.data)
         @render()
         @replaceState(response)
-        @pleaseWait.style('visibility', 'hidden')
+        @hidePleaseWait()
       error: =>
         if retryCount < 6
           setTimeout((=> @getData(retryCount + 1)), 1500)
         else
-          @pleaseWait.style('visibility', 'hidden')
+          @hidePleaseWait()
           msg = "Data could not be retrieved (tried #{retryCount} times). Please check the series names and try again."
           alert(msg)
     })
+  
+  showPleaseWait: ->
+    @pleaseWait.style('visibility', 'visible')
+
+  hidePleaseWait: ->
+    @pleaseWait.style('visibility', 'hidden')
 
   
   
@@ -260,21 +285,22 @@ class SciView.FocusChart extends SciView.BasicChart
 
   initializeSvg: =>
     @svg = d3.select(@element).append("svg")
-      .attr("width", @width + @margin.left + @margin.right)
-      #.attr("height", @height + @margin.top + @margin.bottom)
       .attr("preserveAspectRatio", "none")
-      .attr("viewBox", "0 0 #{@width + @margin.right + @margin.left} #{@height + @margin.top + @margin.bottom}")
+    @setSvgAttributes()
     @svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
       .attr("width", @width)
       .attr("height", @height)
-    @focus = @svg.append("g")
+    @focus or= @svg.append("g")
       .attr("class", "focus")
       .attr("transform", "translate(" + @margin.left + "," + @margin.top + ")")
-    @context = @svg.append("g")
+    @context or= @svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + @margin2.left + "," + @margin2.top + ")")
+  setSvgAttributes: ->
+    @svg.attr("width", @width + @margin.left + @margin.right)
+    .attr("viewBox", "0 0 #{@width + @margin.right + @margin.left} #{@height + @margin.top + @margin.bottom}")
 
   #lineColor = d3.scale.category10()
   # lineColor = d3.scale.ordinal().range([
@@ -322,42 +348,50 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('fill', (d) -> lineColor(d.key))
     zoomFocusPaths.attr('d', (d) => @lineFocus(d.values))
     zoomFocusPaths.exit().remove()
-  
-  _renderInitialData: ->
-    all_data = @_data.map((obj) -> obj.values).reduce((a, b) -> a.concat(b))
 
+  
+  setDomains: ->
+    all_data = @_data.map((obj) -> obj.values).reduce((a, b) -> a.concat(b))
     @x.domain(d3.extent(all_data.map((d) -> d.x )))
     @y.domain(d3.extent(all_data.map((d) -> d.y )))
     @x2.domain(@x.domain())
     @y2.domain(@y.domain())
 
-    @focusTarget = @focus.append('rect')
+  _renderInitialData: ->
+    @setDomains()
+
+    @focusTarget or= @focus.append('rect')
       .attr('class', 'focusTarget')
       .attr('x', 0)
       .attr('y', 0)
-      .attr('height', @height)
-      .attr('width', @width)
       .style('fill', 'black')
-      .style('fill-opacity', 0.15)
-    @focusTarget.call(@zoom)
+      .style('fill-opacity', 0)
+      .call(@zoom)
+    @focusTarget.attr('height', @height)
+      .attr('width', @width)
+    #@focusTarget.call(@zoom)
 
     focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
       .attr('id', (d) -> d.key )
-      .attr('d', (d) => @lineFocus(d.values))
-      .attr("clip-path", "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
       .style('fill-opacity', 0.2)
       .style('fill', (d) -> lineColor(d.key))
-    @focus.append("g")
+    focusPaths.attr('d', (d) => @lineFocus(d.values))
+      .attr("clip-path", "url(#clip)")
+    focusPaths.exit().remove()
+    @xAxisGroup or= @focus.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + @height + ")")
+    @xAxisGroup.attr("transform", "translate(0," + @height + ")")
       .call(@xAxis)
-    @focus.append("g")
+    @yAxisGroup or= @focus.append("g")
       .attr("class", "y axis")
-      .call(@yAxis)
+    @yAxisMinorGroup or= @focus.append('g')
+      .attr('class', 'y axis minor')
+    @yAxisGroup.call(@yAxis)
+    @yAxisMinorGroup.call(@yAxisMinor)
 
     contextPaths = @context.selectAll("path.context").data(@_data)
     
@@ -367,25 +401,30 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
     
-    @context.append("rect")
+    @contextBg or= @context.append("rect")
       .attr('id', 'contextBg')
       .attr('x', 0)
       .attr('width', @width)
       .attr('y', 0)
       .attr('height', @height2)
       .style('fill', 'black')
-      .style('fill-opacity', 0.15)
-    @context.append("g")
+      .style('fill-opacity', 0.1)
+    @xAxisContextGroup or= @context.append("g")
       .attr("class", "x axis")
+    @xAxisContextGroup
       .attr("transform", "translate(0," + @height2 + ")")
       .call(@xAxis2)
-    @context.append("g")
+    @brushGroup or= @context.append("g")
+    @brushGroup
       .attr("class", "x brush")
       .call(@brush)
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+    @renderLegend()
+    @zoomIt()
 
+  renderLegend: ->
     legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
     legend.append("rect")
@@ -403,7 +442,6 @@ class SciView.FocusChart extends SciView.BasicChart
 
     legend.on "click", (d) => @setSeriesOpacity(d.key)
 
-    @zoomIt()
 
   setSeriesOpacity: (key) =>
     # Determine if current line is visible
@@ -419,4 +457,90 @@ class SciView.FocusChart extends SciView.BasicChart
     d3.select("##{key}").style "opacity", newGraphOpacity
     @getData()
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
+
+# subclassing the chart for the Angular app (so the basic html app doesn't break)
+class SciView.D3.FocusChart extends SciView.FocusChart
+  
+  # TODO - move 'data loading' indicator elsewhere
+  initializePleaseWait: noOp
+  showPleaseWait:       noOp
+  hidePleaseWait:       noOp
+  renderLegend:         noOp
+  replaceState:         noOp
+
+  elementSelection: -> @_elementSelection or= d3.select(@element)
+
+  constructor: (options) ->
+    @options = options
+    super(options)
+
+  initializeBaseVariables: (options) ->
+    @element = options.element or 'body'
+    bh = @baseHeight()
+    h1 = bh * 0.85
+    h2 = bh - h1
+    @margin  = {top: 0, right: 0, bottom: h2 + 10, left: 0}
+    @margin2 = {top: h1 + 10, right: 0, bottom: 0, left: 0}
+    @width   = @baseWidth() - @margin.left - @margin.right
+    @height  = @baseHeight() - @margin.top - @margin.bottom
+    @height2 = @baseHeight() - @margin2.top - @margin2.bottom
+
+  initializeChartVariables: (options) ->
+    @_dataURL     = options.url
+    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: (options.disabledSeries or []) }
+    @x            = d3.time.scale().range([0, @width])
+    @x2           = d3.time.scale().range([0, @width])
+    @y            = d3.scale.linear().range([@height, 0])
+    @y2           = d3.scale.linear().range([@height2, 0])
+    @xAxis        = d3.svg.axis().scale(@x).orient("bottom")
+    @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
+    @yAxis        = d3.svg.axis()
+      .scale(@y)
+      .orient("right")
+      .tickFormat(d3.format(".0f"))
+      .ticks(10)
+      .tickSize(20, 10)
+    @yAxisMinor = d3.svg.axis()
+      .scale(@y)
+      .orient("right")
+      .tickFormat("")
+      .ticks((@y.ticks(10).length + 1) * 4)
+      .tickSize(20, 10)
+    window.y = @yAxis
+    window.ym = @yAxisMinor
+
+  baseWidth: ->
+    parseInt(@elementSelection().style('width'))
+
+  baseHeight: ->
+    parseInt(@elementSelection().style('height'))
+
+  postInitializeHook: ->
+    @registerResizeListener()
+
+  registerResizeListener: ->
+    @_listenerId or= "resize.chart#{SciView.D3.counter++}"
+    d3.select(window).on(@_listenerId, @redraw)
+  
+
+
+  # re-scales the chart based on the new dimensions of the chart's container
+  redraw: =>
+    @initializeBaseVariables(@options)
+    @initializeChartVariables(@options)
+    @initializeD3Components()
+    @setSvgAttributes()
+    @svg.select('#clip')
+      .attr('width', @width)
+      .attr('height', @height)
+    @render()
+
+
+
+
+
+
+
+
+
 

@@ -23,9 +23,9 @@ $baby: .6rem;
 $line: $font_size * 1.5;
 $small_point_size: 10;
 $large_point_size: 14;
-
+@import url(http://fonts.googleapis.com/css?family=Fira+Mono:400,700);
 $primary_font_family: #{"pt-sans", "Avenir", Helvetica, sans-serif};
-$mono_font_family: #{"fira-mono", Courier, sans-serif};
+$mono_font_family: #{"Fira Mono", Courier, sans-serif};
 
 $spacing_unit: $line;
 

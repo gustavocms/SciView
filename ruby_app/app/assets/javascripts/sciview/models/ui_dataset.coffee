@@ -47,6 +47,9 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
     key: -> { color: SciView.lineColor(@title), style: "solid" }
     title: -> "untitled series"
 
+  afterDeserialize: ->
+    @key.color = SciView.lineColor(@title)
+
   @serialized_attributes: ['title', 'category', 'key']
 
 
@@ -90,7 +93,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
   #chart: "assets/graph_1.svg" # TODO - replace this
 
   initializeChart: (element) ->
-    @chart = new SciView.FocusChart(
+    @chart = new SciView.D3.FocusChart(
       element: element
       url: @dataUrl
     )
