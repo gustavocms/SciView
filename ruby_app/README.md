@@ -115,3 +115,19 @@ Run bower install to download dependencies (the files will be downloaded to vend
 Add the library to the asset pipeline:
 
     //= require bootstrap/dist/js/bootstrap
+    
+
+### ViewState
+
+If no ViewState model exists, create one like this:
+
+```ruby
+ViewState.create(
+  title: "TestViewState", 
+  charts: [
+    {"title"=>"Untitled Chart", "channels"=>[
+      {"title"=>"default channel", "state"=>"expanded", "series"=>[
+        {"title"=>"test", "category"=>"default category", "key"=>{"color"=>"#1ABC9C", "style"=>"solid"}}]}]}])
+```
+
+This will be available in the angular app at `/ng#/data-sets/:id`.
