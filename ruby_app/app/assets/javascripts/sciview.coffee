@@ -408,7 +408,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('y', 0)
       .attr('height', @height2)
       .style('fill', 'black')
-      .style('fill-opacity', 0)
+      .style('fill-opacity', 0.1)
     @xAxisContextGroup or= @context.append("g")
       .attr("class", "x axis")
     @xAxisContextGroup
@@ -421,7 +421,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+    @renderLegend()
+    @zoomIt()
 
+  renderLegend: ->
     legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
     legend.append("rect")
@@ -439,7 +442,6 @@ class SciView.FocusChart extends SciView.BasicChart
 
     legend.on "click", (d) => @setSeriesOpacity(d.key)
 
-    @zoomIt()
 
   setSeriesOpacity: (key) =>
     # Determine if current line is visible
@@ -483,7 +485,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   initializeChartVariables: (options) ->
     @_dataURL     = options.url
-    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: options.disabledSeries }
+    @zoom_options = { startTime: options.startTime, stopTime: options.stopTime, disabledSeries: (options.disabledSeries or []) }
     @x            = d3.time.scale().range([0, @width])
     @x2           = d3.time.scale().range([0, @width])
     @y            = d3.scale.linear().range([@height, 0])
@@ -517,6 +519,8 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   registerResizeListener: ->
     @_listenerId or= "resize.chart#{SciView.D3.counter++}"
     d3.select(window).on(@_listenerId, @redraw)
+  
+  renderLegend: noOp
 
 
   # re-scales the chart based on the new dimensions of the chart's container

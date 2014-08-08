@@ -47,6 +47,9 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
     key: -> { color: SciView.lineColor(@title), style: "solid" }
     title: -> "untitled series"
 
+  afterDeserialize: ->
+    @key.color = SciView.lineColor(@title)
+
   @serialized_attributes: ['title', 'category', 'key']
 
 

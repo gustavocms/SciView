@@ -48,11 +48,10 @@
                   <!-- Channel dropdown -->
                   <i class="channel__dropdown"></i>
                   <!-- Channel title -->
-                  <span class="channel__title" ng-bind="channel.title"> </span>
+                  <span class="channel__title" style="color: {{channel.key.color}}" ng-bind="channel.title"> </span>
                   <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
                   <!-- Channel Category -->
                   <span class="channel__category" ng-bind="channel.category"> </span>
-
                 </li>
               </ul>
             </section>
