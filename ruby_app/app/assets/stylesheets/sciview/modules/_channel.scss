@@ -1,0 +1,54 @@
+.channel {
+  @extend %monospaced-style;
+  @include span-columns(12);
+  padding: $normal 0;
+
+  &:nth-child(odd) {
+    background-color: rgba($interface_color, 0.025);
+  }
+  
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($interface_color, 0.1);
+  }
+  
+  &:active {
+    background-color: rgba($highlight_color, 0.9);
+  }
+
+}
+
+.channel__dropdown {
+  @extend %batch-icon-chevron;
+  &::before {
+    opacity: 0.2;
+    background: url('/assets/chevron.svg') center center no-repeat;
+    -webkit-transform: rotate(270deg);
+  }
+}
+
+.channel__title {
+  @extend %monospaced-style;
+  @include shift(.5);
+  @include span-columns(9);
+  height: 100%;
+  vertical-align: middle;
+  display: block;
+}
+
+.channel__key {
+    position: relative;
+    top: .5rem;
+    right: 1rem;
+    width: 1rem;
+    height: 0.2rem;
+    float: right;
+    display: inline-block;
+    border-bottom-width: 2px;
+}
+
+.channel__category {
+  @include shift(.5);
+  @include span-columns(9); 
+  opacity: 0.3;
+}

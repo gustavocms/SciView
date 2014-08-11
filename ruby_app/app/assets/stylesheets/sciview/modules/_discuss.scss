@@ -1,0 +1,99 @@
+.discuss {
+  height: 0%;
+  // &.ng-enter,
+  // &.ng-leave {
+  //   @include vp(transition, all 1s ease);    
+  //   position: absolute;  
+  // }
+
+  // &.ng-enter {
+  //   @include vp(transform, translate3d(10%, 0, 0));
+  //   opacity: 0.3;
+  // }
+
+  // &.ng-leave {
+  //   @include vp(transform, translate3d(-10%, 0, 0));
+  //   opacity: 0.3;
+  // }
+
+  // &.ng-enter-active {
+
+  // }
+
+  // &.ng-leave-active {
+
+  // }
+}
+
+.is-discussing {
+    @include vp(transition, all 1s ease);    
+
+  &.discuss {
+    width: 50%;
+    position: absolute;
+    // left: 50%;
+    right: 0;
+    top: -$alpha;
+    height: 100%;
+    background-color: rgba(darken($background_color, 3%), 0.9);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-bottom: $alpha*3;
+  }
+
+  .discuss__header {
+    @include pad($normal $gamma*4 $normal $beta);
+    @include span-columns(12);
+  }
+
+  .discuss__title {
+    @include span-columns(5);
+    // @include rem(font-size, $gamma);
+  } 
+
+  .discuss__notifications {
+    @include span-columns(7);
+    @include rem(font-size, $normal);
+    text-align: right;
+  }
+
+  .discuss__notifications-value {
+    opacity: 1;
+    font-weight: 700;
+    margin-right: .1em;
+    &::before {
+      content: '';
+      display: inline-block;
+      width: .5em;
+      height: .5em;
+      margin-right: .4em;
+      border-radius: .5em;
+      background-color: $notification_color;
+    }
+  }
+
+  .discuss__notifications-unread {
+    opacity: 0.5;
+  }
+
+  .discuss__notifications-clear {
+    @extend %hover-ready;
+    text-decoration: underline;
+    margin-left: $normal;
+    &:hover {
+      @extend %hover-go;
+    }
+  }
+  
+  .discuss__feed {
+    @extend %ul-reset;
+    @include span-columns(12);
+    // @include pad($alpha 0);
+    background-color: rgba(darken($background_color, 4%), 0.9);
+    top: -2px;
+    position: relative;
+  }
+
+
+
+}

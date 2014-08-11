@@ -8,14 +8,14 @@ class DatasetsController < ApplicationController
   end
 
   def multiple
-    Dataset.multiple_series(start, stop, series, params[:count]).tap do |data|
-      respond_with({ 
+    respond_with_series do |data|
+      { 
         data: data,
         permalink: permalink(data),
         series: series,
         start: start,
         stop: stop
-      })
+      }
     end
   end
 
@@ -54,6 +54,12 @@ class DatasetsController < ApplicationController
   end
 
   private
+
+  def respond_with_series(&block)
+    Dataset.multiple_series(start, stop, series, params[:count]).tap do |data|
+      respond_with(yield data)
+    end
+  end
 
   def series
     params.select {|k,v| k.to_s =~ /series/ && v.present? }

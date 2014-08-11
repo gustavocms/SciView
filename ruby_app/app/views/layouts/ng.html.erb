@@ -1,0 +1,22 @@
+<!doctype html>
+<html ng-app="sciview">
+  <head>
+    <title>Sciview UI</title>
+    <!-- compiled sass -->
+    <%= stylesheet_link_tag "sciview", media: "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+    <!-- devices -->
+    <meta name = "viewport" content = "width = device-width">
+    <meta name = "viewport" content = "initial-scale = 1.0">
+    <script type="text/javascript" src="//use.typekit.net/jla8qzw.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  </head>
+  <body>
+    <!-- navigation -->
+    <nav class="nav" ng-controller="NavController" ng-include="'assets/sciview/partials/nav.html'"></nav>
+    <!-- main view -->
+    <section class="main" ui-view>
+    </section>
+  </body>
+</html>

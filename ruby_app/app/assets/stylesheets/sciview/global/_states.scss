@@ -1,0 +1,59 @@
+// Global
+// -- States
+
+//    This file should be used for state-specific CSS classes.
+//    Prefix class names with 'is' as much as possible
+
+//    EX: .is-selected, .is-transparent
+
+.is-current {
+
+    &.nav__data-sets {
+      color: $font_color;
+    }
+
+    &.nav__navigator {
+      color: $font_color;
+    }
+
+    &.data-sets__item {
+      background-color: rgba($interface_color, 0.05);      
+    }
+
+    .data-sets__item-title {
+      color: $font_color;
+    }
+}
+
+.is-blurred {
+  -webkit-filter: blur(10px);
+}
+
+.retracted {
+  // Groups
+  .batch__data-group-title {
+    border-bottom: 1px solid rgba($white, 0.1);
+  }
+  .batch__data-group-expand {
+    @extend %batch-rotate-chevron-1;   
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .batch__data-group {
+    @extend %batch-retract-animation;
+  }  
+
+}
+
+.is-group {
+  .channel__title {
+    @include shift(1);
+  }  
+  .channel__category {
+    @include shift(1);
+  }
+  .channel__dropdown {
+    left: 1em;
+  }
+}

@@ -1,0 +1,93 @@
+<section class="discussion">
+  <section class="discussion__closed" ng-if="$state.current.name !== 'data-sets.single.discuss'">
+    <i class="discussion__cta-open" ui-sref="data-sets.single.discuss"></i>
+    <i class="discussion__tab--notification"></i>
+  </section> 
+  <section class="discussion__open" ng-if="$state.current.name === 'data-sets.single.discuss'">
+    <i class="discussion__cta-close" ui-sref="data-sets.single"></i> 
+  </section>
+</section>
+
+<section class="data-set__current">
+  <ul class="batches">
+    <!-- First Graph -->
+    <li class="batch" ng-repeat="chart in current_data_set.charts" ng-controller="UIChartController">
+      <!-- Sidebar / Data representation for gjkkraph -->
+      <section class="batch__sidebar">
+        <section class="batch__header">
+          <i class="batch__title-icon"></i>
+          <h4 class="batch__title" ng-click="chart.refresh()" ng-bind="chart.title"></h4>
+          <i class="batch__add-channel-action"></i>
+        </section>
+        <ul class="batch__data">
+
+          <!-- Each data item -->
+          <li class="batch__data-item">
+            <input ng-model="new_series_title">
+            <a href="#" ng-click="addSeries(chart, new_series_title)">Add Series</a>
+          </li>
+          <li class="batch__data-item" ng-repeat="channel in chart.channels" >
+            <!-- If the data item is NOT a group ## NO LONGER VALID - series must belong to a channel
+            <section class="channel" ng-if="!channel.series">
+              <i class="channel__dropdown"></i>
+              <span id="graph_{{$index}}" class="channel__title" ng-bind="channel.title"> </span> 
+              <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
+              <span class="channel__category" ng-bind="channel.category"> </span>
+              </section> -->
+
+            <!-- If the data item is a group -->
+            <section class="channel__group" ng-class="channel.state">
+              <!-- Retract group icon -->
+              <i class="batch__data-group-expand" ng-click="toggleGroup(channel)"></i>
+              <!-- Group Title -->
+              <h5 class="batch__data-group-title" ng-bind="channel.title"> </h5>
+              <!-- Group data list -->
+              <ul class="batch__data-group">
+                <!-- Channel item -->
+                <li class="channel is-group" ng-repeat="channel in channel.series">
+                  <!-- Channel dropdown -->
+                  <i class="channel__dropdown"></i>
+                  <!-- Channel title -->
+                  <span class="channel__title" style="color: {{channel.key.color}}" ng-bind="channel.title"> </span>
+                  <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
+                  <!-- Channel Category -->
+                  <span class="channel__category" ng-bind="channel.category"> </span>
+                </li>
+              </ul>
+            </section>
+          </li>
+
+            <!-- Metadata  -->
+            <li class="batch__data-item">
+                <section ng-controller="MetadataController" ng-include="'assets/charts/metadata/metadata.html'">
+                </section>
+            </li>
+        </ul>
+      </section>
+
+    <!-- Visual chart representation for graph -->
+      <section class="batch__chart">
+        <div class="batch__chart-units-1">
+        </div>
+        <!-- Dummy Graph -->
+      </section>
+    </li> 
+
+    <li>
+      <section class="batch__header">
+        <a class="batch__title" href="#" ng-click="addChart()">+ Add New Graph</a>
+      </section>
+    </li>
+    <li>
+      <section class="batch__header">
+        <a class="batch__title" href="#" ng-click="logDataset()">+ Serialize DataSet</a>
+      </section>
+    </li>
+</ul>
+</section>
+
+<section class="discuss" ui-view ng-class="{ 'is-discussing': $state.current.name === 'data-sets.single.discuss'}">
+</section>
+
+<section class="tools" ng-controller="ToolController" ng-include="'assets/sciview/partials/tool.html'">
+</section>
