@@ -52,16 +52,14 @@
                   <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
                   <!-- Channel Category -->
                   <span class="channel__category" ng-bind="channel.category"> </span>
+                    <!-- Metadata  -->
+                  <section ng-controller="MetadataController" ng-include="'assets/charts/metadata/metadata.html'">
+                  </section>
                 </li>
               </ul>
             </section>
           </li>
 
-            <!-- Metadata  -->
-            <li class="batch__data-item">
-                <section ng-controller="MetadataController" ng-include="'assets/charts/metadata/metadata.html'">
-                </section>
-            </li>
         </ul>
       </section>
 

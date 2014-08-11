@@ -4,7 +4,8 @@
     module.controller('MetadataController', ['$scope', '$log', 'MetadataService', 'ModalService', 'SeriesTagsService', 'SeriesAttributesService',
         function ($scope, $log, MetadataService, ModalService, SeriesTagsService, SeriesAttributesService) {
 
-            $scope.parameters = {series_1: "paul-sin-2", series_2: "paul-sin-1"};
+            //$scope.channel.title from parent controller
+            $scope.parameters = {series_1: $scope.channel.title};
 
             $scope.seriesList = MetadataService.query($scope.parameters);
 
