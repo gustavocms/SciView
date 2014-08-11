@@ -371,17 +371,17 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('width', @width)
     #@focusTarget.call(@zoom)
 
-    focusPaths = @focus.selectAll('path.focus.init').data(@_data)
-    focusPaths.enter()
+    @focusPaths or= @focus.selectAll('path.focus.init').data(@_data)
+    @focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
       .attr('id', (d) -> d.key )
       .style('stroke', (d) -> lineColor(d.key))
       .style('fill-opacity', 0.2)
       .style('fill', (d) -> lineColor(d.key))
-    focusPaths.attr('d', (d) => @lineFocus(d.values))
+    @focusPaths.attr('d', (d) => @lineFocus(d.values))
       .attr("clip-path", "url(#clip)")
-    focusPaths.exit().remove()
+    @focusPaths.exit().remove()
     @xAxisGroup or= @focus.append("g")
       .attr("class", "x axis")
     @xAxisGroup.attr("transform", "translate(0," + @height + ")")
@@ -391,7 +391,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @yAxisMinorGroup or= @focus.append('g')
       .attr('class', 'y axis minor')
     @yAxisGroup.call(@yAxis)
-    @yAxisMinorGroup.call(@yAxisMinor)
+    @yAxisMinorGroup.call(@yAxisMinor) if @yAxisMinor
 
     contextPaths = @context.selectAll("path.context").data(@_data)
     
@@ -425,7 +425,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @zoomIt()
 
   renderLegend: ->
-    legend = focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
+    legend = @focusPaths.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     
     legend.append("rect")
       .attr("x", 20)
