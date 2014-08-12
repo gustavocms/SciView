@@ -19,11 +19,14 @@ app.controller('DataSetController', [
     #setCurrentDataSet()
 
     deserializeAndSetCurrent = (raw) ->
+      console.log(raw)
       dataset = SciView.Models.UIDataset.deserialize(raw)
-      $scope.data_sets.push(dataset)
+      $scope.data_sets.push(dataset) # TODO: does this controller need to know about this array?
+      $scope.resource = raw
+      window.s = $scope
       setCurrentDataSet(dataset)
 
-    ViewState.get({ viewStateId: $stateParams.dataSetId }).$promise.then(deserializeAndSetCurrent)
+    ViewState.get({ id: $stateParams.dataSetId }).$promise.then(deserializeAndSetCurrent)
 
     # Make $state available in $scope
     $scope.$state = $state
@@ -38,6 +41,13 @@ app.controller('DataSetController', [
     $scope.logDataset = ->
       console.log(@current_data_set)
       console.log(angular.toJson(@current_data_set.serialize()))
+
+    $scope.saveDataset = ->
+      ViewState.update(
+        { id: $scope.resource.id },
+        $scope.current_data_set.serialize()
+      )
+
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
