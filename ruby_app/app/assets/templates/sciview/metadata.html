@@ -1,0 +1,14 @@
+<span ng-repeat="series in seriesList">
+    <li class="metadata">
+        <span class="metadata__title"><strong>meta</strong></span>
+    </li>
+    <li class="metadata" ng-repeat="tag in series.tags">
+        <span class="metadata__title">{{tag}}</span>
+    </li>
+    <li class="metadata" ng-repeat="(key, value) in series.attributes">
+        <span class="metadata__title">{{key}}:{{value}}</span>
+    </li>
+    <li class="metadata">
+        <span class="metadata__title"><strong>+</strong> add key-value pair</span>
+    </li>
+</span>

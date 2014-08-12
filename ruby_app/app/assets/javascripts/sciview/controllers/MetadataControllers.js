@@ -5,7 +5,7 @@
         function ($scope, $log, MetadataService, ModalService, SeriesTagsService, SeriesAttributesService) {
 
             //$scope.channel.title from parent controller
-            $scope.parameters = {series_1: $scope.channel.title};
+            $scope.parameters = {series_1: $scope.series.title};
 
             $scope.seriesList = MetadataService.query($scope.parameters);
 

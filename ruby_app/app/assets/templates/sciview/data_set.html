@@ -44,17 +44,17 @@
               <!-- Group data list -->
               <ul class="batch__data-group">
                 <!-- Channel item -->
-                <li class="channel is-group" ng-repeat="channel in channel.series">
-                  <!-- Channel dropdown -->
+                <li class="channel is-group" ng-repeat="series in channel.series">
+                  <!-- series dropdown -->
                   <i class="channel__dropdown"></i>
-                  <!-- Channel title -->
-                  <span class="channel__title" style="color: {{channel.key.color}}" ng-bind="channel.title"> </span>
-                  <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
-                  <!-- Channel Category -->
-                  <span class="channel__category" ng-bind="channel.category"> </span>
-                    <!-- Metadata  -->
-                  <section ng-controller="MetadataController" ng-include="'assets/charts/metadata/metadata.html'">
-                  </section>
+                  <!-- series title -->
+                  <span class="channel__title" style="color: {{series.key.color}}" ng-bind="series.title"> </span>
+                  <span class="channel__key" style="border-color: {{series.key.color}}; border-bottom-style: {{series.key.style}}"> </span>
+                  <!-- series Category -->
+                  <span class="channel__category" ng-bind="series.category"> </span>
+                    <!-- series Metadata  -->
+                  <span ng-controller="MetadataController" ng-include="'assets/sciview/metadata.html'">
+                  </span>
                 </li>
               </ul>
             </section>
