@@ -11,6 +11,9 @@ var app = angular.module('sciview', [
     'sv.ui.services'
 ]).config(function($routeProvider, $locationProvider, $httpProvider, $stateProvider, $urlRouterProvider) {
 
+    authToken = $("meta[name=\"csrf-token\"]").attr("content");
+    $httpProvider.defaults.headers.common["X-CSRF-TOKEN"] = authToken;
+
     $urlRouterProvider.otherwise('/data-sets/0');
     $urlRouterProvider.when('/data-sets', '/data-sets/0');
     
