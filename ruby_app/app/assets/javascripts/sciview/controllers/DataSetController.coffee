@@ -31,7 +31,10 @@ app.controller('DataSetController', [
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
-    $scope.addChart = -> @current_data_set.addChart()
+    $scope.addChart = ->
+      console.log('add chart')
+      @current_data_set.addChart()
+
     $scope.logDataset = ->
       console.log(@current_data_set)
       console.log(angular.toJson(@current_data_set.serialize()))
