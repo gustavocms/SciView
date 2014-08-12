@@ -24,7 +24,7 @@
           <!-- Each data item -->
           <li class="batch__data-item">
             <input ng-model="new_series_title">
-            <a href="#" ng-click="addSeries(chart, new_series_title)">Add Series</a>
+            <a ng-click="addSeries(chart, new_series_title)">Add Series</a>
           </li>
           <li class="batch__data-item" ng-repeat="channel in chart.channels" >
             <!-- If the data item is NOT a group ## NO LONGER VALID - series must belong to a channel
