@@ -37,6 +37,6 @@ app.controller('DataSetController', [
       console.log(angular.toJson(@current_data_set.serialize()))
 
     toggleExpandRetract = (obj) ->
-      obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
+      obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
 
 ])

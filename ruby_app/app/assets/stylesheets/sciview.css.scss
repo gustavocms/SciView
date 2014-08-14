@@ -12,11 +12,12 @@
 
 @import "sciview/global/layout";
 @import "sciview/global/mixins";
-
 @import "sciview/global/states";
 
+@import "sciview/patterns/icons";
 @import "sciview/patterns/animations";
 @import "sciview/patterns/batch";
+@import "sciview/patterns/channel";
 @import "sciview/patterns/formatting";
 @import "sciview/patterns/gradients";
 @import "sciview/patterns/input";
