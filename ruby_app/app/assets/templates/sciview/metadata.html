@@ -8,25 +8,25 @@
     <span class="channel__meta-item-value">{{value}}</span>
 </li>
 <li class="channel__meta-item-new">
-    <span class="channel__meta-add" ng-class="{'is-active': channel.meta.show}" ng-click="channel.meta.show = true">Add Meta Data</span>
-    <section class="channel__meta-item-input" ng-if="channel.meta.show">
+    <span class="channel__meta-add" ng-class="{'is-active': metaState.showForm}" ng-click="metaState.showForm = true">Add Meta Data</span>
+    <section class="channel__meta-item-input" ng-if="metaState.showForm">
         <input class="channel__meta-item-new-tag"
                type="text"
-               ng-model="meta.tag"
+               ng-model="newMetadata.tag"
                placeholder="Add a tag">
         <span class="channel__meta-item-split">or</span>
         <fieldset class="channel__meta-item-pair">
             <input class="channel__meta-item-new-key"
                    type="text"
-                   ng-model="meta.key"
+                   ng-model="newMetadata.attribute"
                    placeholder="Add a Key/Value">
             <input class="channel__meta-item-new-value"
                    type="text"
-                   ng-model="meta.value">
+                   ng-model="newMetadata.value">
         </fieldset>
 
         <button class="channel__meta-item-close"
-                ng-click="channel.meta.show = false">Close
+                ng-click="metaState.showForm = false">Close
         </button>
         <button class="channel__meta-item-save"
                 ng-click="saveMetaChannel(channel, meta)">Save
