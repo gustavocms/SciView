@@ -7,7 +7,10 @@
             //$scope.channel.title from parent controller
             $scope.parameters = {series_1: $scope.series.title};
 
-            $scope.seriesList = MetadataService.query($scope.parameters);
+            //wait for the promise to succesfully finish
+            MetadataService.query($scope.parameters, function(seriesList) {
+                $scope.seriesData = seriesList[0];
+            });
 
             $scope.addMetadata = function(series) {
                 var result = ModalService.showModal({

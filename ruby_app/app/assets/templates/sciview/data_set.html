@@ -44,9 +44,10 @@
                             <!-- Group data list -->
                             <ul class="batch__data-group">
                                 <!-- Channel item -->
-                                <li class="channel is-group" ng-repeat="series in channel.series">
+                                <li class="channel is-group" ng-repeat="series in channel.series"
+                                    ng-class="series.state">
                                     <!-- series dropdown -->
-                                    <i class="channel__dropdown"></i>
+                                    <i class="channel__dropdown" ng-click="toggleGroup(series)"></i>
                                     <!-- series title -->
                                     <span class="channel__title" style="color: {{series.key.color}}"
                                           ng-bind="series.title"> </span>
@@ -55,8 +56,9 @@
                                     <!-- series Category -->
                                     <span class="channel__category" ng-bind="series.category"> </span>
                                     <!-- series Metadata  -->
-                                    <span ng-controller="MetadataController"
-                                          ng-include="'assets/sciview/metadata.html'"></span>
+                                    <ul class="channel__meta"
+                                        ng-include="'assets/sciview/metadata.html'"
+                                        ng-controller="MetadataController"></ul>
                                 </li>
                             </ul>
                         </section>

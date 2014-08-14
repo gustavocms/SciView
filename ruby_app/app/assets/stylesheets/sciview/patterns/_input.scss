@@ -19,7 +19,18 @@
 
   &:focus {
     outline: none;
-    border: 1px solid rgba($highlight_color, 0.8);    
+    border: 1px solid rgba($highlight_color, 0.8);
+  }
+
+}
+
+%button-reset {
+  @extend %input-reset;
+  @include pad($baby/2 $baby);
+  @include rem(font-size, $baby);
+
+  &:hover {
+    cursor: pointer;
   }
 
 }
