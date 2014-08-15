@@ -19,11 +19,9 @@ app.controller('DataSetController', [
     #setCurrentDataSet()
 
     deserializeAndSetCurrent = (raw) ->
-      console.log(raw)
       dataset = SciView.Models.UIDataset.deserialize(raw)
       $scope.data_sets.push(dataset) # TODO: does this controller need to know about this array?
       $scope.resource = raw
-      window.s = $scope
       setCurrentDataSet(dataset)
 
     ViewState.get({ id: $stateParams.dataSetId }).$promise.then(deserializeAndSetCurrent)
@@ -35,7 +33,6 @@ app.controller('DataSetController', [
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
     $scope.addChart = ->
-      console.log('add chart')
       @current_data_set.addChart()
 
     $scope.logDataset = ->
@@ -44,7 +41,7 @@ app.controller('DataSetController', [
 
     $scope.saveDataset = ->
       ViewState.update(
-        { id: $scope.resource.id },
+        { id: $scope.current_data_set.id },
         $scope.current_data_set.serialize()
       )
 

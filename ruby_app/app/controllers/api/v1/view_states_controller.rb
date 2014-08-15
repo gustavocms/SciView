@@ -21,7 +21,7 @@ class Api::V1::ViewStatesController < ApplicationController
       view_state.charts = params[:charts]
       view_state.title  = params[:title]
       if view_state.save!
-        respond_with "true"
+        respond_with true
       else
         respon_with view_state.errors.as_json
       end
