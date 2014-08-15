@@ -10,7 +10,14 @@ class Api::V1::ViewStatesController < ApplicationController
   end
 
   def create
-    puts params.inspect
+    view_state = ViewState.new.tap do |vs|
+      vs.user_id = current_user.id if current_user
+      vs.title = "New Dataset"
+    end
+
+    if view_state.save
+      respond_with view_state, location: api_v1_view_state_url(view_state)
+    end
   end
 
   def update
@@ -23,7 +30,7 @@ class Api::V1::ViewStatesController < ApplicationController
       if view_state.save!
         respond_with true
       else
-        respon_with view_state.errors.as_json
+        respond_with view_state.errors.as_json
       end
     end
   end
