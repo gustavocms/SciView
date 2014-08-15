@@ -1,9 +1,11 @@
 <li class="channel__meta-item"
-    ng-repeat="tag in seriesData.tags">
+    ng-repeat="tag in seriesData.tags"
+    ng-click="removeTag(tag)">
     <span>{{tag}}</span>
 </li>
 <li class="channel__meta-item"
-    ng-repeat="(key, value) in seriesData.attributes">
+    ng-repeat="(key, value) in seriesData.attributes"
+    ng-click="removeAttribute(key)">
     <span class="channel__meta-item-key">{{key}}</span>
     <span class="channel__meta-item-value">{{value}}</span>
 </li>

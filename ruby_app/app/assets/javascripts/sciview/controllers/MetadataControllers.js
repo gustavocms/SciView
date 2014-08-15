@@ -1,8 +1,8 @@
 (function() {
     var module = angular.module('sv.ui.controllers.metadata', []);
 
-    module.controller('MetadataController', ['$scope', '$log', '$q', 'MetadataService', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $log, $q, MetadataService, SeriesTagsService, SeriesAttributesService) {
+    module.controller('MetadataController', ['$scope', '$log', '$q', 'ModalService', 'MetadataService', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $log, $q, ModalService, MetadataService, SeriesTagsService, SeriesAttributesService) {
 
             $scope.metaState = {
                 //$scope.channel.title from parent controller
@@ -86,6 +86,49 @@
 
                 //return promise of the saving call
                 return promise;
+            };
+
+
+            $scope.removeAttribute = function(key) {
+                var result = ModalService.showModal({}, {
+                    actionButtonText: 'Delete',
+                    headerText: 'Remove attribute?',
+                    bodyText: 'Are you sure you want to delete this attribute?<br><br><strong>' + key + ':' + $scope.seriesData.attributes[key] + '</strong>'
+                });
+
+                result.then(function () {
+                    //ajax call
+                    SeriesAttributesService.delete({
+                            seriesId: $scope.seriesData.key,
+                            attributeId: key
+                        }, {},
+                        //onSuccess promise function
+                        function () {
+                            //update scope removing object
+                            delete $scope.seriesData.attributes[key];
+                        });
+                });
+            };
+
+            $scope.removeTag = function(tag) {
+                var result = ModalService.showModal({}, {
+                    actionButtonText: 'Delete',
+                    headerText: 'Remove tag?',
+                    bodyText: 'Are you sure you want to delete this tag?<br><br><strong>' + tag + '</strong>'
+                });
+
+                result.then(function () {
+                    //ajax call
+                    SeriesTagsService.delete({
+                            seriesId: $scope.seriesData.key,
+                            tagId: tag
+                        }, {},
+                        //onSuccess promise function
+                        function () {
+                            //update scope removing object
+                            $scope.seriesData.tags.splice($scope.seriesData.tags.indexOf(tag), 1);
+                        });
+                });
             };
         }
     ]);
