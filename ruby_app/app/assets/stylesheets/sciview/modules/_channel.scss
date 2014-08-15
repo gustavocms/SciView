@@ -90,10 +90,10 @@
 
 .channel__meta-item-new {
   @extend .channel__meta-item;
-  &::before {
-    @include rem(padding-right, $baby);
-    content: '+';
-  }
+//  &::before {
+//    @include rem(padding-right, $baby);
+//    content: '+';
+//  }
 }
 
 %channel__meta-item-new-input {
