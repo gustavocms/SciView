@@ -13,6 +13,7 @@ class Api::V1::ViewStatesController < ApplicationController
     view_state = ViewState.new.tap do |vs|
       vs.user_id = current_user.id if current_user
       vs.title = "New Dataset"
+      vs.charts = []
     end
 
     if view_state.save
