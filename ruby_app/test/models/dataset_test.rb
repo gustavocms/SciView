@@ -40,7 +40,7 @@ describe Dataset do
       start: Time.new(2013, 12, 31),
       stop: Time.new(2014, 1, 2)
     })].map do |s|
-      _s = SeriesSummary.new(s.series['key'], Time.utc(1999), Time.utc(2020))
+      _s = DatasetSupport::SeriesSummary.new(s.series['key'], Time.utc(1999), Time.utc(2020))
       _s.instance_variable_set(:@_summary, s)
       _s
     end
@@ -51,7 +51,7 @@ describe Dataset do
 
   let(:series_names){ %w[series_key series_2_key] }
 
-  describe SeriesSummary do
+  describe DatasetSupport::SeriesSummary do
     [
       [:count, 1024, 204800],
       [:mean, 150, 250],
@@ -70,13 +70,13 @@ describe Dataset do
   end
 
   let(:dataset_summary) { 
-    DatasetSummary.new(series_names, Time.utc(1999), Time.utc(2020)).tap do |summary|
+    DatasetSupport::DatasetSummary.new(series_names, Time.utc(1999), Time.utc(2020)).tap do |summary|
       summary.instance_variable_set(:@starts, starts)
       summary.instance_variable_set(:@stops, stops)
     end
   }
 
-  describe DatasetSummary do
+  describe DatasetSupport::DatasetSummary do
     before { dataset_summary.instance_variable_set(:@series_summaries, meta) }
 
     let(:dataset) do
@@ -110,7 +110,4 @@ describe Dataset do
       end
     end
   end
-end
-
-describe Iso8601Duration do
 end
