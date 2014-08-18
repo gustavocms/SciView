@@ -20,6 +20,11 @@ module Tdms
     def values
       @values ||= AggregateChannelEnumerator.new(@channels)
     end
+
+    def properties
+      @channels[0].properties
+    end
+
   end
 
   class AggregateChannelEnumerator

@@ -85,8 +85,20 @@ module Tdms
 
           # TODO store properties
           num_props = @file.read_u32
+          prop_array = []
           1.upto(num_props) do |n|
             prop = @file.read_property
+            # puts "#{prop.name}\t#{prop.value}"
+            prop_array << prop
+          end
+
+          if path.channel?
+            chan.properties = prop_array
+          elsif path.group?
+            segment.properties = prop_array
+          else
+            # File as a whole/dataset
+            puts path
           end
         end
 

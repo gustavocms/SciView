@@ -2,7 +2,7 @@ module Tdms
 
   class Channel < Object
     attr_accessor :file, :path, :data_type_id, :dimension, :num_values,
-                  :raw_data_pos
+                  :raw_data_pos, :properties
 
     def name
       path.channel
