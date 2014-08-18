@@ -2,15 +2,14 @@
   <section class="discussion__closed" ng-if="$state.current.name !== 'data-sets.single.discuss'">
     <i class="discussion__cta-open" ui-sref="data-sets.single.discuss"></i>
     <i class="discussion__tab--notification"></i>
-  </section> 
+  </section>
   <section class="discussion__open" ng-if="$state.current.name === 'data-sets.single.discuss'">
-    <i class="discussion__cta-close" ui-sref="data-sets.single"></i> 
+    <i class="discussion__cta-close" ui-sref="data-sets.single"></i>
   </section>
 </section>
 
 <section class="data-set__current">
   <ul class="batches">
-    <!-- First Graph -->
     <li class="batch" ng-repeat="chart in current_data_set.charts" ng-controller="UIChartController">
       <!-- Sidebar / Data representation for gjkkraph -->
       <section class="batch__sidebar">
@@ -27,67 +26,62 @@
             <a ng-click="addSeries(chart, new_series_title)">Add Series</a>
           </li>
           <li class="batch__data-item" ng-repeat="channel in chart.channels" >
-            <!-- If the data item is NOT a group ## NO LONGER VALID - series must belong to a channel
-            <section class="channel" ng-if="!channel.series">
-              <i class="channel__dropdown"></i>
-              <span id="graph_{{$index}}" class="channel__title" ng-bind="channel.title"> </span> 
-              <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
-              <span class="channel__category" ng-bind="channel.category"> </span>
-              </section> -->
 
             <!-- If the data item is a group -->
             <section class="channel__group" ng-class="channel.state">
               <!-- Retract group icon -->
               <i class="batch__data-group-expand" ng-click="toggleGroup(channel)"></i>
               <!-- Group Title -->
-              <h5 class="batch__data-group-title" ng-bind="channel.title"> </h5>
+              <h5 class="batch__data-group-title" ng-bind="channel.title"></h5>
               <!-- Group data list -->
               <ul class="batch__data-group">
                 <!-- Channel item -->
-                <li class="channel is-group" ng-repeat="channel in channel.series">
-                  <!-- Channel dropdown -->
-                  <i class="channel__dropdown"></i>
-                  <!-- Channel title -->
-                  <span class="channel__title" style="color: {{channel.key.color}}" ng-bind="channel.title"> </span>
-                  <span class="channel__key" style="border-color: {{channel.key.color}}; border-bottom-style: {{channel.key.style}}"> </span>
-                  <!-- Channel Category -->
-                  <span class="channel__category" ng-bind="channel.category"> </span>
-                </li>
-              </ul>
-            </section>
-          </li>
+                <li class="channel is-group" ng-repeat="series in channel.series"
+                ng-class="series.state">
+                <!-- series dropdown -->
+                <i class="channel__dropdown" ng-click="toggleGroup(series)"></i>
+                <!-- series title -->
+                <span class="channel__title" style="color: {{series.key.color}}"
+                ng-bind="series.title"> </span>
+                <span class="channel__key"
+                style="border-color: {{series.key.color}}; border-bottom-style: {{series.key.style}}"> </span>
+                <!-- series Category -->
+                <span class="channel__category" ng-bind="series.category"> </span>
+                <!-- series Metadata  -->
+                <ul class="channel__meta"
+                ng-include="'assets/sciview/metadata.html'"
+                ng-controller="MetadataController"></ul>
+              </li>
+            </ul>
+          </section>
+        </li>
 
-            <!-- Metadata  -->
-            <li class="batch__data-item">
-                <section ng-controller="MetadataController" ng-include="'assets/charts/metadata/metadata.html'">
-                </section>
-            </li>
-        </ul>
-      </section>
+      </ul>
+    </section>
 
     <!-- Visual chart representation for graph -->
-      <section class="batch__chart">
-        <div class="batch__chart-units-1">
-        </div>
-        <!-- Dummy Graph -->
-      </section>
-    </li> 
+    <section class="batch__chart">
+      <div class="batch__chart-units-1">
+      </div>
+      <!-- Dummy Graph -->
+    </section>
+  </li>
 
-    <li>
-      <section class="batch__header">
-        <a class="batch__title" ng-click="addChart()">+ Add New Graph</a>
-      </section>
-    </li>
-    <li>
-      <section class="batch__header">
-        <a class="batch__title" ng-click="saveDataset()">+ Save DataSet</a>
-      </section>
-    </li>
-    <li>
-      <section class="batch__header">
-        <a class="batch__title" ng-click="deleteDataset()">x Delete DataSet</a>
-      </section>
-    </li>
+  <li>
+    <section class="batch__header">
+      <a class="batch__title" ng-click="addChart()">+ Add New Graph</a>
+    </section>
+  </li>
+  <li>
+    <section class="batch__header">
+      <a class="batch__title" ng-click="saveDataset()">+ Save DataSet</a>
+    </section>
+  </li>
+  <li>
+    <section class="batch__header">
+      <a class="batch__title" ng-click="deleteDataset()">x Delete DataSet</a>
+    </section>
+  </li>
 </ul>
 </section>
 

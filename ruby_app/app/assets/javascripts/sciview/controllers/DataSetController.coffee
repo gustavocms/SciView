@@ -61,6 +61,6 @@ app.controller('DataSetController', [
         )
 
     toggleExpandRetract = (obj) ->
-      obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
+      obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
 
 ])
