@@ -11,7 +11,6 @@ app.controller('DataSetController', [
     #$scope.data_sets = DataSets.getDataSets()
     $scope.data_sets = []
 
-
     setCurrentDataSet = (dataset) ->
       dataset or= $scope.data_sets[$stateParams.dataSetId] # TODO: fixme (shouldn't be array-indexed)
       $scope.current_data_set = dataset
@@ -24,7 +23,16 @@ app.controller('DataSetController', [
       $scope.resource = raw
       setCurrentDataSet(dataset)
 
-    ViewState.get({ id: $stateParams.dataSetId }).$promise.then(deserializeAndSetCurrent)
+    ViewState.get({ id: $stateParams.dataSetId })
+      .$promise
+      .then(deserializeAndSetCurrent)
+
+    ViewState.index()
+      .$promise
+      .then((data) ->
+        $scope.data_sets = data
+        console.log(data)
+      )
 
     # Make $state available in $scope
     $scope.$state = $state
