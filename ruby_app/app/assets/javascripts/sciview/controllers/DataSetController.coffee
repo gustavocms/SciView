@@ -45,6 +45,8 @@ app.controller('DataSetController', [
         $scope.current_data_set.serialize()
       )
 
+    $scope.deleteDataset = ->
+      ViewState.delete({ id: $scope.current_data_set.id })
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "retracted" then "expanded" else "retracted")

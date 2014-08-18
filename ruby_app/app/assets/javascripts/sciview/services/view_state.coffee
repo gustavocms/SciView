@@ -4,5 +4,6 @@ app.factory('ViewState', ['$resource',
     '/api/v1/view_states/:id.json',
     { id: '@id' },
     { update: { method: 'PUT' } }
+    { delete: { method: 'DELETE' }}
   )
 ])

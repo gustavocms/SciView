@@ -36,6 +36,10 @@ class Api::V1::ViewStatesController < ApplicationController
     end
   end
 
+  def destroy
+    respond_with true if view_state.destroy
+  end
+
   private
 
   def view_state
