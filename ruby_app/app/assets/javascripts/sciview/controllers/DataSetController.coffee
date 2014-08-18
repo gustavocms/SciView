@@ -23,7 +23,7 @@ app.controller('DataSetController', [
       $scope.data_sets.push(dataset)
       setCurrentDataSet(dataset)
 
-    ViewState.get({ viewStateId: $stateParams.dataSetId }).$promise.then(deserializeAndSetCurrent)
+    ViewState.get({ viewStateId: $stateParams.dataSetId }, deserializeAndSetCurrent) if $stateParams.dataSetId?
 
     # Make $state available in $scope
     $scope.$state = $state
