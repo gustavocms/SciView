@@ -1,71 +1,55 @@
-app.service('Observations', function($http, $cookieStore, $state) {
-    var Observations = {};
+(function() {
+    var app = angular.module('sciview')
 
-    Observations.getObservations = function() {
-        return [
-            {
-                data_set: "launch_39.2",
-                data_point: "C",
-                img: "/assets/prof-1.png",
-                author: "Blake Benthall",
-                created: "1288323623006",
-                observation: "This doesn't look good, it could be X or Y, but not Z."
-            },                
-            {
-                data_set: "TEST_3A",
-                data_point: "F",
-                img: "/assets/prof-2.png",
-                author: "Paul Mestemaker",
-                created: "1288323623006",
-                observation: "I think this problem will continue to grow if we don't address immediately. I think we could do Z if we had A and B, but that's up to Stan."
-            },              
-            {
-                data_set: "TEST_3A",
-                data_point: "F",
-                img: "/assets/prof-2.png",
-                author: "Paul Mestemaker",
-                created: "1288323623006",
-                observation: "I think this problem will continue to grow if we don't address immediately. I think we could do Z if we had A and B, but that's up to Stan."
-            },             
-            {
-                data_set: "TEST_3A",
-                data_point: "F",
-                img: "/assets/prof-2.png",
-                author: "Paul Mestemaker",
-                created: "1288323623006",
-                observation: "I think this problem will continue to grow if we don't address immediately. I think we could do Z if we had A and B, but that's up to Stan."
-            },            
-            {
-                data_set: "launch_39.2",
-                data_point: "C",
-                img: "/assets/prof-1.png",
-                author: "Blake Benthall",
-                created: "1288323623006",
-                observation: "This doesn't look good, it could be X or Y, but not Z."
-            }
-        ];
-    }
+    app.service('Observations', function($http, $cookieStore, $state) {
+        var Observations = {};
 
-    return Observations;
-});
+        Observations.getObservations = function() {
+            return [
+                {
+                    data_set: "launch_39.2",
+                    data_point: "C",
+                    img: "/assets/prof-1.png",
+                    author: "Blake Benthall",
+                    created: "1288323623006",
+                    observation: "This doesn't look good, it could be X or Y, but not Z."
+                },
+                {
+                    data_set: "TEST_3A",
+                    data_point: "F",
+                    img: "/assets/prof-2.png",
+                    author: "Paul Mestemaker",
+                    created: "1288323623006",
+                    observation: "I think this problem will continue to grow if we don't address immediately. I think we could do Z if we had A and B, but that's up to Stan."
+                },
+                {
+                    data_set: "TEST_3A",
+                    data_point: "F",
+                    img: "/assets/prof-2.png",
+                    author: "Paul Mestemaker",
+                    created: "1288323623006",
+                    observation: "I think this problem will continue to grow if we don't address immediately. I think we could do Z if we had A and B, but that's up to Stan."
+                },
+                {
+                    data_set: "TEST_3A",
+                    data_point: "F",
+                    img: "/assets/prof-2.png",
+                    author: "Paul Mestemaker",
+                    created: "1288323623006",
+                    observation: "I think this problem will continue to grow if we don't address immediately. I think we could do Z if we had A and B, but that's up to Stan."
+                },
+                {
+                    data_set: "launch_39.2",
+                    data_point: "C",
+                    img: "/assets/prof-1.png",
+                    author: "Blake Benthall",
+                    created: "1288323623006",
+                    observation: "This doesn't look good, it could be X or Y, but not Z."
+                }
+            ];
+        }
 
+        return Observations;
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+})();

@@ -1,3 +1,5 @@
+app = angular.module('sciview')
+
 app.controller('DataSetListController', [
   '$scope'
   'ViewState'
