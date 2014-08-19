@@ -3,6 +3,9 @@ module Tdms
   class Path
     attr_reader :group, :channel
 
+    # If given a path, break it up into @group or @channel
+    # If given a group, store just the group
+    # If given a channel, store just the channel
     def initialize(options={})
       load(options[:path]) if options[:path]
       @group   = options[:group]   if options[:group]

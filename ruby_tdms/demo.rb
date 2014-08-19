@@ -15,21 +15,34 @@ doc = Tdms::File.parse(filename)
 #   puts "#{ch1.values[i]},#{ch2.values[i]}"
 # end
 
-doc.segments.each_with_index do |segment, i|
+def display(s, level)
+  puts "#{" " * 2 * level}#{s}"
+end
+
+
+doc.segments.each_with_index do |segment, index|
   puts segment.path
+
 
   if segment.properties
     segment.properties.each do |prop|
-      puts "#{prop.name}\t#{prop.value}"
+      # puts "#{prop.name}\t#{prop.value}"
+      display "#{prop.name}\t#{prop.value}", 1
     end
   end
 end
 
+puts
+puts
+
 doc.channels.each_with_index do |channel, index|
-  puts channel.path
-  channel.properties.each do |prop|
-    puts "#{prop.name}\t#{prop.value}"
-  end
+  display channel.path, 1
+  # puts channel.path
+  # if channel.path == "/'EXAMPLE'/'Time'"
+  #   channel.properties.each do |prop|
+  #     puts "#{prop.name}\t#{prop.value}"
+  #   end
+  # end
   # channel.values.each_with_index do |value, i|
   #   puts value
   # end

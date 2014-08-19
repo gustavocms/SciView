@@ -21,7 +21,10 @@ module Tdms
 
         lead_in = @file.read(0x1C)
         metadata_pos = @file.pos
-
+        # More details here http://www.ruby-doc.org/core-2.1.2/String.html#method-i-unpack
+        # a4 = arbitrary binary string (4 bytes)
+        # V = Integer | 32-bit unsigned, VAX (little-endian) byte order
+        # Q = Integer | 64-bit unsigned, native endian (uint64_t)
         unpacked = lead_in.unpack("a4VVQQ")
         tdms_tag     = unpacked[0]                # char[4]
         toc_flags    = unpacked[1]                # u32
@@ -98,6 +101,7 @@ module Tdms
             segment.properties = prop_array
           else
             # File as a whole/dataset
+            # raise "This should never happen"
             puts path
           end
         end
