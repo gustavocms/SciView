@@ -25,14 +25,14 @@
 .batch__title-icon {
   @extend %batch-icon-mini;
   &::before {
-    background: url('/assets/graph-title.svg') center center no-repeat;
+    background: asset-url('graph-title.svg') center center no-repeat;
   }
 }
 
 .batch__add-channel-action {
   @extend %batch-icon-mini;
   &::before {
-    background: url('/assets/add-channel.svg') center center no-repeat;
+    background: asset-url('add-channel.svg') center center no-repeat;
   }
 }
 
@@ -67,7 +67,7 @@
   }
   &::before {
     opacity: 0.5;
-    background: url('/assets/chevron.svg') center center no-repeat;
+    background: asset-url('chevron.svg') center center no-repeat;
   }
 }
 
