@@ -31,27 +31,27 @@ app.config(['$urlRouterProvider', '$stateProvider',
     $stateProvider
       .state('data-sets', {
           url: '/data-sets',
-          templateUrl: '/assets/sciview/data_sets.html',
+          templateUrl: '<%= asset_path('sciview/data_sets.html') %>',
           controller: 'DataSetListController'
       })
       .state('data-sets.single', {
           url: '/:dataSetId',
-          templateUrl: '/assets/sciview/data_set.html',
+          templateUrl: '<%= asset_path('sciview/data_set.html') %>',
           controller: 'DataSetController'
       })
       .state('data-sets.single.discuss', {
           url: '/discuss',
-          templateUrl: '/assets/sciview/discuss.html',
+          templateUrl: '<%= asset_path('sciview/discuss.html') %>',
           controller: 'DiscussController'
       })
       .state('navigator', {
           url: '/navigator',
-          templateUrl: '/assets/sciview/navigator.html',
+          templateUrl: '<%= asset_path('sciview/navigator.html') %>',
           controller: 'NavigatorController'
       })
       .state('navigator.upload', {
           url: '/upload',
-          templateUrl: '/assets/sciview/partials/upload.html',
+          templateUrl: '<%= asset_path('sciview/partials/upload.html') %>',
           controller: 'UploadController'
       })
 ])
