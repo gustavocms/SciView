@@ -53,7 +53,6 @@ app.controller('DataSetController', [
         .$promise
         .then(->
           $scope.data_sets = $scope.data_sets.filter((ds) -> ds.id isnt dataset_id)
-          window.s = $scope
           $state.go('data-sets')
         )
 
