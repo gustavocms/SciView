@@ -27,7 +27,6 @@ app.controller('DataSetController', [
       .$promise
       .then((data) ->
         $scope.data_sets = data
-        console.log(data)
       )
 
     # Make $state available in $scope
