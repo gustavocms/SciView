@@ -37,6 +37,7 @@ module Tdms
         raw_data_pos_obj = raw_data_pos
 
         1.upto(new_changed_objs) do |obj_index|
+          # /'Noise data' does not contain properties with Ruby library, but does with Python library
           path = Tdms::Path.new(:path => @file.read_utf8_string)
           index_block_len = @file.read_u32
 
