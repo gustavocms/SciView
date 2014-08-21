@@ -33,7 +33,7 @@
 .discussion__cta-open {
   @extend %discussion__tab;
   &::before {
-    content: url('/assets/discussion.svg');
+    content: asset-url('discussion.svg');
   }
 }
 
@@ -59,7 +59,7 @@
 .discussion__cta-close {
   @extend %discussion__tab;
   &::before {
-    content: url('../img/x.svg');
+    content: asset-url('x.svg');
   }
 }
 

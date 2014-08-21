@@ -24,7 +24,7 @@
 
   &::before {
     opacity: 0.2;
-    background: url('/assets/chevron.svg') center center no-repeat;
+    background: asset-url('chevron.svg') center center no-repeat;
     -webkit-transform: rotate(270deg);
   }
 
