@@ -1,7 +1,6 @@
 <section class="data-sets">
   <!-- Current Data Set -->
   <!-- Current Data Set Title -->
-  {{ $scope | json }}
   <ul class="data-sets__list">
     <li class="data-sets__item" ng-repeat="data_set in data_sets" ui-sref="data-sets.single({ dataSetId: data_set.id })" ui-sref-active="is-current">
       <h3 class="data-sets__item-title" ng-bind="data_set.title"></h3>

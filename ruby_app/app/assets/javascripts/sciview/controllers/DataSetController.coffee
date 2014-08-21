@@ -54,9 +54,12 @@ app.controller('DataSetController', [
       )
 
     $scope.deleteDataset = ->
-      ViewState.delete({ id: $scope.current_data_set.id })
+      dataset_id = $scope.current_data_set.id
+      ViewState.delete({ id: dataset_id })
         .$promise
         .then(->
+          $scope.data_sets = $scope.data_sets.filter((ds) -> ds.id isnt dataset_id)
+          window.s = $scope
           $state.go('data-sets')
         )
 
