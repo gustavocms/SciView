@@ -13,9 +13,6 @@ app.controller('NewDataSetController', [
       ViewState.save({})
         .$promise
         .then((data) ->
-          window.l = $location
-          window.s = $state
-          window.sp = $stateParams
           $state.go('data-sets.single', { dataSetId: data.id })
         )
 
