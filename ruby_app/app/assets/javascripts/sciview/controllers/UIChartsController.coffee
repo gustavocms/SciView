@@ -1,3 +1,5 @@
+app = angular.module('sciview')
+
 app.controller("UIChartController", [
   '$scope'
   '$state'

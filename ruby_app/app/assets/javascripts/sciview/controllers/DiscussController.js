@@ -1,13 +1,18 @@
-app.controller('DiscussController', [
-    '$scope',
-    '$rootScope',
-    '$location',
-    '$state',
-    'Observations',
-    function($scope, $rootScope, $location, $state, Observations) {
-        $scope.$state = $state;        
+(function() {
+    var app = angular.module('sciview')
 
-        $scope.observations = Observations.getObservations();
+    app.controller('DiscussController', [
+        '$scope',
+        '$rootScope',
+        '$location',
+        '$state',
+        'Observations',
+        function($scope, $rootScope, $location, $state, Observations) {
+            $scope.$state = $state;
 
-    }
-]);
+            $scope.observations = Observations.getObservations();
+
+        }
+    ]);
+
+})();

@@ -1,15 +1,20 @@
-app.controller('NavigatorController', [
-    '$scope',
-    '$rootScope',
-    '$location',
-    'Sources',
-    function($scope, $rootScope, $location, Sources) {
-      
-        $scope.sources = Sources.getDataSources();
+(function() {
+    var app = angular.module('sciview')
 
-        $scope.navigator = {
-          search_query: ""
-        };
+    app.controller('NavigatorController', [
+        '$scope',
+        '$rootScope',
+        '$location',
+        'Sources',
+        function($scope, $rootScope, $location, Sources) {
 
-    }
-]);
+            $scope.sources = Sources.getDataSources();
+
+            $scope.navigator = {
+              search_query: ""
+            };
+
+        }
+    ]);
+
+})();
