@@ -32,7 +32,7 @@ app.config(['$urlRouterProvider', '$stateProvider',
       .state('data-sets', {
           url: '/data-sets',
           templateUrl: '<%= asset_path('sciview/data_sets.html') %>',
-          controller: 'DataSetListController'
+          controller: 'DataSetsController'
       })
       .state('data-sets.single', {
           url: '/:dataSetId',
