@@ -2,12 +2,11 @@ app = angular.module('sciview')
 
 app.controller('DataSetController', [
   '$scope'
-  '$location'
   '$stateParams'
   '$state'
   'DataSets'
   'ViewState'
-  ($scope, $location, $stateParams, $state, DataSets, ViewState) ->
+  ($scope, $stateParams, $state, DataSets, ViewState) ->
     # Get all Data Sets        
     #$scope.data_sets = DataSets.getDataSets()
     $scope.data_sets = []
