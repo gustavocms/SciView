@@ -56,7 +56,10 @@ describe "UI Models", ->
 
     describe 'serialization', ->
       it 'serializes to a basic object', ->
-        expect(channel.serialize()).toEqual(serializedChannel)
+        serialized = channel.serialize()
+        expect(serialized.title).toEqual("channel title")
+        expect(serialized.state).toEqual("retracted")
+        expect(serialized.series.map((a) -> a.title)).toEqual(['series_A', 'series_B'])
 
       it 'deserializes to a UIChannel', ->
         expect(svm.UIChannel.deserialize(serializedChannel)).toEqual(channel)
@@ -85,7 +88,7 @@ describe "UI Models", ->
               {
                 title: 'new_series'
                 category: 'default category'
-                key: { color: '#1ABC9C', style: 'solid' }
+                key: { color: '#F39C12', style: 'solid' }
               }
             ]
           }
@@ -93,12 +96,15 @@ describe "UI Models", ->
       }
 
       it 'serializes to a basic object', -> expect(chart2.serialize()).toEqual(serializedChart)
-      it 'deserializes from a basic object', -> expect(svm.UIChart.deserialize(serializedChart)).toEqual(chart2)
+      it 'deserializes from a basic object', ->
+        ui_chart = svm.UIChart.deserialize(serializedChart)
+        expect(ui_chart.title).toEqual(chart2.title)
+        expect(ui_chart.channels).toEqual(chart2.channels)
 
 
   describe "UIDataset", ->
     dataset = new svm.UIDataset('0', 'test dataset')
     dataset.charts = [chart]
 
-    it 'serializes to a basic object', ->
-      console.log(dataset.serialize())
+    #it 'serializes to a basic object', ->
+    #  console.log(dataset.serialize())

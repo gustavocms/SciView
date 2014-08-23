@@ -4,8 +4,11 @@ SciView.Models or= {}
 class SciView.Models.UIBase
   # assigns a property is arg is present and defined, otherwise
   # defaults to the function on _defaults with the same property name
+  #
+  # The object must be passed in as an argument if it is to be used in the
+  # function (see UISeries default 'key')
   default: (attr, arg) ->
-    @[attr] = ( arg or (@_defaults[attr] or @_noOp)())
+    @[attr] = ( arg or (@_defaults[attr] or @_noOp)(@))
 
   _defaults:
     title: -> "untitled"
@@ -39,13 +42,13 @@ class SciView.Models.UIBase
 
 class SciView.Models.UISeries extends SciView.Models.UIBase
   constructor: (@title, @category) ->
-    @key = @default('key')
+    @default('key')
     @default('state')
 
   seriesKeys: -> [@title]
 
   _defaults:
-    key: -> { color: SciView.lineColor(@title), style: "solid" }
+    key: (obj) -> return { color: SciView.lineColor(obj.title), style: "solid" }
     title: -> "untitled series"
     state: -> "is-retracted"
 
@@ -98,8 +101,6 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     @channels = [new SciView.Models.UIChannel('default channel').expand()]
     @_computeDataUrl()
     #@initializeChart()
-
-  #chart: "assets/graph_1.svg" # TODO - replace this
 
   initializeChart: (element) ->
     @chart = new SciView.D3.FocusChart(
@@ -159,7 +160,6 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
 
   # Triggers a data load/d3 redraw
   refresh: -> 
-    console.log(@charts)
     chart.refresh() for chart in @charts
 
   @serialized_attributes: ['id', 'title']
