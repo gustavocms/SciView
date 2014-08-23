@@ -22,7 +22,14 @@ module Tdms
     end
 
     def properties
-      @channels[0].properties
+      props = {}
+      @channels.each do |chan|
+        chan.properties.each do |prop|
+          props[prop.name] = prop.data
+        end
+
+      end
+      props
     end
 
   end
