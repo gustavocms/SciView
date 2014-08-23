@@ -7,26 +7,15 @@ app.controller('DataSetController', [
   'DataSets'
   'ViewState'
   ($scope, $stateParams, $state, DataSets, ViewState) ->
-    # Get all Data Sets        
-    #$scope.data_sets = DataSets.getDataSets()
-    $scope.data_sets = []
-
     setCurrentDataSet = (dataset) ->
       $scope.current_data_set = dataset
 
     deserializeAndSetCurrent = (raw) ->
       dataset = SciView.Models.UIDataset.deserialize(raw)
-      $scope.data_sets.push(dataset) # TODO: does this controller need to know about this array?
       $scope.resource = raw
       setCurrentDataSet(dataset)
 
     ViewState.get({ id: $stateParams.dataSetId }, deserializeAndSetCurrent) if $stateParams.dataSetId?
-
-    ViewState.index()
-      .$promise
-      .then((data) ->
-        $scope.data_sets = data
-      )
 
     # Make $state available in $scope
     $scope.$state = $state
