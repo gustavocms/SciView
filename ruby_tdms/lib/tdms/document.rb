@@ -43,8 +43,13 @@ module Tdms
 
           if index_block_len == 0xFFFFFFFF
             # no index block
+            # Object has no data in this segment
+            # Leave number_values and data_size as set previously,
+            # as these may be re-used by later segments.
+
 
           elsif index_block_len == 0x000000
+
             # index block is same as this channel in the last segment
             prev_chan = segment.prev_segment.objects.find {|o| o.path == path }
 
@@ -61,7 +66,12 @@ module Tdms
             # XXX why does the number of properties seem to be
             # included in the raw data index block size?
             # -4 is a hack
+            puts "Current position (before index block):\t#{@file.pos}"
             index_block = @file.read(index_block_len - 4)
+            puts "Current position (after index block):\t#{@file.pos}"
+            # V = Integer | 32-bit unsigned, VAX (little-endian) byte order
+            # Q = Integer | 64-bit unsigned, native endian (uint64_t)
+
             decoded = index_block.unpack("VVQ")
 
             chan = Tdms::Channel.new
@@ -89,6 +99,8 @@ module Tdms
 
           # TODO store properties
           num_props = @file.read_u32
+          puts "#{path}: #{num_props}"
+          puts "Current position: #{@file.pos}"
           prop_array = []
           1.upto(num_props) do |n|
             prop = @file.read_property
@@ -103,8 +115,10 @@ module Tdms
           else
             # File as a whole/dataset
             # raise "This should never happen"
-            puts path
+            puts "else"
           end
+          # puts "segment.properties: #{segment.properties.length}" if segment.properties
+          # puts "chan.properties: #{chan.properties.length}" if chan.properties
         end
 
         @file.seek next_seg_pos
