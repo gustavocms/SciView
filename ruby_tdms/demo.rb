@@ -37,6 +37,10 @@ puts
 
 doc.channels.each_with_index do |channel, index|
   display channel.path, 1
+  display channel.properties.length, 2
+  # channel.properties.each do |prop, value|
+  #   display "#{prop}: #{value}", 2
+  # end
   # puts channel.path
   # if channel.path == "/'EXAMPLE'/'Time'"
   #   channel.properties.each do |prop|
