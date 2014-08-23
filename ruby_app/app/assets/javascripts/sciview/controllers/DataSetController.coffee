@@ -9,6 +9,10 @@ app.controller('DataSetController', [
   ($scope, $stateParams, $state, DataSets, ViewState) ->
     setCurrentDataSet = (dataset) ->
       $scope.current_data_set = dataset
+      ids_present             = (ds.id for ds in $scope.$parent.data_sets)
+      if ids_present.indexOf(dataset.id) is -1
+        $scope.$parent.data_sets.push(dataset)
+
 
     deserializeAndSetCurrent = (raw) ->
       dataset = SciView.Models.UIDataset.deserialize(raw)
