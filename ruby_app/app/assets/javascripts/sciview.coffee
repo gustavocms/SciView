@@ -371,7 +371,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('width', @width)
     #@focusTarget.call(@zoom)
 
-    @focusPaths or= @focus.selectAll('path.focus.init').data(@_data)
+    @focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     @focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
@@ -506,8 +506,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       .tickFormat("")
       .ticks((@y.ticks(10).length + 1) * 4)
       .tickSize(20, 10)
-    window.y = @yAxis
-    window.ym = @yAxisMinor
 
   baseWidth: ->
     parseInt(@elementSelection().style('width'))
