@@ -3,10 +3,7 @@
 
     app.controller('UploadController', [
         '$scope',
-        '$rootScope',
-        '$location',
-        '$timeout',
-        function($scope, $rootScope, $location, $timeout) {
+        function($scope) {
 
           $scope.uploads = [];
           var index = 0;

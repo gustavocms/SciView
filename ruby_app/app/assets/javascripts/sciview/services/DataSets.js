@@ -1,7 +1,7 @@
 (function() {
     var app = angular.module('sciview')
 
-    app.service('DataSets', function($http, $cookieStore, $state) {
+    app.service('DataSets', function() {
         var DataSets = {};
 
         DataSets.getDataSets = function() {

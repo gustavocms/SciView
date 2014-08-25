@@ -3,10 +3,8 @@ app = angular.module('sciview')
 app.controller('DataSetController', [
   '$scope'
   '$stateParams'
-  '$state'
-  'DataSets'
   'ViewState'
-  ($scope, $stateParams, $state, DataSets, ViewState) ->
+  ($scope, $stateParams, ViewState) ->
     setCurrentDataSet = (dataset) ->
       $scope.current_data_set = dataset
       ids_present             = (ds.id for ds in $scope.$parent.data_sets)
@@ -21,8 +19,6 @@ app.controller('DataSetController', [
 
     ViewState.get({ id: $stateParams.dataSetId }, deserializeAndSetCurrent) if $stateParams.dataSetId?
 
-    # Make $state available in $scope
-    $scope.$state = $state
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
@@ -46,7 +42,7 @@ app.controller('DataSetController', [
         .then(->
           window.s = $scope
           $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt dataset_id)
-          $state.go('data-sets')
+          $scope.$state.go('data-sets')
         )
 
     toggleExpandRetract = (obj) ->
