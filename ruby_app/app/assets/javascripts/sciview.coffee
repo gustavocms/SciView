@@ -397,6 +397,7 @@ class SciView.FocusChart extends SciView.BasicChart
     contextPaths.enter()
       .append('path')
       .attr("class", "line context")
+    contextPaths
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
     
