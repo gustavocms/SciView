@@ -7,5 +7,10 @@ app.controller('DataSetsController', [
     $scope.data_sets = []
     ViewState.index()
       .$promise
-      .then((data) -> $scope.data_sets = data)
+      .then((data) ->
+        for raw in data
+          do (raw) ->
+            dataset = SciView.Models.UIDataset.deserialize(raw)
+            $scope.data_sets.push(dataset)
+      )
 ])

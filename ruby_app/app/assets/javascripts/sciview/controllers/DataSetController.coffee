@@ -5,19 +5,12 @@ app.controller('DataSetController', [
   '$stateParams'
   'ViewState'
   ($scope, $stateParams, ViewState) ->
-    setCurrentDataSet = (dataset) ->
-      $scope.current_data_set = dataset
-      ids_present             = (ds.id for ds in $scope.$parent.data_sets)
-      if ids_present.indexOf(dataset.id) is -1
-        $scope.$parent.data_sets.push(dataset)
 
+#   find the correct dataset in parent's scope
+    filteredDS = $scope.$parent.data_sets.filter (ds) ->
+      ds.id.toString() == $stateParams.dataSetId
 
-    deserializeAndSetCurrent = (raw) ->
-      dataset = SciView.Models.UIDataset.deserialize(raw)
-      $scope.resource = raw
-      setCurrentDataSet(dataset)
-
-    ViewState.get({ id: $stateParams.dataSetId }, deserializeAndSetCurrent) if $stateParams.dataSetId?
+    $scope.current_data_set = filteredDS[0]
 
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
