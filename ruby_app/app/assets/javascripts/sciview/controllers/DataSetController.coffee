@@ -12,6 +12,12 @@ app.controller('DataSetController', [
 
     $scope.current_data_set = filteredDS[0]
 
+#   used to manage changes that may be reverted
+    $scope.temporary_data_set = angular.copy($scope.current_data_set)
+
+    $scope.states =
+      is_renaming: false
+
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
@@ -37,6 +43,15 @@ app.controller('DataSetController', [
           $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt dataset_id)
           $scope.$state.go('data-sets')
         )
+
+    $scope.saveRenaming = ->
+      $scope.current_data_set.title = $scope.temporary_data_set.title
+      $scope.states.is_renaming = false
+      $scope.saveDataset()
+
+    $scope.cancelRenaming = ->
+      $scope.temporary_data_set.title = $scope.current_data_set.title
+      $scope.states.is_renaming = false
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
