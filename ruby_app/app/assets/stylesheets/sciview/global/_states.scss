@@ -60,6 +60,13 @@
     display: none;
   }
 
+  &.channel {
+    &:hover {
+      cursor: pointer;
+      background-color: rgba($white, 0.1);
+    }
+  }
+
 
 
 }
@@ -83,3 +90,19 @@
   }
 
 }
+
+.is-expanded {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
