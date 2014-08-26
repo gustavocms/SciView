@@ -1,9 +1,12 @@
+app = angular.module('sciview')
+
 app.controller("UIChartController", [
   '$scope'
   '$state'
   '$element'
   ($scope, $state, $element) ->
     $scope.addSeries = (ui_chart, series_title, group = null) ->
+      console.log(ui_chart, $scope.chart, series_title)
       if group
         # TODO: do something with the group
       else
