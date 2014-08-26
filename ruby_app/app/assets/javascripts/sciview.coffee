@@ -341,7 +341,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .append('path')
       .attr('class', 'line focus zoom')
       .attr('id', (d) -> "zoomed_#{d.key}" )
-      .attr('clip-path', "url(#clip)")
       .style('stroke', (d) -> lineColor(d.key))
       .style('opacity', (d)-> if d.disabled then 0 else 1 )
       .style('fill-opacity', 0.2)
@@ -371,7 +370,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('width', @width)
     #@focusTarget.call(@zoom)
 
-    @focusPaths or= @focus.selectAll('path.focus.init').data(@_data)
+    @focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     @focusPaths.enter()
       .append('path')
       .attr('class', 'line focus init')
@@ -379,8 +378,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('stroke', (d) -> lineColor(d.key))
       .style('fill-opacity', 0.2)
       .style('fill', (d) -> lineColor(d.key))
-    @focusPaths.attr('d', (d) => @lineFocus(d.values))
-      .attr("clip-path", "url(#clip)")
+    @focusPaths
+      .attr('d', (d) => @lineFocus(d.values))
     @focusPaths.exit().remove()
     @xAxisGroup or= @focus.append("g")
       .attr("class", "x axis")
@@ -398,6 +397,7 @@ class SciView.FocusChart extends SciView.BasicChart
     contextPaths.enter()
       .append('path')
       .attr("class", "line context")
+    contextPaths
       .attr("d", (d) => @lineContext(d.values))
       .style('stroke', (d) -> lineColor(d.key))
     
@@ -506,8 +506,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       .tickFormat("")
       .ticks((@y.ticks(10).length + 1) * 4)
       .tickSize(20, 10)
-    window.y = @yAxis
-    window.ym = @yAxisMinor
 
   baseWidth: ->
     parseInt(@elementSelection().style('width'))
@@ -530,9 +528,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     @initializeChartVariables(@options)
     @initializeD3Components()
     @setSvgAttributes()
-    @svg.select('#clip')
-      .attr('width', @width)
-      .attr('height', @height)
     @render()
 
 
