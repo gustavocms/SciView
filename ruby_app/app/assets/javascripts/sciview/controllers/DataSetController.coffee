@@ -13,7 +13,8 @@ app.controller('DataSetController', [
     $scope.current_data_set = filteredDS[0]
 
 #   used to manage changes that may be reverted
-    $scope.temporary_data_set = angular.copy($scope.current_data_set)
+    $scope.temporary_data_set =
+      title: $scope.current_data_set.title
 
     $scope.states =
       is_renaming: false
