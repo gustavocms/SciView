@@ -27,8 +27,7 @@ class SciView.Models.UIBase
     newObj = new @()
     newObj.default(key, obj[key]) for key in @serialized_attributes
     for key, klass of @serializable_collections
-#      TODO: replace with default version of attribute
-      newObj[key] = (klass.deserialize(member) for member in obj[key]) if obj[key]
+      newObj[key] = if !obj[key] then [] else (klass.deserialize(member) for member in obj[key])
     newObj.afterDeserialize()
     newObj
 
