@@ -27,8 +27,7 @@ class SciView.Models.UIBase
     newObj = new @()
     newObj.default(key, obj[key]) for key in @serialized_attributes
     for key, klass of @serializable_collections
-#      TODO: replace with default version of attribute
-      newObj[key] = (klass.deserialize(member) for member in obj[key]) if obj[key]
+      newObj[key] = (klass.deserialize(member) for member in (obj[key] or []))
     newObj.afterDeserialize()
     newObj
 
@@ -158,6 +157,10 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
   _newChart: -> new SciView.Models.UIChart("Untitled Chart")
 
   removeChart: -> # TODO
+  
+  defaults:
+    title: -> "Untitled Dataset"
+
 
   # Triggers a data load/d3 redraw
   refresh: -> 
