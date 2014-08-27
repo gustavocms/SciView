@@ -7,15 +7,6 @@
     background-color: rgba($interface_color, 0.025);
   }
 
-  &:hover {
-    cursor: pointer;
-    background-color: rgba($interface_color, 0.1);
-  }
-
-  // &:active {
-  //   background-color: rgba($highlight_color, 0.9);
-  // }
-
 }
 
 .channel__dropdown {
@@ -73,6 +64,7 @@
 
 .channel__meta-item {
   @include pad($baby/4 $normal);
+  word-wrap: break-word;
   &:nth-child(odd) {
     background-color: rgba($white, 0.02);
   }
@@ -153,6 +145,64 @@
   }
 }
 
+.channel__meta-item-remove {
+  @extend %button-delete;
+  @include vp(transform, translateY(-1rem));
+  right: $normal;
+  top: 50%;
+}
+
+// Mini Modal View
+.channel__meta-remove-view {
+  position: absolute;
+  top: 0;
+  background-color: darken($background_color, 5%);
+  padding: 2em;
+  overflow: hidden;
+}
+
+.channel__meta-remove-no {
+  @extend %button-reset;
+  float: right;
+}
+
+.channel__meta-remove-yes {
+  @extend %button-reset;
+  margin-left: 2em;
+  float: right;
+}
+
+.channel__meta-remove-delete {
+  @extend %button-delete;
+  top: 0;
+  right: $normal;
+}
+
+.channel__meta-remove-info {
+  display: block;
+  font-family: $primary_font_family;
+  margin-bottom: 1em;
+  line-height: 1.7;
+}
+
+.channel__meta-remove-tag {
+  @extend %monospaced-style;
+  @include pad($baby/4 $baby);
+  word-break: break-word;
+  line-height: 1.95;
+  margin-right: .3em;
+  background-color: rgba($white, 0.1);
+}
+
+.channel__meta-remove-flash {
+  @include vp(transition, all .3s ease);
+  position: absolute;
+  top: 0;
+  background-color: rgba($highlight_color, 0.95);
+  color: $font_color;
+  padding: .5em 1em;
+  opacity: 1;
+}
 
 
 
