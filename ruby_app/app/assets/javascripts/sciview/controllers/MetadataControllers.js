@@ -1,8 +1,8 @@
 (function() {
     var module = angular.module('sv.ui.controllers.metadata', []);
 
-    module.controller('MetadataController', ['$scope','$q', '$timeout', 'ModalService', 'MetadataService', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $q, $timeout, ModalService, MetadataService, SeriesTagsService, SeriesAttributesService) {
+    module.controller('MetadataController', ['$scope','$q', '$timeout', 'MetadataService', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $q, $timeout, MetadataService, SeriesTagsService, SeriesAttributesService) {
 
             $scope.metaState = {
                 //$scope.channel.title from parent controller
