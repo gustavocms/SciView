@@ -3,8 +3,9 @@ app = angular.module('sciview')
 app.controller('DataSetController', [
   '$scope'
   '$stateParams'
+  '$timeout'
   'ViewState'
-  ($scope, $stateParams, ViewState) ->
+  ($scope, $stateParams, $timeout, ViewState) ->
 
 #   find the correct dataset in parent's scope
     filteredDS = $scope.$parent.data_sets.filter (ds) ->
@@ -34,6 +35,7 @@ app.controller('DataSetController', [
         { id: $scope.current_data_set.id },
         $scope.current_data_set.serialize()
       )
+      console.log('saving')
 
     $scope.deleteDataset = ->
       dataset_id = $scope.current_data_set.id
@@ -48,11 +50,25 @@ app.controller('DataSetController', [
     $scope.saveRenaming = ->
       $scope.current_data_set.title = $scope.temporary_data_set.title
       $scope.states.is_renaming = false
-      $scope.saveDataset()
 
     $scope.cancelRenaming = ->
       $scope.temporary_data_set.title = $scope.current_data_set.title
       $scope.states.is_renaming = false
+
+#   as seen here:
+#   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
+    initializing = true
+    afterInitialization = (callback) ->
+      if initializing
+        $timeout(()-> initializing = false)
+      else
+        callback()
+
+    $scope.$watch(
+      'current_data_set.serialize()'
+      () -> afterInitialization($scope.saveDataset)
+      true
+    )
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
