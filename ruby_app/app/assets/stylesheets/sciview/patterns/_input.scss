@@ -34,3 +34,27 @@
   }
 
 }
+
+%button-delete {
+  @extend %button-reset;
+  @include pad($baby $baby/2);
+  position: absolute;
+  background: transparent;
+  border: none;
+  &::before {
+    content: '';
+    width: $normal;
+    height: $normal;
+    background: asset-url('x.svg') no-repeat center;
+    background-size: $baby;
+    position: absolute;
+    left: 0;
+    opacity: 0.5;
+  }
+  &:hover {
+    border: none;
+    &::before {
+      opacity: 1;
+    }
+  }
+}
