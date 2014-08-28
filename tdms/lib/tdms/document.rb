@@ -66,9 +66,9 @@ module Tdms
             # XXX why does the number of properties seem to be
             # included in the raw data index block size?
             # -4 is a hack
-            puts "Current position (before index block):\t#{@file.pos}"
+            # puts "Current position (before index block):\t#{@file.pos}"
             index_block = @file.read(index_block_len - 4)
-            puts "Current position (after index block):\t#{@file.pos}"
+            # puts "Current position (after index block):\t#{@file.pos}"
             # V = Integer | 32-bit unsigned, VAX (little-endian) byte order
             # Q = Integer | 64-bit unsigned, native endian (uint64_t)
 
@@ -99,8 +99,8 @@ module Tdms
 
           # TODO store properties
           num_props = @file.read_u32
-          puts "#{path}: #{num_props}"
-          puts "Current position: #{@file.pos}"
+          # puts "#{path}: #{num_props}"
+          # puts "Current position: #{@file.pos}"
           prop_array = []
           1.upto(num_props) do |n|
             prop = @file.read_property
@@ -113,9 +113,7 @@ module Tdms
           elsif path.group?
             segment.properties = prop_array
           else
-            # File as a whole/dataset
-            # raise "This should never happen"
-            puts "else"
+            # NOOP
           end
           # puts "segment.properties: #{segment.properties.length}" if segment.properties
           # puts "chan.properties: #{chan.properties.length}" if chan.properties
