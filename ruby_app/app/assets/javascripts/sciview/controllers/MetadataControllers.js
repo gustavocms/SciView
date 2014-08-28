@@ -1,8 +1,8 @@
 (function() {
     var module = angular.module('sv.ui.controllers.metadata', []);
 
-    module.controller('MetadataController', ['$scope','$q', 'ModalService', 'MetadataService', 'SeriesTagsService', 'SeriesAttributesService',
-        function ($scope, $q, ModalService, MetadataService, SeriesTagsService, SeriesAttributesService) {
+    module.controller('MetadataController', ['$scope','$q', '$timeout', 'MetadataService', 'SeriesTagsService', 'SeriesAttributesService',
+        function ($scope, $q, $timeout, MetadataService, SeriesTagsService, SeriesAttributesService) {
 
             $scope.metaState = {
                 //$scope.channel.title from parent controller
@@ -88,47 +88,81 @@
                 return promise;
             };
 
+            $scope.deleteMeta = {
+                selected_tag: {},
+                selected_attr: {},
+                selected_key: {},
+                is_attr: false,
+                remove_screen: false,
+                remove_flash: false
+            };
 
-            $scope.removeAttribute = function(key) {
-                var result = ModalService.showModal({}, {
-                    actionButtonText: 'Delete',
-                    headerText: 'Remove attribute?',
-                    bodyText: 'Are you sure you want to delete this attribute?<br><br><strong>' + key + ':' + $scope.seriesData.attributes[key] + '</strong>'
-                });
+            $scope.removeTagView = function(tag) {
+                // Clear selected tag
+                $scope.deleteMeta.selected_tag = {};
+                // Remove attr setting (for delete function)
+                $scope.deleteMeta.is_attr = false;
+                // Show the remove screen
+                $scope.deleteMeta.remove_screen = true;
+                // Set selected tag
+                $scope.deleteMeta.selected_tag = tag;
+            };
 
-                result.then(function () {
-                    //ajax call
-                    SeriesAttributesService.delete({
-                            seriesId: $scope.seriesData.key,
-                            attributeId: key
-                        }, {},
-                        //onSuccess promise function
-                        function () {
-                            //update scope removing object
-                            delete $scope.seriesData.attributes[key];
-                        });
-                });
+            $scope.removeAttrView = function(key, value) {
+                // Clear selected attr
+                $scope.deleteMeta.selected_attr = {};
+                // Set selected key
+                $scope.deleteMeta.selected_key = key;
+                // Set attr setting to true (for delete selection)
+                $scope.deleteMeta.is_attr = true;
+                // Show remove screen
+                $scope.deleteMeta.remove_screen = true;
+                // Build attribute string 
+                $scope.deleteMeta.selected_attr = key + ": " + value;
+            };  
+
+            $scope.hideRemoveView = function() {
+                // Hide remove screen 
+                $scope.deleteMeta.remove_screen = false;
+            };
+
+            $scope.removeFlash = function() {
+                // Show alert
+                $scope.deleteMeta.remove_flash = true;
+                // Remove alert
+                $timeout(function() {
+                    $scope.deleteMeta.remove_flash = false;
+                }, 1500);
             };
 
             $scope.removeTag = function(tag) {
-                var result = ModalService.showModal({}, {
-                    actionButtonText: 'Delete',
-                    headerText: 'Remove tag?',
-                    bodyText: 'Are you sure you want to delete this tag?<br><br><strong>' + tag + '</strong>'
-                });
+                //ajax call
+                SeriesTagsService.delete({
+                        seriesId: $scope.seriesData.key,
+                        tagId: tag
+                    }, {},
+                    //onSuccess promise function
+                    function () {
+                        //update scope removing object
+                        $scope.seriesData.tags.splice($scope.seriesData.tags.indexOf(tag), 1);
+                        $scope.deleteMeta.remove_screen = false;
+                        $scope.removeFlash();
+                    });
+            };
 
-                result.then(function () {
-                    //ajax call
-                    SeriesTagsService.delete({
-                            seriesId: $scope.seriesData.key,
-                            tagId: tag
-                        }, {},
-                        //onSuccess promise function
-                        function () {
-                            //update scope removing object
-                            $scope.seriesData.tags.splice($scope.seriesData.tags.indexOf(tag), 1);
-                        });
-                });
+            $scope.removeAttribute = function(key) {
+                //ajax call
+                SeriesAttributesService.delete({
+                        seriesId: $scope.seriesData.key,
+                        attributeId: key
+                    }, {},
+                    //onSuccess promise function
+                    function () {
+                        //update scope removing object
+                        delete $scope.seriesData.attributes[key];
+                        $scope.deleteMeta.remove_screen = false;
+                        $scope.removeFlash();
+                    });
             };
         }
     ]);
