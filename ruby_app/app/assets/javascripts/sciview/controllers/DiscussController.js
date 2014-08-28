@@ -3,15 +3,9 @@
 
     app.controller('DiscussController', [
         '$scope',
-        '$rootScope',
-        '$location',
-        '$state',
         'Observations',
-        function($scope, $rootScope, $location, $state, Observations) {
-            $scope.$state = $state;
-
+        function($scope, Observations) {
             $scope.observations = Observations.getObservations();
-
         }
     ]);
 

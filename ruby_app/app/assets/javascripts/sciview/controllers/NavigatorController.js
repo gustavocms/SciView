@@ -3,10 +3,8 @@
 
     app.controller('NavigatorController', [
         '$scope',
-        '$rootScope',
-        '$location',
         'Sources',
-        function($scope, $rootScope, $location, Sources) {
+        function($scope, Sources) {
 
             $scope.sources = Sources.getDataSources();
 

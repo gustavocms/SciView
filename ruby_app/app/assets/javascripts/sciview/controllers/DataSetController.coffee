@@ -3,26 +3,22 @@ app = angular.module('sciview')
 app.controller('DataSetController', [
   '$scope'
   '$stateParams'
-  '$state'
-  'DataSets'
   'ViewState'
-  ($scope, $stateParams, $state, DataSets, ViewState) ->
-    setCurrentDataSet = (dataset) ->
-      $scope.current_data_set = dataset
-      ids_present             = (ds.id for ds in $scope.$parent.data_sets)
-      if ids_present.indexOf(dataset.id) is -1
-        $scope.$parent.data_sets.push(dataset)
+  ($scope, $stateParams, ViewState) ->
 
+#   find the correct dataset in parent's scope
+    filteredDS = $scope.$parent.data_sets.filter (ds) ->
+      ds.id.toString() == $stateParams.dataSetId
 
-    deserializeAndSetCurrent = (raw) ->
-      dataset = SciView.Models.UIDataset.deserialize(raw)
-      $scope.resource = raw
-      setCurrentDataSet(dataset)
+    $scope.current_data_set = filteredDS[0]
 
-    ViewState.get({ id: $stateParams.dataSetId }, deserializeAndSetCurrent) if $stateParams.dataSetId?
+#   used to manage changes that may be reverted
+    $scope.temporary_data_set =
+      title: $scope.current_data_set.title
 
-    # Make $state available in $scope
-    $scope.$state = $state
+    $scope.states =
+      is_renaming: false
+
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
@@ -46,8 +42,17 @@ app.controller('DataSetController', [
         .then(->
           window.s = $scope
           $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt dataset_id)
-          $state.go('data-sets')
+          $scope.$state.go('data-sets')
         )
+
+    $scope.saveRenaming = ->
+      $scope.current_data_set.title = $scope.temporary_data_set.title
+      $scope.states.is_renaming = false
+      $scope.saveDataset()
+
+    $scope.cancelRenaming = ->
+      $scope.temporary_data_set.title = $scope.current_data_set.title
+      $scope.states.is_renaming = false
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
