@@ -524,11 +524,13 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   # re-scales the chart based on the new dimensions of the chart's container
   redraw: =>
-    @initializeBaseVariables(@options)
-    @initializeChartVariables(@options)
-    @initializeD3Components()
-    @setSvgAttributes()
-    @render()
+#    initial data set has already been loaded and avoid further resizing of discarded chart
+    if @_data and !isNaN(@baseWidth()) and !isNaN(@baseHeight())
+      @initializeBaseVariables(@options)
+      @initializeChartVariables(@options)
+      @initializeD3Components()
+      @setSvgAttributes()
+      @render()
 
 
 
