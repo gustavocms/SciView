@@ -3,9 +3,7 @@
 
     app.controller('ToolController', [
         '$scope',
-        '$rootScope',
-        '$location',
-        function($scope, $rootScope, $location) {
+        function($scope) {
             $scope.channel = {
               title: 'oil-pressure_3a',
               category: 'thrusters',

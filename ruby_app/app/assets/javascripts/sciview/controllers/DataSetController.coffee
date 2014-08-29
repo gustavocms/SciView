@@ -3,26 +3,23 @@ app = angular.module('sciview')
 app.controller('DataSetController', [
   '$scope'
   '$stateParams'
-  '$state'
-  'DataSets'
+  '$timeout'
   'ViewState'
-  ($scope, $stateParams, $state, DataSets, ViewState) ->
-    setCurrentDataSet = (dataset) ->
-      $scope.current_data_set = dataset
-      ids_present             = (ds.id for ds in $scope.$parent.data_sets)
-      if ids_present.indexOf(dataset.id) is -1
-        $scope.$parent.data_sets.push(dataset)
+  ($scope, $stateParams, $timeout, ViewState) ->
 
+#   find the correct dataset in parent's scope
+    filteredDS = $scope.$parent.data_sets.filter (ds) ->
+      ds.id.toString() == $stateParams.dataSetId
 
-    deserializeAndSetCurrent = (raw) ->
-      dataset = SciView.Models.UIDataset.deserialize(raw)
-      $scope.resource = raw
-      setCurrentDataSet(dataset)
+    $scope.current_data_set = filteredDS[0]
 
-    ViewState.get({ id: $stateParams.dataSetId }, deserializeAndSetCurrent) if $stateParams.dataSetId?
+#   used to manage changes that may be reverted
+    $scope.temporary_data_set =
+      title: $scope.current_data_set.title
 
-    # Make $state available in $scope
-    $scope.$state = $state
+    $scope.states =
+      is_renaming: false
+
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
@@ -38,6 +35,7 @@ app.controller('DataSetController', [
         { id: $scope.current_data_set.id },
         $scope.current_data_set.serialize()
       )
+      console.log('saving')
 
     $scope.deleteDataset = ->
       dataset_id = $scope.current_data_set.id
@@ -46,8 +44,31 @@ app.controller('DataSetController', [
         .then(->
           window.s = $scope
           $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt dataset_id)
-          $state.go('data-sets')
+          $scope.$state.go('data-sets')
         )
+
+    $scope.saveRenaming = ->
+      $scope.current_data_set.title = $scope.temporary_data_set.title
+      $scope.states.is_renaming = false
+
+    $scope.cancelRenaming = ->
+      $scope.temporary_data_set.title = $scope.current_data_set.title
+      $scope.states.is_renaming = false
+
+#   as seen here:
+#   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
+    initializing = true
+    afterInitialization = (callback) ->
+      if initializing
+        $timeout(()-> initializing = false)
+      else
+        callback()
+
+    $scope.$watch(
+      'current_data_set.serialize()'
+      () -> afterInitialization($scope.saveDataset)
+      true
+    )
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
