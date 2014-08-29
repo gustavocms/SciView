@@ -7,34 +7,30 @@ namespace :data do
     filename = "/Users/paul/code/CleverPoint/sciview/python_app/data/EXAMPLE.tdms"
     doc = Tdms::File.parse(filename)
 
-    # ch1 = doc.channels.find {|c| c.name == "StatisticsText"}
-    # ch2 = doc.channels.find {|c| c.name == "Res_Noise_1"}
+    # doc.segments.each_with_index do |segment, index|
+    #   puts segment.path
     #
-    # last = [ch1.values.size, ch2.values.size].min - 1
-    #
-    # puts "#{ch1.name},#{ch2.name}"
-    # 0.upto(last) do |i|
-    #   puts "#{ch1.values[i]},#{ch2.values[i]}"
+    #   if segment.properties
+    #     segment.properties.each do |prop|
+    #       indented_display "#{prop.name}\t#{prop.value}", 1
+    #     end
+    #   end
     # end
 
-    doc.segments.each_with_index do |segment, index|
-      puts segment.path
-
-
-      if segment.properties
-        segment.properties.each do |prop|
-          # puts "#{prop.name}\t#{prop.value}"
-          indented_display "#{prop.name}\t#{prop.value}", 1
-        end
-      end
-    end
-
-    puts
-    puts
+    # puts
+    # puts
 
     doc.channels.each_with_index do |channel, index|
-      indented_display channel.path, 1
-      indented_display channel.properties.length, 2
+
+      indented_display channel.path, 0
+
+      indented_display "#{channel.properties.length} properties", 1
+
+      channel.properties.each do |name, value|
+        indented_display "#{name}\t#{value}", 2
+      end
+
+
       # channel.properties.each do |prop, value|
       #   indented_display "#{prop}: #{value}", 2
       # end
