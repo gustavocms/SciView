@@ -92,12 +92,14 @@ class SciView.FocusChart extends SciView.BasicChart
  
   # if argument is present, set data and return self;
   # otherwise return current data
-  data: (d) ->
+  data: (d, overwrite = false) ->
     if d
-      if @_data # initial data set has already been loaded, and should be kept as the low-fi data set
-        @zoomData(d)
-      else
+      if overwrite or !@_data
         @_data = preprocess(d, @zoom_options['disabledSeries'])
+        @isZoomed = false
+      else
+        # initial data set has already been loaded, and should be kept as the low-fi data set
+        @zoomData(d)
 
       return @
     @_data
@@ -106,18 +108,18 @@ class SciView.FocusChart extends SciView.BasicChart
   zoomData: (d) ->
     if d
       @_zoomData = preprocess(d, @zoom_options['disabledSeries'])
-      @isZoomed  = true
+      @isZoomed = true
       return @
     @_zoomData
 
   # Trigger the ajax call.
-  getData: (retryCount = 0) ->
+  getData: (retryCount = 0, overwrite = false) ->
     @showPleaseWait()
     get_data_url = "#{@dataURL()}#{@startStopQuery()}&count=960"
     $.ajax({
       url: get_data_url
       success: (response) =>
-        @data(response.data)
+        @data(response.data, overwrite)
         @render()
         @replaceState(response)
         @hidePleaseWait()
@@ -139,7 +141,7 @@ class SciView.FocusChart extends SciView.BasicChart
   
   
   disabledSeriesParams: ->
-    data = @_zoomData || @_data
+    data = if @isZoomed then @_zoomData else @_data
     disabled_series = data.map((d)-> d.key if d.disabled ).filter( (e)-> return typeof(e) is 'string' )
     if disabled_series.length then "&disabled=#{disabled_series.join(',')}" else ''
 
@@ -171,6 +173,7 @@ class SciView.FocusChart extends SciView.BasicChart
   dataURL: (string) ->
     if string
       @_dataURL = string
+      @options.url = string
       return @
     @_dataURL
 
@@ -318,7 +321,7 @@ class SciView.FocusChart extends SciView.BasicChart
   lineColor = SciView.lineColor
 
   render: ->
-    if @_zoomData
+    if @isZoomed
      @_renderZoomData()
     else
       @_renderInitialData()
