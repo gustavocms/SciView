@@ -513,19 +513,10 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   baseHeight: ->
     parseInt(@elementSelection().style('height'))
 
-  postInitializeHook: ->
-    @registerResizeListener()
-
-  registerResizeListener: ->
-    @_listenerId or= "resize.chart#{SciView.D3.counter++}"
-    d3.select(window).on(@_listenerId, @redraw)
-  
-
-
   # re-scales the chart based on the new dimensions of the chart's container
   redraw: =>
-#    initial data set has already been loaded and avoid further resizing of discarded chart
-    if @_data and !isNaN(@baseWidth()) and !isNaN(@baseHeight())
+    # only if initial data set has already been loaded
+    if @_data
       @initializeBaseVariables(@options)
       @initializeChartVariables(@options)
       @initializeD3Components()
