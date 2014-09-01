@@ -7,15 +7,18 @@ app.controller('DataSetController', [
   'ViewState'
   ($scope, $stateParams, $timeout, ViewState) ->
 
-#   find the correct dataset in parent's scope
-    filteredDS = $scope.$parent.data_sets.filter (ds) ->
-      ds.id.toString() == $stateParams.dataSetId
+#  waits for the parent loading to finish
+    $scope.deferredDatasetsLoading.promise.then ->
 
-    $scope.current_data_set = filteredDS[0]
+  #   find the correct dataset in parent's scope
+      filteredDS = $scope.$parent.data_sets.filter (ds) ->
+        ds.id.toString() == $stateParams.dataSetId
 
-#   used to manage changes that may be reverted
-    $scope.temporary_data_set =
-      title: $scope.current_data_set.title
+      $scope.current_data_set = filteredDS[0]
+
+  #   used to manage changes that may be reverted
+      $scope.temporary_data_set =
+        title: $scope.current_data_set.title
 
     $scope.states =
       is_renaming: false
