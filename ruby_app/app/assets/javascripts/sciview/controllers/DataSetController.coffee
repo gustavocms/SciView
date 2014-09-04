@@ -5,7 +5,8 @@ app.controller('DataSetController', [
   '$stateParams'
   '$timeout'
   'ViewState'
-  ($scope, $stateParams, $timeout, ViewState) ->
+  'SeriesService'
+  ($scope, $stateParams, $timeout, ViewState, SeriesService) ->
 
 #  waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -72,6 +73,23 @@ app.controller('DataSetController', [
       () -> afterInitialization($scope.saveDataset)
       true
     )
+
+    $scope.filteredSeries = []
+
+#   full list of series
+    SeriesService.query({}, (seriesList) ->
+      angular.forEach(seriesList, (value, key) ->
+        $scope.filteredSeries.push(value.key)
+      )
+    )
+
+#    TODO: implement filtering on the serverside
+    $scope.querySeriesList = (typed) ->
+#      // MovieRetriever could be some service returning a promise
+#      $scope.newmovies = MovieRetriever.getmovies(typed);
+#      $scope.newmovies.then((data) ->
+#        $scope.filteredSeries = data
+#      )
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
