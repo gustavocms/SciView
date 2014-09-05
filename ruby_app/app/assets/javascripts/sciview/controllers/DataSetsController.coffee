@@ -2,8 +2,12 @@ app = angular.module('sciview')
 
 app.controller('DataSetsController', [
   '$scope'
+  '$q'
   'ViewState'
-  ($scope, ViewState) ->
+  ($scope, $q, ViewState) ->
+
+#   deferred promise needed for the child state to wait for
+    $scope.deferredDatasetsLoading = $q.defer()
 
     $scope.data_sets = []
 
@@ -14,6 +18,8 @@ app.controller('DataSetsController', [
           do (raw) ->
             dataset = SciView.Models.UIDataset.deserialize(raw)
             $scope.data_sets.push(dataset)
+
+        $scope.deferredDatasetsLoading.resolve()
       )
 
     $scope.newDataSet = ->
