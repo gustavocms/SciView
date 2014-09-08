@@ -22,14 +22,23 @@ module Tdms
     end
 
     def properties
-      props = {}
-      @channels.each do |chan|
-        chan.properties.each do |prop|
-          props[prop.name] = prop.data
-        end
-
+      @props ||= {}
+      if @props.length > 0
+        return @props
       end
-      props
+
+      @channels.each do |chan|
+        puts "Number of properties in chan: #{chan.properties.length}"
+        chan.properties.each do |prop|
+          puts "Current value: '#{prop.name}' - '#{@props[prop.name]}'"
+          @props[prop.name] = prop.value
+          puts "New value: '#{prop.name}' - '#{@props[prop.name]}'"
+          puts
+        end
+      end
+      puts "Number of properties: #{@props.length}"
+
+      @props
     end
 
   end

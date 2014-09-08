@@ -4,6 +4,7 @@ namespace :data do
   desc 'TDMS import'
   task :tdms_import do
     # filename = File.dirname(__FILE__) + "../../../../test/fixtures/EXAMPLE2.tdms"
+    # TODO: make this dynamic
     filename = "/Users/paul/code/CleverPoint/sciview/python_app/data/EXAMPLE.tdms"
     doc = Tdms::File.parse(filename)
 
