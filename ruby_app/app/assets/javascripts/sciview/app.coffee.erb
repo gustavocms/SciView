@@ -20,13 +20,17 @@ app.run(['$rootScope', '$state', '$stateParams',
 #     'contacts.list' or one of its decendents is active.
     $rootScope.$state = $state
     $rootScope.$stateParams = $stateParams
+    $rootScope.$on('$stateChangeError',
+        (event, toState, toParams, fromState, fromParams, error) ->
+            console.log(error)
+    )
 ])
 
 #routing configuration
 app.config(['$urlRouterProvider', '$stateProvider',
   ($urlRouterProvider, $stateProvider) ->
 
-    $urlRouterProvider.otherwise('/data-sets/1')
+    $urlRouterProvider.otherwise('/data-sets')
 
     $stateProvider
       .state('data-sets', {

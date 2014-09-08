@@ -128,7 +128,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
   refresh: ->
     @chart or @initializeChart()
     @_computeDataUrl()
-    @chart.dataURL(@dataUrl).getData()
+    @chart.dataURL(@dataUrl).getData(0,true)
 
   _computeDataUrl: ->
     @dataUrl = "/api/v1/datasets/multiple?#{@_seriesQueryString()}"
