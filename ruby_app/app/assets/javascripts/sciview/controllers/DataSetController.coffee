@@ -74,22 +74,29 @@ app.controller('DataSetController', [
       true
     )
 
-    $scope.filteredSeries = []
+    # full list of series
+    $scope.seriesList = SeriesService.query()
 
-#   full list of series
-    SeriesService.query({}, (seriesList) ->
-      angular.forEach(seriesList, (value, key) ->
-        $scope.filteredSeries.push(value.key)
-      )
-    )
+    $scope.filteredSeries = []
 
 #    TODO: implement filtering on the serverside
     $scope.querySeriesList = (typed) ->
-#      // MovieRetriever could be some service returning a promise
-#      $scope.newmovies = MovieRetriever.getmovies(typed);
-#      $scope.newmovies.then((data) ->
-#        $scope.filteredSeries = data
-#      )
+      $scope.filteredSeries = []
+
+      matcher = RegExp(typed, 'i')
+
+#     search seriesList for matching items
+      angular.forEach($scope.seriesList, (item, i) ->
+        seriesTerms = item.key + '|' + item.tags.join('|')
+
+#       merge attributes in seriesTerms as key:value pairs
+        angular.forEach(item.attributes, (value, key) ->
+          seriesTerms += key + ':' + value + '|'
+        )
+
+        if matcher.test(seriesTerms)
+          $scope.filteredSeries.push(item.key)
+      )
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
