@@ -28,7 +28,7 @@
                    typeahead-loading="filtering"
                    typeahead-template-url="/assets/sciview/autocomplete.html"
                    placeholder="Search key, tag or attribute:value">
-            <a ng-click="addSeries(chart, new_series_title)">Add Series</a>
+            <a ng-click="addSeries(chart, new_series_title.key)">Add Series</a>
           </li>
           <li class="batch__data-item" ng-repeat="channel in chart.channels" >
 
