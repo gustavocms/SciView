@@ -22,10 +22,12 @@
 
           <!-- Each data item -->
           <li class="batch__data-item">
-            <input type="text" class="form-control" placeholder="Search key, tag or attribute:value"
+            <input type="text"
                    ng-model="new_series_title"
-                   typeahead="series.key for series in querySeriesList($viewValue) | limitTo:8"
-                   typeahead-loading="filtering">
+                   typeahead="series as series.key for series in querySeriesList($viewValue) | limitTo:8"
+                   typeahead-loading="filtering"
+                   typeahead-template-url="/assets/sciview/autocomplete.html"
+                   placeholder="Search key, tag or attribute:value">
             <a ng-click="addSeries(chart, new_series_title)">Add Series</a>
           </li>
           <li class="batch__data-item" ng-repeat="channel in chart.channels" >
