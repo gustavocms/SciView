@@ -77,13 +77,11 @@ app.controller('DataSetController', [
     # full list of series
     $scope.seriesList = SeriesService.query()
 
-    $scope.filteredSeries = []
-
 #    TODO: implement filtering on the serverside
     $scope.querySeriesList = (typed) ->
-      $scope.filteredSeries = []
 
       matcher = RegExp(typed, 'i')
+      filteredSeries = []
 
 #     search seriesList for matching items
       angular.forEach($scope.seriesList, (item, i) ->
@@ -95,8 +93,10 @@ app.controller('DataSetController', [
         )
 
         if matcher.test(seriesTerms)
-          $scope.filteredSeries.push(item.key)
+          filteredSeries.push(item)
       )
+
+      return filteredSeries
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
