@@ -70,19 +70,17 @@ module Tdms
 
 
         elsif index_block_len == 0x000000
-
           # index block is same as this channel in the last segment
           prev_chan = segment.prev_segment.objects.find {|o| o.path == path }
 
-          chan = Tdms::Channel.new
-          chan.file = @file
-          chan.raw_data_pos = raw_data_pos_obj
-          chan.path         = prev_chan.path
-          chan.data_type_id = prev_chan.data_type_id
-          chan.dimension    = prev_chan.dimension
-          chan.num_values   = prev_chan.num_values
-
-          segment.objects << chan
+          objects << (chan = Tdms::Channel.new.tap do |chan|
+            chan.file = @file
+            chan.raw_data_pos = raw_data_pos_obj
+            chan.path         = prev_chan.path
+            chan.data_type_id = prev_chan.data_type_id
+            chan.dimension    = prev_chan.dimension
+            chan.num_values   = prev_chan.num_values
+          end)
         else
           # XXX why does the number of properties seem to be
           # included in the raw data index block size?
@@ -95,27 +93,26 @@ module Tdms
 
           decoded = index_block.unpack("VVQ")
 
-          chan = Tdms::Channel.new
-          chan.file = @file
-          chan.raw_data_pos = raw_data_pos_obj
-          chan.path         = path
-          chan.data_type_id = decoded[0] # first 4 bytes u32
-          chan.dimension    = decoded[1] # next 4 bytes u32
-          chan.num_values   = decoded[2] # next 8 bytes u64
+          objects << (chan = Tdms::Channel.new.tap do |chan|
+            chan.file = @file
+            chan.raw_data_pos = raw_data_pos_obj
+            chan.path         = path
+            chan.data_type_id = decoded[0] # first 4 bytes u32
+            chan.dimension    = decoded[1] # next 4 bytes u32
+            chan.num_values   = decoded[2] # next 8 bytes u64
 
-          data_type = Tdms::DataType.find_by_id(chan.data_type_id)
-          fixed_length = data_type::LENGTH_IN_BYTES
+            data_type = Tdms::DataType.find_by_id(chan.data_type_id)
+            fixed_length = data_type::LENGTH_IN_BYTES
 
-          raw_data_pos_obj += if fixed_length
-            chan.num_values * fixed_length
-          else
-            # if the values are variable length (strings only) then
-            # the index block contains 8 additional bytes at the
-            # end with the total length of the raw data in u64
-            index_block[-8,8].unpack("Q")[0]
-          end
-
-          segment.objects << chan
+            raw_data_pos_obj += if fixed_length
+              chan.num_values * fixed_length
+            else
+              # if the values are variable length (strings only) then
+              # the index block contains 8 additional bytes at the
+              # end with the total length of the raw data in u64
+              index_block[-8,8].unpack("Q")[0]
+            end
+          end)
         end
 
         # TODO store properties
