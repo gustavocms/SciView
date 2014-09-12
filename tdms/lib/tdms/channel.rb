@@ -34,6 +34,15 @@ module Tdms
     def size
       @size ||= channel.num_values
     end
+
+    private
+
+    def ensure_index_in_range(i)
+      if (i < 0) || (i >= size)
+        raise RangeError, "Channel %s has a range of 0 to %d, got invalid index: %d" %
+                          [channel.path, size - 1, i]
+      end
+    end
   end
 
   class ChannelEnumerator < ChannelEnumeratorBase
@@ -42,12 +51,9 @@ module Tdms
       0.upto(size - 1) { |i| yield self[i] }
     end
 
+    # TODO: reduce complexity
     def [](i)
-      if (i < 0) || (i >= size)
-        raise RangeError, "Channel %s has a range of 0 to %d, got invalid index: %d" %
-                          [channel.path, size - 1, i]
-      end
-
+      ensure_index_in_range(i)
       channel.file.seek channel.raw_data_pos + (i * channel.data_type::LENGTH_IN_BYTES)
       channel.data_type.read_from_stream(channel.file).value
     end
@@ -57,11 +63,11 @@ module Tdms
 
     def initialize(channel)
       super(channel)
-
       @index_pos = channel.raw_data_pos
       @data_pos  = @index_pos + (4 * channel.num_values)
     end
 
+    # TODO: reduce complexity
     def each
       data_pos = @data_pos
 
@@ -80,12 +86,9 @@ module Tdms
       end
     end
 
+    # TODO: audit efficiency. 
     def [](i)
-      if (i < 0) || (i >= size)
-        raise RangeError, "Channel %s has a range of 0 to %d, got invalid index: %d" %
-                          [channel.path, size - 1, i]
-      end
-
+      ensure_index_in_range(i)
       inject(0) do |j, value|
         return value if j == i
         j += 1
