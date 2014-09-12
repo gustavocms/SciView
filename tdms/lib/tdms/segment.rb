@@ -8,6 +8,10 @@ module Tdms
     def initialize(file = nil)
       @objects = []
       @file    = file
+
+      # these variables need to be touched here; they rely on specific cursor positions
+      @lead_in      = @file.read(0x1C)
+      @metadata_pos = @file.pos
     end
 
     def segment
@@ -15,26 +19,45 @@ module Tdms
     end
 
     def parse
+      enumerate_this(raw_data_pos)
+      @file.seek next_seg_pos # TODO: can we get this back into document.rb?
+    end
 
-      lead_in = @file.read(0x1C)
-      metadata_pos = @file.pos
-      # More details here http://www.ruby-doc.org/core-2.1.2/String.html#method-i-unpack
-      # a4 = arbitrary binary string (4 bytes)
-      # V = Integer | 32-bit unsigned, VAX (little-endian) byte order
-      # Q = Integer | 64-bit unsigned, native endian (uint64_t)
-      unpacked = lead_in.unpack("a4VVQQ")
+    private
 
-      tdms_tag     = unpacked[0]                # char[4]
-      toc_flags    = unpacked[1]                # u32
-      tdms_version = unpacked[2]                # u32
-      next_seg_pos = unpacked[3] + metadata_pos # u64
-      raw_data_pos = unpacked[4] + metadata_pos # u64
+    attr_reader :lead_in, :metadata_pos
 
-      new_changed_objs = @file.read_u32
+    # More details here http://www.ruby-doc.org/core-2.1.2/String.html#method-i-unpack
+    # a4 = arbitrary binary string (4 bytes)
+    # V = Integer | 32-bit unsigned, VAX (little-endian) byte order
+    # Q = Integer | 64-bit unsigned, native endian (uint64_t)
+    def unpacked
+      @unpacked ||= lead_in.unpack("a4VVQQ")
+    end
 
-      raw_data_pos_obj = raw_data_pos
+    def tdms_tag
+      unpacked[0]
+    end
 
-      1.upto(new_changed_objs) do |obj_index|
+    def toc_flags    
+      unpacked[1]                # u32
+    end
+
+    def tdms_version 
+      unpacked[2]                # u32
+    end
+
+    def next_seg_pos 
+      unpacked[3] + metadata_pos # u64
+    end
+
+    def raw_data_pos 
+      unpacked[4] + metadata_pos # u64
+    end
+
+    # TODO: rename this method (after figuring out what it does)
+    def enumerate_this(raw_data_pos_obj)
+      1.upto(@file.read_u32) do |obj_index|
         # /'Noise data' does not contain properties with Ruby library, but does with Python library
         path = Tdms::Path.new(:path => @file.read_utf8_string)
         index_block_len = @file.read_u32
@@ -116,8 +139,7 @@ module Tdms
         # puts "segment.properties: #{segment.properties.length}" if segment.properties
         # puts "chan.properties: #{chan.properties.length}" if chan.properties
       end
-
-      @file.seek next_seg_pos # TODO: can we get this back into document.rb?
     end
+
   end
 end
