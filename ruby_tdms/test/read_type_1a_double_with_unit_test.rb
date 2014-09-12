@@ -1,4 +1,4 @@
-class ReadType1aDoubleWithUnitTest < Test::Unit::TestCase
+class ReadType1aDoubleWithUnitTest < Minitest::Test
 
   def test_reads_one_double_with_unit_channel_in_one_segment
     filename = fixture_filename("type_1a_double_with_unit_one_segment")

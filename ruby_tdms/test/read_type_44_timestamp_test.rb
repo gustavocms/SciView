@@ -1,4 +1,4 @@
-class ReadType44TimestampTest < Test::Unit::TestCase
+class ReadType44TimestampTest < Minitest::Test
 
   def test_reads_one_timestamp_channel_in_one_segment
     filename = fixture_filename("type_44_timestamp_one_segment")

@@ -1,4 +1,4 @@
-class ReadType20StringTest < Test::Unit::TestCase
+class ReadType20StringTest < Minitest::Test
 
   def test_reads_one_string_channel_in_one_segment
     filename = fixture_filename("type_20_string_one_segment")

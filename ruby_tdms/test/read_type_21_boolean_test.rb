@@ -1,4 +1,4 @@
-class ReadType21BooleanTest < Test::Unit::TestCase
+class ReadType21BooleanTest < Minitest::Test
 
   def test_reads_one_boolean_channel_in_one_segment
     filename = fixture_filename("type_21_boolean_one_segment")

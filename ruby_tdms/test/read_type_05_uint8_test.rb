@@ -1,4 +1,4 @@
-class ReadType05Uint8Test < Test::Unit::TestCase
+class ReadType05Uint8Test < Minitest::Test
 
   def test_reads_one_uint8_channel_in_one_segment
     filename = fixture_filename("type_05_uint8_one_segment")
