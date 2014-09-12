@@ -164,7 +164,7 @@ module Tdms
     }
 
     def find_by_id(id_byte)
-      DATA_TYPES_BY_ID[id_byte] || raise(ArgumentError, "Don't know type %d" % id_byte)
+      DATA_TYPES_BY_ID.fetch(id_byte){ raise(ArgumentError, "Don't know type %d" % id_byte) }
     end
     module_function :find_by_id
 
