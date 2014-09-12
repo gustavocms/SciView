@@ -10,7 +10,7 @@ module Tdms
 
     def values
       @values ||= begin
-        (if data_type::LENGTH_IN_BYTES.nil?
+        (if data_type == DataType::Utf8String
           StringChannelEnumerator
         else
           ChannelEnumerator
@@ -23,16 +23,20 @@ module Tdms
     end
   end
 
-  class ChannelEnumerator
+  class ChannelEnumeratorBase
     include Enumerable
+    attr_reader :channel
 
     def initialize(channel)
       @channel = channel
     end
 
     def size
-      @size ||= @channel.num_values
+      @size ||= channel.num_values
     end
+  end
+
+  class ChannelEnumerator < ChannelEnumeratorBase
 
     def each
       0.upto(size - 1) { |i| yield self[i] }
@@ -41,26 +45,21 @@ module Tdms
     def [](i)
       if (i < 0) || (i >= size)
         raise RangeError, "Channel %s has a range of 0 to %d, got invalid index: %d" %
-                          [@channel.path, size - 1, i]
+                          [channel.path, size - 1, i]
       end
 
-      @channel.file.seek @channel.raw_data_pos + (i * @channel.data_type::LENGTH_IN_BYTES)
-      @channel.data_type.read_from_stream(@channel.file).value
+      channel.file.seek channel.raw_data_pos + (i * channel.data_type::LENGTH_IN_BYTES)
+      channel.data_type.read_from_stream(channel.file).value
     end
   end
 
-  class StringChannelEnumerator
-    include Enumerable
+  class StringChannelEnumerator < ChannelEnumeratorBase
 
     def initialize(channel)
-      @channel = channel
+      super(channel)
 
-      @index_pos = @channel.raw_data_pos
-      @data_pos  = @index_pos + (4 * @channel.num_values)
-    end
-
-    def size
-      @size ||= @channel.num_values
+      @index_pos = channel.raw_data_pos
+      @data_pos  = @index_pos + (4 * channel.num_values)
     end
 
     def each
@@ -69,13 +68,13 @@ module Tdms
       0.upto(size - 1) do |i|
         index_pos = @index_pos + (4 * i)
 
-        @channel.file.seek index_pos
-        next_data_pos = @data_pos + @channel.file.read_u32
+        channel.file.seek index_pos
+        next_data_pos = @data_pos + channel.file.read_u32
 
         length = next_data_pos - data_pos
 
-        @channel.file.seek data_pos
-        yield @channel.file.read(length)
+        channel.file.seek data_pos
+        yield channel.file.read(length)
 
         data_pos = next_data_pos
       end
@@ -84,7 +83,7 @@ module Tdms
     def [](i)
       if (i < 0) || (i >= size)
         raise RangeError, "Channel %s has a range of 0 to %d, got invalid index: %d" %
-                          [@channel.path, size - 1, i]
+                          [channel.path, size - 1, i]
       end
 
       inject(0) do |j, value|
