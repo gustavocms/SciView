@@ -11,8 +11,8 @@ module Tdms
     end
 
     class Int8 < Base
-      Id = 0x01
-      LengthInBytes = 1
+      ID = 0x01
+      LENGTH_IN_BYTES = 1
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_i8)
@@ -20,8 +20,8 @@ module Tdms
     end
 
     class Int16 < Base
-      Id = 0x02
-      LengthInBytes = 2
+      ID = 0x02
+      LENGTH_IN_BYTES = 2
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_i16)
@@ -29,8 +29,8 @@ module Tdms
     end
 
     class Int32 < Base
-      Id = 0x03
-      LengthInBytes = 4
+      ID = 0x03
+      LENGTH_IN_BYTES = 4
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_i32)
@@ -38,8 +38,8 @@ module Tdms
     end
 
     class Int64 < Base
-      Id = 0x04
-      LengthInBytes = 8
+      ID = 0x04
+      LENGTH_IN_BYTES = 8
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_i64)
@@ -47,8 +47,8 @@ module Tdms
     end
 
     class Uint8 < Base
-      Id = 0x05
-      LengthInBytes = 1
+      ID = 0x05
+      LENGTH_IN_BYTES = 1
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_u8)
@@ -56,8 +56,8 @@ module Tdms
     end
 
     class Uint16 < Base
-      Id = 0x06
-      LengthInBytes = 2
+      ID = 0x06
+      LENGTH_IN_BYTES = 2
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_u16)
@@ -65,8 +65,8 @@ module Tdms
     end
 
     class Uint32 < Base
-      Id = 0x07
-      LengthInBytes = 4
+      ID = 0x07
+      LENGTH_IN_BYTES = 4
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_u32)
@@ -74,8 +74,8 @@ module Tdms
     end
 
     class Uint64 < Base
-      Id = 0x08
-      LengthInBytes = 8
+      ID = 0x08
+      LENGTH_IN_BYTES = 8
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_u64)
@@ -83,8 +83,8 @@ module Tdms
     end
 
     class Single < Base
-      Id = 0x09
-      LengthInBytes = 4
+      ID = 0x09
+      LENGTH_IN_BYTES = 4
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_single)
@@ -92,8 +92,8 @@ module Tdms
     end
 
     class Double < Base
-      Id = 0x0A
-      LengthInBytes = 8
+      ID = 0x0A
+      LENGTH_IN_BYTES = 8
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_double)
@@ -101,8 +101,8 @@ module Tdms
     end
 
     class SingleWithUnit < Base
-      Id = 0x19
-      LengthInBytes = 4
+      ID = 0x19
+      LENGTH_IN_BYTES = 4
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_single)
@@ -110,8 +110,8 @@ module Tdms
     end
 
     class DoubleWithUnit < Base
-      Id = 0x1A
-      LengthInBytes = 8
+      ID = 0x1A
+      LENGTH_IN_BYTES = 8
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_double)
@@ -119,8 +119,8 @@ module Tdms
     end
 
     class Utf8String < Base
-      Id = 0x20
-      LengthInBytes = nil
+      ID = 0x20
+      LENGTH_IN_BYTES = nil
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_utf8_string)
@@ -128,8 +128,8 @@ module Tdms
     end
 
     class Boolean < Base
-      Id = 0x21
-      LengthInBytes = 1
+      ID = 0x21
+      LENGTH_IN_BYTES = 1
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_bool)
@@ -137,34 +137,34 @@ module Tdms
     end
 
     class Timestamp < Base
-      Id = 0x44
-      LengthInBytes = 16
+      ID = 0x44
+      LENGTH_IN_BYTES = 16
 
       def self.read_from_stream(tdms_file)
         new(tdms_file.read_timestamp)
       end
     end
 
-    DataTypesById = {
-      Int8::Id           => Int8,
-      Int16::Id          => Int16,
-      Int32::Id          => Int32,
-      Int64::Id          => Int64,
-      Uint8::Id          => Uint8,
-      Uint16::Id         => Uint16,
-      Uint32::Id         => Uint32,
-      Uint64::Id         => Uint64,
-      Single::Id         => Single,
-      SingleWithUnit::Id => SingleWithUnit,
-      Double::Id         => Double,
-      DoubleWithUnit::Id => DoubleWithUnit,
-      Utf8String::Id     => Utf8String,
-      Boolean::Id        => Boolean,
-      Timestamp::Id      => Timestamp
+    DATA_TYPES_BY_ID = {
+      Int8::ID           => Int8,
+      Int16::ID          => Int16,
+      Int32::ID          => Int32,
+      Int64::ID          => Int64,
+      Uint8::ID          => Uint8,
+      Uint16::ID         => Uint16,
+      Uint32::ID         => Uint32,
+      Uint64::ID         => Uint64,
+      Single::ID         => Single,
+      SingleWithUnit::ID => SingleWithUnit,
+      Double::ID         => Double,
+      DoubleWithUnit::ID => DoubleWithUnit,
+      Utf8String::ID     => Utf8String,
+      Boolean::ID        => Boolean,
+      Timestamp::ID      => Timestamp
     }
 
     def find_by_id(id_byte)
-      DataTypesById[id_byte] || raise(ArgumentError, "Don't know type %d" % id_byte)
+      DATA_TYPES_BY_ID[id_byte] || raise(ArgumentError, "Don't know type %d" % id_byte)
     end
     module_function :find_by_id
 

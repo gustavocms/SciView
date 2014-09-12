@@ -6,7 +6,7 @@ class ReadType05Uint8Test < Minitest::TDMSTest
 
     assert_equal 1, segments.size
     assert_equal 1, segments[0].objects.size
-    assert_equal Tdms::DataType::Uint8::Id, segments[0].objects[0].data_type_id
+    assert_equal Tdms::DataType::Uint8::ID, segments[0].objects[0].data_type_id
 
     chan = channels.find {|ch| ch.path == "/'uint8_group'/'uint8_channel'" }
     assert_equal 5, chan.values.size
@@ -21,8 +21,8 @@ class ReadType05Uint8Test < Minitest::TDMSTest
 
     assert_equal 1, segments.size
     assert_equal 2, segments[0].objects.size
-    assert_equal Tdms::DataType::Uint8::Id, segments[0].objects[0].data_type_id
-    assert_equal Tdms::DataType::Uint8::Id, segments[0].objects[1].data_type_id
+    assert_equal Tdms::DataType::Uint8::ID, segments[0].objects[0].data_type_id
+    assert_equal Tdms::DataType::Uint8::ID, segments[0].objects[1].data_type_id
 
     chan = channels.find {|ch| ch.path == "/'uint8_group'/'uint8_channel_a'" }
     assert_equal 5, chan.values.size
@@ -43,9 +43,9 @@ class ReadType05Uint8Test < Minitest::TDMSTest
     assert_equal 1, segments[0].objects.size
     assert_equal 1, segments[1].objects.size
     assert_equal 1, segments[2].objects.size
-    assert_equal Tdms::DataType::Uint8::Id, segments[0].objects[0].data_type_id
-    assert_equal Tdms::DataType::Uint8::Id, segments[1].objects[0].data_type_id
-    assert_equal Tdms::DataType::Uint8::Id, segments[2].objects[0].data_type_id
+    assert_equal Tdms::DataType::Uint8::ID, segments[0].objects[0].data_type_id
+    assert_equal Tdms::DataType::Uint8::ID, segments[1].objects[0].data_type_id
+    assert_equal Tdms::DataType::Uint8::ID, segments[2].objects[0].data_type_id
 
     chan = channels.find {|ch| ch.path == "/'uint8_group'/'uint8_channel'" }
     assert_equal 15, chan.values.size

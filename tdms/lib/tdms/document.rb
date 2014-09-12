@@ -83,7 +83,7 @@ module Tdms
             chan.num_values   = decoded[2] # next 8 bytes u64
 
             data_type = Tdms::DataType.find_by_id(chan.data_type_id)
-            fixed_length = data_type::LengthInBytes
+            fixed_length = data_type::LENGTH_IN_BYTES
 
             raw_data_pos_obj += if fixed_length
               chan.num_values * fixed_length

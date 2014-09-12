@@ -10,13 +10,11 @@ module Tdms
 
     def values
       @values ||= begin
-        klass = if data_type::LengthInBytes.nil?
+        (if data_type::LENGTH_IN_BYTES.nil?
           StringChannelEnumerator
         else
           ChannelEnumerator
-        end
-
-        klass.new(self)
+        end).new(self)
       end
     end
 
@@ -46,7 +44,7 @@ module Tdms
                           [@channel.path, size - 1, i]
       end
 
-      @channel.file.seek @channel.raw_data_pos + (i * @channel.data_type::LengthInBytes)
+      @channel.file.seek @channel.raw_data_pos + (i * @channel.data_type::LENGTH_IN_BYTES)
       @channel.data_type.read_from_stream(@channel.file).value
     end
   end

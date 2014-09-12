@@ -6,7 +6,7 @@ class ReadType44TimestampTest < Minitest::TDMSTest
 
     assert_equal 1, segments.size
     assert_equal 1, segments[0].objects.size
-    assert_equal Tdms::DataType::Timestamp::Id, segments[0].objects[0].data_type_id
+    assert_equal Tdms::DataType::Timestamp::ID, segments[0].objects[0].data_type_id
 
 
     chan = channels.find {|ch| ch.path == "/'timestamp_group'/'timestamp_channel'" }
@@ -22,8 +22,8 @@ class ReadType44TimestampTest < Minitest::TDMSTest
 
     assert_equal 1, segments.size
     assert_equal 2, segments[0].objects.size
-    assert_equal Tdms::DataType::Timestamp::Id, segments[0].objects[0].data_type_id
-    assert_equal Tdms::DataType::Timestamp::Id, segments[0].objects[1].data_type_id
+    assert_equal Tdms::DataType::Timestamp::ID, segments[0].objects[0].data_type_id
+    assert_equal Tdms::DataType::Timestamp::ID, segments[0].objects[1].data_type_id
 
     chan = channels.find {|ch| ch.path == "/'timestamp_group'/'timestamp_channel_a'" }
     assert_equal 3, chan.values.size
@@ -44,9 +44,9 @@ class ReadType44TimestampTest < Minitest::TDMSTest
     assert_equal 1, segments[0].objects.size
     assert_equal 1, segments[1].objects.size
     assert_equal 1, segments[2].objects.size
-    assert_equal Tdms::DataType::Timestamp::Id, segments[0].objects[0].data_type_id
-    assert_equal Tdms::DataType::Timestamp::Id, segments[1].objects[0].data_type_id
-    assert_equal Tdms::DataType::Timestamp::Id, segments[2].objects[0].data_type_id
+    assert_equal Tdms::DataType::Timestamp::ID, segments[0].objects[0].data_type_id
+    assert_equal Tdms::DataType::Timestamp::ID, segments[1].objects[0].data_type_id
+    assert_equal Tdms::DataType::Timestamp::ID, segments[2].objects[0].data_type_id
 
     chan = channels.find {|ch| ch.path == "/'timestamp_group'/'timestamp_channel'" }
     assert_equal 9, chan.values.size
