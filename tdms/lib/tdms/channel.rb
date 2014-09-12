@@ -1,6 +1,6 @@
 module Tdms
 
-  class Channel < Object
+  class Channel 
     attr_accessor :file, :path, :data_type_id, :dimension, :num_values,
                   :raw_data_pos, :properties
 
