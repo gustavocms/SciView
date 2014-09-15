@@ -17,24 +17,23 @@ module Tdms
     end
 
     def parse_next_segment
-      @segments << Tdms::Segment.new(@file).tap do |segment| 
-        segment.prev_segment = @segments[-1]
+      segments << Tdms::Segment.new(@file).tap do |segment| 
+        segment.prev_segment = segments[-1]
         segment.parse
       end
     end
 
     def build_aggregates
-      @channels = []
-
-      channels_by_path = {}
-      segments.each do |segment|
-        segment.objects.select { |o| o.path.channel? }.each do |ch|
-          (channels_by_path[ch.path.to_s] ||= []) << ch
-        end
+      @channels = channels_by_path.map do |_, channels|
+        AggregateChannel.new(channels)
       end
+    end
 
-      channels_by_path.each do |path, channels|
-        @channels << AggregateChannel.new(channels)
+    def channels_by_path
+      segments.each_with_object({}) do |segment, _channels_by_path|
+        segment.objects.select { |o| o.path.channel? }.each do |ch|
+          (_channels_by_path[ch.path.to_s] ||= []) << ch
+        end
       end
     end
   end
