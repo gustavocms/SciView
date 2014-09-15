@@ -56,6 +56,7 @@ module Tdms
     end
 
     # TODO: rename this method (after figuring out what it does)
+    # and trim it down
     def enumerate_this(raw_data_pos_obj)
       1.upto(@file.read_u32) do |obj_index|
         # /'Noise data' does not contain properties with Ruby library, but does with Python library

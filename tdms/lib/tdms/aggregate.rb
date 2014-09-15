@@ -28,16 +28,10 @@ module Tdms
       end
 
       @channels.each do |chan|
-        puts "Number of properties in chan: #{chan.properties.length}"
         chan.properties.each do |prop|
-          puts "Current value: '#{prop.name}' - '#{@props[prop.name]}'"
           @props[prop.name] = prop.value
-          puts "New value: '#{prop.name}' - '#{@props[prop.name]}'"
-          puts
         end
       end
-      puts "Number of properties: #{@props.length}"
-
       @props
     end
 
