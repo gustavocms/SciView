@@ -1,0 +1,17 @@
+<a>
+    <strong><span bind-html-unsafe="match.label | typeaheadHighlight:query"></span></strong>
+
+    <p ng-if="match.model.hasTags" style='font-size: small; padding: 0; margin: 0'>
+        <strong>Tags: </strong>
+        <span ng-repeat="tag in match.model.tags">
+            <span bind-html-unsafe="tag + ', ' | typeaheadHighlight:query"></span>
+        </span>
+    </p>
+
+    <p ng-if="match.model.hasAttributes" style='font-size: small; padding: 0; margin: 0'>
+        <strong>Attributes: </strong>
+        <span ng-repeat="(key, value) in match.model.attributes">
+            <span bind-html-unsafe="key +':'+ value + ', ' | typeaheadHighlight:query"></span>
+        </span>
+    </p>
+</a>

@@ -11,6 +11,9 @@ app = angular.module('sciview', [
   'sv.ui.services'
 ])
 
+# register additional modules
+angular.module('sv.ui.services', ['ngResource'])
+
 # first thing to run after loading
 app.run(['$rootScope', '$state', '$stateParams',
   ($rootScope, $state, $stateParams) ->

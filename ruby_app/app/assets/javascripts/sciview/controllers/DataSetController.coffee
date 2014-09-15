@@ -5,7 +5,8 @@ app.controller('DataSetController', [
   '$stateParams'
   '$timeout'
   'ViewState'
-  ($scope, $stateParams, $timeout, ViewState) ->
+  'SeriesService'
+  ($scope, $stateParams, $timeout, ViewState, SeriesService) ->
 
 #  waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -72,6 +73,37 @@ app.controller('DataSetController', [
       () -> afterInitialization($scope.saveDataset)
       true
     )
+
+    # full list of series
+    $scope.seriesList = SeriesService.query()
+
+    $scope.joinAttributes = (attributes) ->
+      attributesList = ''
+      angular.forEach(attributes, (value, key) ->
+        attributesList += key + ':' + value + ', '
+      )
+      return attributesList
+
+#    TODO: implement filtering on the serverside
+    $scope.querySeriesList = (typed) ->
+
+      matcher = RegExp(typed, 'i')
+      filteredSeries = []
+
+#     search seriesList for matching items
+      angular.forEach($scope.seriesList, (item, i) ->
+        seriesTerms = item.key + '|' + item.tags.join('|') + $scope.joinAttributes(item.attributes)
+
+        if matcher.test(seriesTerms)
+          # used to control exhibition at autocomplete
+          item.hasTags = item.tags.length > 0
+          item.hasAttributes = $scope.joinAttributes(item.attributes).length > 0
+
+          # add item to autocomplete list
+          filteredSeries.push(item)
+      )
+
+      return filteredSeries
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
