@@ -7,28 +7,22 @@ describe 'Tdms' do
     # This is lifted from the example tdms import rake task.
     #
 
-    output = [].tap do |array|
-      indented_display = -> (msg, level) { array << %{#{" " * 2 * level}#{msg}\n}}
-
-      filename = File.expand_path("../python_app/data/EXAMPLE.tdms")
-      Tdms::File.parse(filename).tap do |doc|
-        doc.channels.each_with_index do |channel, index|
-          indented_display[channel.path, 0]
-
-          indented_display["#{channel.properties.length} properties", 1]
-
-          channel.properties.each do |name, value|
-            indented_display["#{name}\t#{value}", 2]
-          end
+    filename = File.expand_path("../python_app/data/EXAMPLE.tdms")
+    Tdms::File.parse(filename).tap do |doc|
+      doc.channels.each_with_index do |channel, index|
+        YAML.load(File.read("fixtures/tdms_#{Digest::SHA1.hexdigest(channel.path.to_s)}.yml")).tap do |expectation|
+          puts channel.path.to_s
+          specify("#{channel.path} path"){ channel.path.to_s.must_equal expectation[:path] }
+          specify("#{channel.path} properties"){ channel.properties.must_equal expectation[:properties] }
+          specify { channel.values.to_a.must_equal expectation[:values] }
         end
+        ## Generate the files
+        #File.open("fixtures/tdms_#{Digest::SHA1.hexdigest(channel.path.to_s)}.yml", 'w') do |file|
+          #file.write(YAML.dump(
+            #{ path: channel.path.to_s, properties: channel.properties, values: channel.values.to_a }
+          #))
+        #end
       end
-    end
-
-    output.zip(File.readlines('fixtures/tdms_output')).each_with_index do |(result, expectation), index|
-      puts result.inspect
-      puts expectation.inspect
-      specify("index #{index}") { result.must_equal_expectation }
-      break if index > 5
     end
   end
 end
