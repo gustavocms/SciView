@@ -7,7 +7,7 @@ describe 'Tdms' do
     # This is lifted from the example tdms import rake task.
     #
 
-    filename = File.expand_path("../python_app/data/EXAMPLE.tdms")
+    filename = File.expand_path("fixtures/EXAMPLE.tdms")
     Tdms::File.parse(filename).tap do |doc|
       doc.channels.each_with_index do |channel, index|
         YAML.load(File.read("fixtures/tdms_#{Digest::SHA1.hexdigest(channel.path.to_s)}.yml")).tap do |expectation|

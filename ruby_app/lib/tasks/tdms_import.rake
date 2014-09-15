@@ -3,7 +3,7 @@ require 'tdms'
 namespace :data do
   desc 'TDMS import'
   task :tdms_import do
-    filename = File.expand_path("../python_app/data/EXAMPLE.tdms")
+    filename = File.expand_path("fixtures/EXAMPLE.tdms")
     doc = Tdms::File.parse(filename)
 
     # doc.segments.each_with_index do |segment, index|
