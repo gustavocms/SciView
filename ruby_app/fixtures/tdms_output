@@ -1,0 +1,1633 @@
+/'EXAMPLE'/'Time'
+Number of properties in chan: 21
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 's'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Driving time'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '59.8400999919977'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '0.0'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'increasing'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'ResultStatArithMean' - ''
+New value: 'ResultStatArithMean' - '29.9200499959988'
+
+Current value: 'ResultStatMax' - ''
+New value: 'ResultStatMax' - '59.8400999919977'
+
+Current value: 'ResultStatMin' - ''
+New value: 'ResultStatMin' - '0.0'
+
+Current value: 'ResultStatSum' - ''
+New value: 'ResultStatSum' - '30638.1311959028'
+
+Number of properties: 21
+  21 properties
+    unit_string	s
+    datatype	DT_DOUBLE
+    description	Driving time
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	59.8400999919977
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	0.0
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	increasing
+    novaluekey	No
+    ResultStatArithMean	29.9200499959988
+    ResultStatMax	59.8400999919977
+    ResultStatMin	0.0
+    ResultStatSum	30638.1311959028
+/'EXAMPLE'/'Speed'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'm/s'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Velocity'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '52.7635952666751'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '0.0'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	m/s
+    datatype	DT_DOUBLE
+    description	Velocity
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	52.7635952666751
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	0.0
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'EXAMPLE'/'Revs'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - '1/min'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Engine revolutions'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '6059.72922319919'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '800.077998029999'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	1/min
+    datatype	DT_DOUBLE
+    description	Engine revolutions
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	6059.72922319919
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	800.077998029999
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'EXAMPLE'/'Torque'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Nm'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Torque course'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '207.135527630104'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '23.0031492960115'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	Nm
+    datatype	DT_DOUBLE
+    description	Torque course
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	207.135527630104
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	23.0031492960115
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'Noise data'/'Noise_1'
+Number of properties in chan: 0
+Number of properties in chan: 29
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Vehicle start'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '0.632589685319464'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-0.588409873692028'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'ResultStatArithMean' - ''
+New value: 'ResultStatArithMean' - '-8.06729014402752e-06'
+
+Current value: 'ResultStatMax' - ''
+New value: 'ResultStatMax' - '0.632589685319464'
+
+Current value: 'ResultStatMin' - ''
+New value: 'ResultStatMin' - '-0.588409873692028'
+
+Current value: 'ResultStatSqrMean' - ''
+New value: 'ResultStatSqrMean' - '0.0589834649704995'
+
+Current value: 'ResultStatSum' - ''
+New value: 'ResultStatSum' - '-2.62186929680894'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '2.0e-05'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '325000'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 's'
+
+Number of properties: 29
+  29 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Vehicle start
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	0.632589685319464
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-0.588409873692028
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    ResultStatArithMean	-8.06729014402752e-06
+    ResultStatMax	0.632589685319464
+    ResultStatMin	-0.588409873692028
+    ResultStatSqrMean	0.0589834649704995
+    ResultStatSum	-2.62186929680894
+    wf_increment	2.0e-05
+    wf_samples	325000
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	s
+/'Noise data'/'Noise_2'
+Number of properties in chan: 0
+Number of properties in chan: 29
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Tractor start'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '1.46514704698149'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-1.66617283249612'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'ResultStatArithMean' - ''
+New value: 'ResultStatArithMean' - '-6.78432317705075e-06'
+
+Current value: 'ResultStatMax' - ''
+New value: 'ResultStatMax' - '1.46514704698149'
+
+Current value: 'ResultStatMin' - ''
+New value: 'ResultStatMin' - '-1.66617283249612'
+
+Current value: 'ResultStatSqrMean' - ''
+New value: 'ResultStatSqrMean' - '0.127941621010326'
+
+Current value: 'ResultStatSum' - ''
+New value: 'ResultStatSum' - '-2.20490503254149'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '2.0e-05'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '325000'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 's'
+
+Number of properties: 29
+  29 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Tractor start
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	1.46514704698149
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-1.66617283249612
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    ResultStatArithMean	-6.78432317705075e-06
+    ResultStatMax	1.46514704698149
+    ResultStatMin	-1.66617283249612
+    ResultStatSqrMean	0.127941621010326
+    ResultStatSum	-2.20490503254149
+    wf_increment	2.0e-05
+    wf_samples	325000
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	s
+/'Noise data'/'Noise_3'
+Number of properties in chan: 0
+Number of properties in chan: 29
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Motor bike start'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '0.845526438444971'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-0.999282783977705'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'ResultStatArithMean' - ''
+New value: 'ResultStatArithMean' - '-8.10995697590216e-06'
+
+Current value: 'ResultStatMax' - ''
+New value: 'ResultStatMax' - '0.845526438444971'
+
+Current value: 'ResultStatMin' - ''
+New value: 'ResultStatMin' - '-0.999282783977705'
+
+Current value: 'ResultStatSqrMean' - ''
+New value: 'ResultStatSqrMean' - '0.0916245669640957'
+
+Current value: 'ResultStatSum' - ''
+New value: 'ResultStatSum' - '-2.6357360171682'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '2.0e-05'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '325000'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 's'
+
+Number of properties: 29
+  29 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Motor bike start
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	0.845526438444971
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-0.999282783977705
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    ResultStatArithMean	-8.10995697590216e-06
+    ResultStatMax	0.845526438444971
+    ResultStatMin	-0.999282783977705
+    ResultStatSqrMean	0.0916245669640957
+    ResultStatSum	-2.6357360171682
+    wf_increment	2.0e-05
+    wf_samples	325000
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	s
+/'Noise data'/'Noise_4'
+Number of properties in chan: 0
+Number of properties in chan: 29
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Motor bike start'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '2.09438658779771'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-2.62231201034899'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'ResultStatArithMean' - ''
+New value: 'ResultStatArithMean' - '-3.71199703466374e-06'
+
+Current value: 'ResultStatMax' - ''
+New value: 'ResultStatMax' - '2.09438658779771'
+
+Current value: 'ResultStatMin' - ''
+New value: 'ResultStatMin' - '-2.62231201034899'
+
+Current value: 'ResultStatSqrMean' - ''
+New value: 'ResultStatSqrMean' - '0.16192988922085'
+
+Current value: 'ResultStatSum' - ''
+New value: 'ResultStatSum' - '-1.20639903626572'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '2.0e-05'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '325883'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 's'
+
+Number of properties: 29
+  29 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Motor bike start
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	2.09438658779771
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-2.62231201034899
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    ResultStatArithMean	-3.71199703466374e-06
+    ResultStatMax	2.09438658779771
+    ResultStatMin	-2.62231201034899
+    ResultStatSqrMean	0.16192988922085
+    ResultStatSum	-1.20639903626572
+    wf_increment	2.0e-05
+    wf_samples	325883
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	s
+/'Noise data'/'Noise_5'
+Number of properties in chan: 0
+Number of properties in chan: 29
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Motor bike start'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '1.98674371351321'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-1.80429139520714'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'ResultStatArithMean' - ''
+New value: 'ResultStatArithMean' - '5.0947661562385e-08'
+
+Current value: 'ResultStatMax' - ''
+New value: 'ResultStatMax' - '1.98674371351321'
+
+Current value: 'ResultStatMin' - ''
+New value: 'ResultStatMin' - '-1.80429139520714'
+
+Current value: 'ResultStatSqrMean' - ''
+New value: 'ResultStatSqrMean' - '0.179515631324318'
+
+Current value: 'ResultStatSum' - ''
+New value: 'ResultStatSum' - '0.0165579900077751'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '2.0e-05'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '325379'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 's'
+
+Number of properties: 29
+  29 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Motor bike start
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	1.98674371351321
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-1.80429139520714
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    ResultStatArithMean	5.0947661562385e-08
+    ResultStatMax	1.98674371351321
+    ResultStatMin	-1.80429139520714
+    ResultStatSqrMean	0.179515631324318
+    ResultStatSum	0.0165579900077751
+    wf_increment	2.0e-05
+    wf_samples	325379
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	s
+/'Results_Noise data'/'Statistics text'
+Number of properties in chan: 15
+Current value: 'unit_string' - ''
+New value: 'unit_string' - ''
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_STRING'
+
+Current value: 'description' - ''
+New value: 'description' - 'Identifier for characteristic statistical values'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Text'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'Yes'
+
+Number of properties: 15
+  15 properties
+    unit_string	
+    datatype	DT_STRING
+    description	Identifier for characteristic statistical values
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    registerint2	0
+    registertxt2	
+    displaytype	Text
+    monotony	not monotone
+    novaluekey	Yes
+/'Results_Noise data'/'Res_Noise_1'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Characteristic values for Noise_1'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '0.632589685319464'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-2.62186929680894'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Characteristic values for Noise_1
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	0.632589685319464
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-2.62186929680894
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'Results_Noise data'/'Res_Noise_2'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Characteristic values for Noise_2'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '1.46514704698149'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-2.20490503254149'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Characteristic values for Noise_2
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	1.46514704698149
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-2.20490503254149
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'Results_Noise data'/'Res_Noise_3'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Characteristic values for Noise_3'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '0.845526438444971'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-2.6357360171682'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Characteristic values for Noise_3
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	0.845526438444971
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-2.6357360171682
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'Results_Noise data'/'Res_Noise_4'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'From clipboard'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '2.09438658779771'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-2.62231201034899'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	From clipboard
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	2.09438658779771
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-2.62231201034899
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'Results_Noise data'/'Res_Noise_5'
+Number of properties in chan: 17
+Current value: 'unit_string' - ''
+New value: 'unit_string' - 'Pa'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Characteristic values for Noise_3'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '1.98674371351321'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '-1.80429139520714'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Number of properties: 17
+  17 properties
+    unit_string	Pa
+    datatype	DT_DOUBLE
+    description	Characteristic values for Noise_3
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	1.98674371351321
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	-1.80429139520714
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+/'Room temperatures'/'Temperature_1'
+Number of properties in chan: 24
+Current value: 'unit_string' - ''
+New value: 'unit_string' - '°C'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Temperature in the front area'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '32.37'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '23.4'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '1.0'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '21'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 'h'
+
+Number of properties: 24
+  24 properties
+    unit_string	°C
+    datatype	DT_DOUBLE
+    description	Temperature in the front area
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	32.37
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	23.4
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    wf_increment	1.0
+    wf_samples	21
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	h
+/'Room temperatures'/'Temperature_2'
+Number of properties in chan: 24
+Current value: 'unit_string' - ''
+New value: 'unit_string' - '°C'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Temperature in the central area'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '17.312'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '12.612'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '1.0'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '21'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 'h'
+
+Number of properties: 24
+  24 properties
+    unit_string	°C
+    datatype	DT_DOUBLE
+    description	Temperature in the central area
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	17.312
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	12.612
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    wf_increment	1.0
+    wf_samples	21
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	h
+/'Room temperatures'/'Temperature_3'
+Number of properties in chan: 24
+Current value: 'unit_string' - ''
+New value: 'unit_string' - '°C'
+
+Current value: 'datatype' - ''
+New value: 'datatype' - 'DT_DOUBLE'
+
+Current value: 'description' - ''
+New value: 'description' - 'Temperature in the rear area'
+
+Current value: 'registerint6' - ''
+New value: 'registerint6' - '0'
+
+Current value: 'registerint4' - ''
+New value: 'registerint4' - '0'
+
+Current value: 'registerint5' - ''
+New value: 'registerint5' - '0'
+
+Current value: 'maximum' - ''
+New value: 'maximum' - '27.0'
+
+Current value: 'registertxt1' - ''
+New value: 'registertxt1' - ''
+
+Current value: 'registerint1' - ''
+New value: 'registerint1' - '0'
+
+Current value: 'registerint3' - ''
+New value: 'registerint3' - '0'
+
+Current value: 'registertxt3' - ''
+New value: 'registertxt3' - ''
+
+Current value: 'minimum' - ''
+New value: 'minimum' - '14.0'
+
+Current value: 'registerint2' - ''
+New value: 'registerint2' - '0'
+
+Current value: 'registertxt2' - ''
+New value: 'registertxt2' - ''
+
+Current value: 'displaytype' - ''
+New value: 'displaytype' - 'Numeric'
+
+Current value: 'monotony' - ''
+New value: 'monotony' - 'not monotone'
+
+Current value: 'novaluekey' - ''
+New value: 'novaluekey' - 'No'
+
+Current value: 'wf_increment' - ''
+New value: 'wf_increment' - '1.0'
+
+Current value: 'wf_samples' - ''
+New value: 'wf_samples' - '21'
+
+Current value: 'wf_start_offset' - ''
+New value: 'wf_start_offset' - '0.0'
+
+Current value: 'wf_start_time' - ''
+New value: 'wf_start_time' - '1903-12-31T23:00:00+00:00'
+
+Current value: 'wf_time_pref' - ''
+New value: 'wf_time_pref' - 'relative'
+
+Current value: 'wf_xname' - ''
+New value: 'wf_xname' - 'Time'
+
+Current value: 'wf_xunit_string' - ''
+New value: 'wf_xunit_string' - 'h'
+
+Number of properties: 24
+  24 properties
+    unit_string	°C
+    datatype	DT_DOUBLE
+    description	Temperature in the rear area
+    registerint6	0
+    registerint4	0
+    registerint5	0
+    maximum	27.0
+    registertxt1	
+    registerint1	0
+    registerint3	0
+    registertxt3	
+    minimum	14.0
+    registerint2	0
+    registertxt2	
+    displaytype	Numeric
+    monotony	not monotone
+    novaluekey	No
+    wf_increment	1.0
+    wf_samples	21
+    wf_start_offset	0.0
+    wf_start_time	1903-12-31T23:00:00+00:00
+    wf_time_pref	relative
+    wf_xname	Time
+    wf_xunit_string	h

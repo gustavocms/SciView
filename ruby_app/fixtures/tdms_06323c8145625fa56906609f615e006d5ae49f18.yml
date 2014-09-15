@@ -1,0 +1,26 @@
+---
+:path: "/'Results_Noise data'/'Res_Noise_4'"
+:properties:
+  unit_string: Pa
+  datatype: DT_DOUBLE
+  description: From clipboard
+  registerint6: 0
+  registerint4: 0
+  registerint5: 0
+  maximum: 2.09438658779771
+  registertxt1: ''
+  registerint1: 0
+  registerint3: 0
+  registertxt3: ''
+  minimum: -2.62231201034899
+  registerint2: 0
+  registertxt2: ''
+  displaytype: Numeric
+  monotony: not monotone
+  novaluekey: 'No'
+:values:
+- -1.20639903626572
+- -2.62231201034899
+- 2.0943865877977146
+- -3.711997034663744e-06
+- 0.16192988922085017

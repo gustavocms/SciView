@@ -1,0 +1,17 @@
+require "bundler/gem_tasks"
+
+here = File.expand_path('..', __FILE__)
+%w[lib test].each {|dir| $LOAD_PATH.unshift File.join(here, dir) }
+
+
+task :test do
+  require 'tdms'
+  require 'test_helper'
+
+  Dir.chdir(File.join(here, 'test')) do
+    Dir['**/*.rb'].each(&method(:require))
+  end
+end
+
+task default: :test
+
