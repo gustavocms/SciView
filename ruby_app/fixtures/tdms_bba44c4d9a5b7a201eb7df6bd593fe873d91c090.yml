@@ -1,0 +1,50 @@
+---
+:path: "/'Room temperatures'/'Temperature_2'"
+:properties:
+  unit_string: !binary |-
+    wrBD
+  datatype: DT_DOUBLE
+  description: Temperature in the central area
+  registerint6: 0
+  registerint4: 0
+  registerint5: 0
+  maximum: 17.312
+  registertxt1: ''
+  registerint1: 0
+  registerint3: 0
+  registertxt3: ''
+  minimum: 12.612
+  registerint2: 0
+  registertxt2: ''
+  displaytype: Numeric
+  monotony: not monotone
+  novaluekey: 'No'
+  wf_increment: 1.0
+  wf_samples: 21
+  wf_start_offset: 0.0
+  wf_start_time: !ruby/object:DateTime 1903-12-31 23:00:00.000000000 Z
+  wf_time_pref: relative
+  wf_xname: Time
+  wf_xunit_string: h
+:values:
+- 12.812
+- 12.612
+- 13.312
+- 15.012
+- 13.512
+- 13.812
+- 13.012
+- 14.512
+- 14.312000000000001
+- 16.012
+- 15.512
+- 16.312
+- 16.012
+- 14.512
+- 15.012
+- 15.312000000000001
+- 16.512
+- 17.312
+- 15.012
+- 15.712
+- 15.012

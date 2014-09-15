@@ -1,0 +1,50 @@
+---
+:path: "/'Room temperatures'/'Temperature_3'"
+:properties:
+  unit_string: !binary |-
+    wrBD
+  datatype: DT_DOUBLE
+  description: Temperature in the rear area
+  registerint6: 0
+  registerint4: 0
+  registerint5: 0
+  maximum: 27.0
+  registertxt1: ''
+  registerint1: 0
+  registerint3: 0
+  registertxt3: ''
+  minimum: 14.0
+  registerint2: 0
+  registertxt2: ''
+  displaytype: Numeric
+  monotony: not monotone
+  novaluekey: 'No'
+  wf_increment: 1.0
+  wf_samples: 21
+  wf_start_offset: 0.0
+  wf_start_time: !ruby/object:DateTime 1903-12-31 23:00:00.000000000 Z
+  wf_time_pref: relative
+  wf_xname: Time
+  wf_xunit_string: h
+:values:
+- 14.5
+- 14.0
+- 15.600000000000001
+- 16.9
+- 15.7
+- 17.9
+- 16.2
+- 19.7
+- 15.5
+- 21.4
+- 17.5
+- 23.0
+- 21.5
+- 24.5
+- 23.5
+- 26.0
+- 22.0
+- 26.5
+- 24.5
+- 27.0
+- 25.0
