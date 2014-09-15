@@ -25,6 +25,7 @@
 //= require angular-ui-bootstrap-bower/ui-bootstrap-tpls
 //= require angular-ui-utils/ui-utils
 //= require angular-ui-router
+//= require s3_upload
 //= require charts/multiple
 //= require charts/index
 //= require sciview

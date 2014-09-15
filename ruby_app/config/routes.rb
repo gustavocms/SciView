@@ -1,4 +1,5 @@
 SciView::Application.routes.draw do
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
@@ -34,6 +35,9 @@ SciView::Application.routes.draw do
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
   get 'series/list' => 'data#list_series'
   get "d3/gf_style"
+
+  resource 's3_options'
+
   #get "welcome/index"
   resources :posts
   root 'welcome#index'

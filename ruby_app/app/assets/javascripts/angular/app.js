@@ -7,7 +7,8 @@
         'sv.charts.metadata.services',
         'sv.charts.metadata.controllers',
         'sv.charts.save.services',
-        'sv.charts.save.controllers'
+        'sv.charts.save.controllers',
+        'ngS3upload'
     ]);
 
     // first thing to run after loading

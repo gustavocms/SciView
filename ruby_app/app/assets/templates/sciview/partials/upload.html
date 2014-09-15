@@ -1,13 +1,12 @@
 <!-- Modal container -->
 <section class="overlay">
-  
+
   <!-- Cancel / Close modal -->
   <button class="upload__cancel"
           ui-sref="navigator">Cancel
-  </button>
-  
+  </button>  
   <!-- Upload box-->
-  <section class="upload">
+  <section class="upload" s3-upload bucket="angular_test_" ng-model="product.remote_product_file_url" s3-upload-options="{ getOptionsUri: 's3_options.json', folder: 'images/' }">
 
     <!-- Header w/ title and action -->
     <header class="upload__header">
