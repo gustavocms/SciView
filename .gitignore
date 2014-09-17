@@ -37,3 +37,5 @@ python_app/out
 python_app/python_app.iml
 python_app/sciview-python.iml
 *.rdb
+.DS_Store
+tdms/pkg/
