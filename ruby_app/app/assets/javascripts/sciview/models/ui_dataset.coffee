@@ -67,7 +67,7 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
 
 class SciView.Models.UIChannel extends SciView.Models.UIBase
   constructor: (@title) ->
-    @default('retracted')
+    @default('state')
     @default('series')
     #@group = [new SciView.Models.UISeries('default', 'default category')]
 

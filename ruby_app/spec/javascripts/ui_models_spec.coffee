@@ -61,10 +61,13 @@ describe "UI Models", ->
       expect(channel.title).toEqual('channel title')
 
     describe 'serialization', ->
-      it 'serializes to a basic object', ->
-        serialized = channel.serialize()
+      serialized = channel.serialize()
+
+      it 'serializes to a basic object - title', ->
         expect(serialized.title).toEqual("channel title")
-        expect(serialized.state).toEqual("retracted")
+      it 'serializes to a basic object - state', ->
+        expect(serialized.state).toEqual('retracted')
+      it 'serializes to a basic object - series', ->
         expect(serialized.series.map((a) -> a.title)).toEqual(['series_A', 'series_B'])
 
       it 'deserializes to a UIChannel', ->
@@ -94,6 +97,7 @@ describe "UI Models", ->
               {
                 title: 'new_series'
                 category: 'default category'
+                state: 'retracted'
                 key: { color: '#F39C12', style: 'solid' }
               }
             ]
@@ -101,7 +105,11 @@ describe "UI Models", ->
         ]
       }
 
-      it 'serializes to a basic object', -> expect(chart2.serialize()).toEqual(serializedChart)
+      for key, value of chart2.serialize()
+        do (key, value) ->
+          it "serializes #{key}", ->
+            expect(value).toEqual(serializedChart[key])
+
       it 'deserializes from a basic object', ->
         ui_chart = svm.UIChart.deserialize(serializedChart)
         expect(ui_chart.title).toEqual(chart2.title)
