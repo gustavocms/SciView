@@ -68,3 +68,10 @@ Add the library to the asset pipeline:
 
 <tt>git push heroku `git subtree split --prefix ruby_app branch_to_deploy`:master --force</tt>
 Replace `heroku` with the correct remote name and `branch_to_deploy` with your current active branch.
+
+== ViewState
+If no ViewState model exists, create one like this:
+
+<tt>ViewState.create( title: "TestViewState", charts: [{"title"=>"Untitled Chart", "channels"=>[{"title"=>"default channel", "state"=>"expanded", "series"=>[{"title"=>"test", "category"=>"default category", "key"=>{"color"=>"#1ABC9C", "style"=>"solid"}}]}]}])</tt>
+
+This will be available in the angular app at `/ng#/data-sets/:id`.

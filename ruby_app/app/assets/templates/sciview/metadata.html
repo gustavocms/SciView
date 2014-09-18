@@ -1,0 +1,64 @@
+<li class="channel__meta-item"
+    ng-repeat="tag in seriesData.tags"
+    ng-mouseover="remove_hover = true"
+    ng-mouseleave="remove_hover = false">
+    <span>{{tag}}</span>
+    <button class="channel__meta-item-remove" 
+            ng-click="removeTagView(tag)"
+            ng-if="remove_hover">
+    </button>
+</li>
+<li class="channel__meta-item"
+    ng-mouseover="remove_hover = true"
+    ng-mouseleave="remove_hover = false"
+    ng-repeat="(key, value) in seriesData.attributes">
+    <span class="channel__meta-item-key">{{key}}</span>
+    <span class="channel__meta-item-value">{{value}}</span>
+    <button class="channel__meta-item-remove" 
+            ng-click="removeAttrView(key, value)"
+            ng-if="remove_hover">
+    </button>
+</li>
+<li class="channel__meta-item-new">
+    <span class="channel__meta-add" ng-class="{'is-active': metaState.showForm}" ng-click="metaState.showForm = true"><i class='fa fa-plus'></i> Add Meta Data</span>
+    <section class="channel__meta-item-input" ng-if="metaState.showForm">
+        <input class="channel__meta-item-new-tag"
+               type="text"
+               ng-model="newMetadata.tag"
+               placeholder="Add a tag">
+        <span class="channel__meta-item-split">or</span>
+        <fieldset class="channel__meta-item-pair">
+            <input class="channel__meta-item-new-key"
+                   type="text"
+                   ng-model="newMetadata.attribute"
+                   placeholder="Add a Key/Value">
+            <input class="channel__meta-item-new-value"
+                   type="text"
+                   ng-model="newMetadata.value">
+        </fieldset>
+
+        <button class="channel__meta-item-close"
+                ng-click="metaState.showForm = false">Close
+        </button>
+        <button class="channel__meta-item-save"
+                ng-click="saveMetaChannel(channel, meta)">Save
+        </button>
+    </section>
+</li>
+
+<section class="channel__meta-remove-view" ng-if="deleteMeta.remove_screen">
+  <button class="channel__meta-remove-delete" ng-click="hideRemoveView()"></button>
+  <span  class="channel__meta-remove-info">Are you sure you want to remove <span class="channel__meta-remove-tag" ng-if="!deleteMeta.is_attr" ng-bind="deleteMeta.selected_tag"></span><span class="channel__meta-remove-tag" ng-if="deleteMeta.is_attr" ng-bind="deleteMeta.selected_attr"></span>?</span>
+  <button class="channel__meta-remove-yes" ng-if="!deleteMeta.is_attr" ng-click="removeTag(deleteMeta.selected_tag)">Yes</button>
+  <button class="channel__meta-remove-yes" ng-if="deleteMeta.is_attr" ng-click="removeAttribute(deleteMeta.selected_key)">Yes</button>
+  <button class="channel__meta-remove-no" ng-click="hideRemoveView()">No</button>
+</section>
+
+<section class="channel__meta-remove-flash" ng-show="deleteMeta.remove_flash">
+  <span>Removed</span>
+</section>
+
+
+
+
+

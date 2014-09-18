@@ -1,11 +1,12 @@
 __author__ = 'paulmestemaker'
-from nptdms import TdmsFile
+from nptdms import TdmsFile, tdms
 from tempodb.client import Client
 from tempodb.protocol import DataPoint
 from secrets import API_KEY, API_SECRET, DATABASE_ID
 from datetime import datetime, timedelta
 import itertools
 import os
+import logging
 
 import argparse
 
@@ -118,6 +119,8 @@ def display(s, level):
     print("%s%s" % (" " * 2 * level, s))
 
 
+logging.getLogger(tdms.__name__).setLevel(logging.DEBUG)
+
 parser = argparse.ArgumentParser(description="Imports TDMS file into TempoDB")
 parser.add_argument("files", type=str, nargs='+', help="One or more TDMS files")
 args = parser.parse_args()
@@ -137,9 +140,9 @@ print file_path
 
 tdmsfile = TdmsFile(file_path)
 
-show_properties = True
+show_properties = False
 show_data = False
-show_time = True
+show_time = False
 
 count = 0
 
@@ -155,11 +158,14 @@ for group in tdmsfile.groups():
     level = 1
     group_obj = tdmsfile.object(group)
     display("%s" % group_obj.path, level)
+
     if show_properties:
         display_properties(group_obj, level)
+
     for channel in tdmsfile.group_channels(group):
         level = 2
         display("%s" % channel.path, level)
+        display("%s" % len(channel.properties), level)
         if show_properties:
             level = 3
             display("data type: %s" % channel.data_type.name, level)

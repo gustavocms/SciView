@@ -1,5 +1,5 @@
 (function() {
-    var module = angular.module('sv.common.services', []);
+    var module = angular.module('sv.common.services', ['ngSanitize']);
 
     module.service('ModalService', ['$modal',
         function ($modal) {

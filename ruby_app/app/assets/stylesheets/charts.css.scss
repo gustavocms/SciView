@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.chart {
+.chart, .batch__chart {
 
   .line {
     stroke: red;
@@ -24,6 +24,8 @@
 
   .axis text {
     fill: white;
+    font-family: "Fira Mono", Courier, sans-serif;
+    font-size: 9pt;
   }
 
   .brush .extent {
@@ -34,11 +36,11 @@
   .legend {
     cursor: pointer;
   }
-}
 
-.top5 { margin-top:5px; }
-.top7 { margin-top:7px; }
-.top10 { margin-top:10px; }
-.top15 { margin-top:15px; }
-.top17 { margin-top:17px; }
-.top30 { margin-top:30px; }
+  .axis .tick line {
+    stroke-width: 1.5pt;
+  }
+  .minor .tick line {
+    stroke-width: 0.5pt;
+  }
+}

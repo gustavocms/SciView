@@ -28,7 +28,7 @@
                 var result = ModalService.showModal({}, {
                     actionButtonText: 'Delete',
                     headerText: 'Remove attribute?',
-                    bodyText: 'Are you sure you want to delete this attribute?'
+                    bodyText: 'Are you sure you want to delete this attribute?<br><br><strong>' + key + ':' + series.attributes[key] + '</strong>'
                 });
 
                 result.then(function () {
@@ -49,7 +49,7 @@
                 var result = ModalService.showModal({}, {
                     actionButtonText: 'Delete',
                     headerText: 'Remove tag?',
-                    bodyText: 'Are you sure you want to delete this tag?'
+                    bodyText: 'Are you sure you want to delete this tag?<br><br><strong>' + tag + '</strong>'
                 });
 
                 result.then(function () {
