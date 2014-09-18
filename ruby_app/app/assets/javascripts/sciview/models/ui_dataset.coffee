@@ -50,14 +50,14 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
   _defaults:
     key: (obj) -> return { color: SciView.lineColor(obj.title), style: "solid" }
     title: -> "untitled series"
-    state: -> "is-retracted"
+    state: -> "retracted"
 
   _state: (state) ->
     @state = state
     @
 
-  expand: -> @_state('is-expanded')
-  retract: -> @_state('is-retracted')
+  expand: -> @_state('expanded')
+  retract: -> @_state('retracted')
 
   afterDeserialize: ->
     @key.color = SciView.lineColor(@title)
@@ -67,7 +67,7 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
 
 class SciView.Models.UIChannel extends SciView.Models.UIBase
   constructor: (@title) ->
-    @default('is-retracted')
+    @default('retracted')
     @default('series')
     #@group = [new SciView.Models.UISeries('default', 'default category')]
 
@@ -87,8 +87,8 @@ class SciView.Models.UIChannel extends SciView.Models.UIBase
     @state = state
     @
 
-  expand: -> @_state('is-expanded')
-  retract: -> @_state('is-retracted')
+  expand: -> @_state('expanded')
+  retract: -> @_state('retracted')
 
 
 # UIChart provides an interface to the D3 chart and stores

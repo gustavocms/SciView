@@ -18,6 +18,7 @@ describe "UI Models", ->
     title: 'test title'
     category: 'test category'
     key: { color: '#1ABC9C', style: 'solid' }
+    state: "retracted"
 
   channel = new svm.UIChannel('channel title')
   channel.series = [
@@ -35,8 +36,13 @@ describe "UI Models", ->
       expect(series.key).toEqual({ color: '#1ABC9C', style: 'solid' })
 
     describe 'serialization', ->
-      it 'serializes to a basic object', ->
-        expect(series.serialize()).toEqual(serializedSeries)
+      for key, value of series.serialize()
+        do (key, value) ->
+          it "serializes #{key}", ->
+            expect(value).toEqual(serializedSeries[key])
+
+      #it 'serializes to a basic object', ->
+      #expect(series.serialize()).toEqual(serializedSeries)
 
       it 'deserializes to a UISeries', ->
         expect(svm.UISeries.deserialize(serializedSeries)).toEqual(series)
