@@ -49,6 +49,10 @@ SciView::Application.routes.draw do
         end
       end
 
+      resources :series do
+        resources :annotations
+      end
+
       resources :view_states
     end
   end
