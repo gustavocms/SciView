@@ -15,9 +15,11 @@ module.controller "MetadataController", [
       showForm: false
 
     # wait for the promise to succesfully finish
-    MetadataService.query $scope.metaState.parameters, (seriesList) ->
-      $scope.seriesData = seriesList[0]
-      return
+    MetadataService.find($scope.$parent.series.title).then(
+      (data) ->
+        $scope.seriesData = data
+        return
+    )
 
     #form model
     $scope.newMetadata =

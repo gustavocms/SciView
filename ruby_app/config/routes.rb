@@ -42,9 +42,10 @@ SciView::Application.routes.draw do
   # (will eventually replace the datasets resource above)
   namespace :api do
     namespace :v1 do
-      resources :datasets, only: [:show] do 
+      resources :datasets, only: [:show] do
         collection do
           get :multiple
+          get 'metadata/:id' => 'datasets#metadata'
         end
       end
 

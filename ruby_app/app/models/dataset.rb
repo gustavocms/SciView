@@ -33,6 +33,11 @@ class Dataset
       raise('this method is deprecated')
     end
 
+
+    def series_metadata(key)
+      tempodb_client.get_series(key)
+    end
+
     def multiple_series_metadata(series)
       series.values.map do |key|
         tempodb_client.get_series(key)
