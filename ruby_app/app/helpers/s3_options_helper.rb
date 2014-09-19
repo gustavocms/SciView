@@ -20,8 +20,7 @@ module S3OptionsHelper
           { "bucket" =>  ENV['S3_BUCKET'] },
           [ "starts-with", "$key", "" ],
           { "acl" => "public-read" },
-          [ "starts-with", "$Content-Type", "" ],
-          [ "content-length-range", 0, 10 * 1024 * 1024 ]
+          [ "starts-with", "$Content-Type", "" ]
         ]
       }.to_json).gsub(/\n/,'')
   end

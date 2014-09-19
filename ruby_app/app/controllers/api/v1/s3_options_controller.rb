@@ -1,4 +1,4 @@
-class S3OptionsController < ApplicationController
+class Api::V1::S3OptionsController < ApplicationController
 
   include S3OptionsHelper
 

@@ -213,10 +213,11 @@
             fileObj['status'] = { upload: false };
             fileObj['file'] = file;
 
-            if (isNotQueued(name) && checkSize(size) && isTypeValid(type)) {
-              $scope.uploads.push(fileObj);
-              $scope.$apply();
-            }
+            $scope.$apply(function(){
+              if (isNotQueued(name) && checkSize(size) && isTypeValid(type)) {
+                $scope.uploads.push(fileObj);
+              }
+            });
           }          
 
           $scope.uploadItem = function(item) {
