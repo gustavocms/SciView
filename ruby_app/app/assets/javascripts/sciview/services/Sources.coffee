@@ -1,6 +1,6 @@
-app = angular.module("sciview")
+module = angular.module('sv.ui.services')
 
-app.service "Sources", ->
+module.service "Sources", ->
   Sources = {}
   Sources.getDataSources = ->
     [

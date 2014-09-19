@@ -1,4 +1,4 @@
-module = angular.module("sv.ui.controllers.metadata", [])
+module = angular.module("sv.ui.controllers")
 
 module.controller "MetadataController", [
   "$scope"

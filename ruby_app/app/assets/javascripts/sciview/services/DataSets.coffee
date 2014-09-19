@@ -1,6 +1,6 @@
-app = angular.module("sciview")
+module = angular.module('sv.ui.services')
 
-app.service "DataSets", ->
+module.service "DataSets", ->
   DataSets = {}
   DataSets.getDataSets = ->
     ds1 = undefined

@@ -1,6 +1,6 @@
-app = angular.module('sv.ui.services')
+module = angular.module('sv.ui.services')
 
-app.factory('SeriesService', [
+module.factory('SeriesService', [
   '$resource'
   ($resource) ->
     $resource('/datasets/:id.json')

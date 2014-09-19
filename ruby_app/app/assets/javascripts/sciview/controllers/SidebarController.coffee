@@ -1,6 +1,6 @@
-app = angular.module("sciview")
+module = angular.module("sv.ui.controllers")
 
-app.controller "SidebarController", [
+module.controller "SidebarController", [
   "$scope"
   ($scope) ->
 ]

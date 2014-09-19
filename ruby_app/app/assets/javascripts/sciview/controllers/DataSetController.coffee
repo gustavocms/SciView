@@ -1,6 +1,6 @@
-app = angular.module('sciview')
+module = angular.module("sv.ui.controllers")
 
-app.controller('DataSetController', [
+module.controller('DataSetController', [
   '$scope'
   '$stateParams'
   '$timeout'

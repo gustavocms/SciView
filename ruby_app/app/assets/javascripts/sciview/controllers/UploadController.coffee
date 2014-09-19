@@ -1,6 +1,6 @@
-app = angular.module("sciview")
+module = angular.module("sv.ui.controllers")
 
-app.controller "UploadController", [
+module.controller "UploadController", [
   "$scope"
   ($scope) ->
     $scope.uploads = []

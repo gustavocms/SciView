@@ -1,6 +1,6 @@
-app = angular.module("sciview")
+module = angular.module("sv.ui.controllers")
 
-app.controller "ToolController", [
+module.controller "ToolController", [
   "$scope"
   ($scope) ->
     $scope.channel =
