@@ -141,21 +141,125 @@
   angular.module('ngS3upload.directives', []).
     directive('s3Upload', ['$parse', 'S3Uploader', function ($parse, S3Uploader) {
       return {
-        restrict: 'AC',
+        restrict: 'AEC',
         require: '?ngModel',
-        replace: true,
         transclude: false,
         scope: true,
+        templateUrl: "<%= asset_path('sciview/partials/uploader.html') %>",
         controller: ['$scope', '$element', '$attrs', '$transclude', function ($scope, $element, $attrs, $transclude) {
           $scope.attempt = false;
           $scope.success = false;
           $scope.uploading = false;
+          $scope.uploads = [];
+
+          var index   = 0
+
+          var button = angular.element($element.children()[0]),
+              file   = angular.element($element.find("input")[0]);
+            button.bind('click', function (e) {
+            file[0].click();
+          });
 
           $scope.barClass = function () {
             return {
               "bar-success": $scope.attempt && !$scope.uploading && $scope.success
             };
           };
+
+
+          validMimeTypes = $attrs.validTypes
+  
+          var checkSize, isTypeValid;
+
+          checkSize = function(size) {
+            var _ref;
+            if (((_ref = $attrs.maxFileSize) === (void 0) || _ref === '') || (size / 1024) / 1024 < $attrs.maxFileSize) {
+              return true;
+            } else {
+              alert("File must be smaller than " + $attrs.maxFileSize + " MB");
+              return false;
+            }
+          };
+
+          isTypeValid = function(type) {
+            if ((validMimeTypes === (void 0) || validMimeTypes === '') || validMimeTypes.indexOf(type) > -1) {
+              return true;
+            } else {
+              alert("Invalid file type.  File must be one of following types " + validMimeTypes);
+              return false;
+            }
+          };
+
+          isNotQueued = function(name) {
+            
+            if ( $scope.uploads.some(function(el) { return el['name'] == name } ) ) {
+              alert("This file is already queued for upload please reaname the file if you think this is a mistake");
+              return false;              
+            } else {
+              return true
+            }
+          };
+
+
+          $scope.queueFile = function(file) {
+
+            name = file.name;
+            type = file.type;
+            size = file.size;
+            var ext = name.split('.').pop();
+
+            var fileObj = {};
+            fileObj['name'] = name;
+            fileObj['status'] = { upload: false };
+            fileObj['file'] = file;
+
+            if (isNotQueued(name) && checkSize(size) && isTypeValid(type)) {
+              $scope.uploads.push(fileObj);
+              $scope.$apply();
+            }
+          }          
+
+          $scope.uploadItem = function(item) {
+            item.status.upload = true;
+          };
+
+
+          // Choosing file from button
+          $element.bind('change', function (nVal) {
+            
+            $scope.queueFile(file[0].files[0]);
+          });
+
+          // Drag n Drop
+
+          var processDragOverOrEnter = function(event) {
+            if (event !== null) {
+              event.preventDefault();
+            }
+            event.originalEvent.dataTransfer.effectAllowed = 'copy';
+            return false;
+          };
+
+          $element.bind('dragover', processDragOverOrEnter);
+
+          $element.bind('dragenter', processDragOverOrEnter);
+
+
+          $element.bind('drop', function(event) {
+            var file, name, reader, size, type;
+            if (event !== null) {
+              event.preventDefault();
+            }
+            reader = new FileReader();
+            reader.onload = function(evt) {
+              $scope.queueFile(file);
+            };
+            file = event.originalEvent.dataTransfer.files[0];
+            reader.readAsDataURL(file);
+            return false;
+          });
+
+
         }],
         compile: function (element, attr, linker) {
           return {
@@ -177,69 +281,48 @@
               var bucket = scope.$eval(attrs.bucket);
 
               // Bind the button click event
-              var button = angular.element(element.children()[0]),
-                file = angular.element(element.find("input")[0]);
-              button.bind('click', function (e) {
-                file[0].click();
-              });
+              
 
-              // Update the scope with the view value
-              ngModel.$render = function () {
-                scope.filename = ngModel.$viewValue;
-              };
+              
+
 
               var uploadFile = function () {
-                var selectedFile = file[0].files[0];
-                var filename = selectedFile.name;
-                var ext = filename.split('.').pop();
-
-                scope.$apply(function () {
-                  S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
-                    ngModel.$setValidity('uploading', false);
-                    var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';
-                    var key = opts.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + ext;
-                    S3Uploader.upload(scope,
-                        s3Uri,
-                        key,
-                        opts.acl,
-                        selectedFile.type,
-                        s3Options.key,
-                        s3Options.policy,
-                        s3Options.signature,
-                        selectedFile
-                      ).then(function () {
-                        ngModel.$setViewValue(s3Uri + key);
-                        scope.filename = ngModel.$viewValue;
-                        ngModel.$setValidity('uploading', true);
-                        ngModel.$setValidity('succeeded', true);
-                      }, function () {
-                        scope.filename = ngModel.$viewValue;
-                        ngModel.$setValidity('uploading', true);
-                        ngModel.$setValidity('succeeded', false);
-                      });
-
-                  }, function (error) {
-                    throw Error("Can't receive the needed options for S3 " + error);
-                  });
-                });
+//
+                //scope.$apply(function () {
+                //  S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
+                //    ngModel.$setValidity('uploading', false);
+                //    var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';
+                //    var key = opts.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + ext;
+                //    S3Uploader.upload(scope,
+                //        s3Uri,
+                //        key,
+                //        opts.acl,
+                //        selectedFile.type,
+                //        s3Options.key,
+                //        s3Options.policy,
+                //        s3Options.signature,
+                //        selectedFile
+                //      ).then(function () {
+                //        ngModel.$setViewValue(s3Uri + key);
+                //        scope.filename = ngModel.$viewValue;
+                //        ngModel.$setValidity('uploading', true);
+                //        ngModel.$setValidity('succeeded', true);
+                //      }, function () {
+                //        scope.filename = ngModel.$viewValue;
+                //        ngModel.$setValidity('uploading', true);
+                //        ngModel.$setValidity('succeeded', false);
+                //      });
+//
+                //  }, function (error) {
+                //    throw Error("Can't receive the needed options for S3 " + error);
+                //  });
+                //});
               };
 
-              element.bind('change', function (nVal) {
-                if (opts.submitOnChange) {
-                  uploadFile();
-                }
-              });
+
             }
           };
-        },
-        template: '<div class="upload-wrap">' +
-          '<button class="btn btn-primary" type="button"><span ng-if="!filename">Choose file</span><span ng-if="filename">Replace file</span></button>' +
-          '<a ng-href="{{ filename  }}" target="_blank" class="" ng-if="filename" > Stored file </a>' +
-          '<div class="progress progress-striped" ng-class="{active: uploading}" ng-show="attempt" style="margin-top: 10px">' +
-          '<div class="bar" style="width: {{ progress }}%;" ng-class="barClass()"></div>' +
-          '</div>' +
-          '<input type="file" style="display: none"/>' +
-          '</div>'
+        }
      };
   }]);
 })(window, document);
