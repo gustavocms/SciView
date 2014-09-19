@@ -1,6 +1,6 @@
-app = angular.module('sciview')
+module = angular.module("sv.ui.controllers")
 
-app.controller('DataSetsController', [
+module.controller('DataSetsController', [
   '$scope'
   '$q'
   'ViewState'
