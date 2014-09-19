@@ -36,7 +36,6 @@ SciView::Application.routes.draw do
   get 'series/list' => 'data#list_series'
   get "d3/gf_style"
 
-  resource 's3_options'
 
   #get "welcome/index"
   resources :posts
@@ -46,6 +45,7 @@ SciView::Application.routes.draw do
   # (will eventually replace the datasets resource above)
   namespace :api do
     namespace :v1 do
+      resource 's3_options'
       resources :datasets, only: [:show] do 
         collection do
           get :multiple

@@ -154,6 +154,18 @@
 
           var index   = 0
 
+          var opts = angular.extend({}, $scope.$eval($attrs.s3UploadOptions || $attrs.options));
+          opts = angular.extend({
+            submitOnChange: true,
+            getOptionsUri: '/getS3Options',
+            acl: 'public-read',
+            uploadingKey: 'uploading',
+            folder: ''
+          }, opts);
+          var bucket = $attrs.bucket;
+
+          console.log(bucket)
+
           var button = angular.element($element.children()[0]),
               file   = angular.element($element.find("input")[0]);
             button.bind('click', function (e) {
@@ -220,11 +232,6 @@
             });
           }          
 
-          $scope.uploadItem = function(item) {
-            item.status.upload = true;
-          };
-
-
           // Choosing file from button
           $element.bind('change', function (nVal) {
             
@@ -261,6 +268,46 @@
           });
 
 
+          // upload file
+
+          $scope.uploadItem = function(item) {
+            item.status.upload = true;
+            uploadFile(item.file)
+          };
+
+          var uploadFile = function (file) {
+            S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
+              //ngModel.$setValidity('uploading', false);
+              var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';
+              var key = opts.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + file.name.split('.').pop();;
+              S3Uploader.upload($scope,
+                  s3Uri,
+                  key,
+                  opts.acl,
+                  file.type,
+                  s3Options.key,
+                  s3Options.policy,
+                  s3Options.signature,
+                  file
+                ).then(function () {
+                  console.log('done')
+                  //ngModel.$setViewValue(s3Uri + key);
+                  //$scope.filename = ngModel.$viewValue;
+                  //ngModel.$setValidity('uploading', true);
+                  //ngModel.$setValidity('succeeded', true);
+                }, function () {
+                  console.log('done!!')
+                  //$scope.filename = ngModel.$viewValue;
+                  //ngModel.$setValidity('uploading', true);
+                  //ngModel.$setValidity('succeeded', false);
+                });
+  //
+            }, function (error) {
+              throw Error("Can't receive the needed options for S3 " + error);
+            });
+          };          
+
+
         }],
         compile: function (element, attr, linker) {
           return {
@@ -271,15 +318,7 @@
             },
             post: function (scope, element, attrs, ngModel) {
               // Build the opts array
-              var opts = angular.extend({}, scope.$eval(attrs.s3UploadOptions || attrs.options));
-              opts = angular.extend({
-                submitOnChange: true,
-                getOptionsUri: '/getS3Options',
-                acl: 'public-read',
-                uploadingKey: 'uploading',
-                folder: ''
-              }, opts);
-              var bucket = scope.$eval(attrs.bucket);
+
 
               // Bind the button click event
               
@@ -287,38 +326,7 @@
               
 
 
-              var uploadFile = function () {
-//
-                //scope.$apply(function () {
-                //  S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
-                //    ngModel.$setValidity('uploading', false);
-                //    var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';
-                //    var key = opts.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + ext;
-                //    S3Uploader.upload(scope,
-                //        s3Uri,
-                //        key,
-                //        opts.acl,
-                //        selectedFile.type,
-                //        s3Options.key,
-                //        s3Options.policy,
-                //        s3Options.signature,
-                //        selectedFile
-                //      ).then(function () {
-                //        ngModel.$setViewValue(s3Uri + key);
-                //        scope.filename = ngModel.$viewValue;
-                //        ngModel.$setValidity('uploading', true);
-                //        ngModel.$setValidity('succeeded', true);
-                //      }, function () {
-                //        scope.filename = ngModel.$viewValue;
-                //        ngModel.$setValidity('uploading', true);
-                //        ngModel.$setValidity('succeeded', false);
-                //      });
-//
-                //  }, function (error) {
-                //    throw Error("Can't receive the needed options for S3 " + error);
-                //  });
-                //});
-              };
+
 
 
             }
