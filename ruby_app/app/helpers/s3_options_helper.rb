@@ -4,7 +4,9 @@ module S3OptionsHelper
     {
       policy:    s3_upload_policy,
       signature: s3_upload_signature,
-      key:       ENV['AWS_ACCESS_KEY_ID'] 
+      key:       ENV['AWS_ACCESS_KEY_ID'],
+      bucket:    ENV['S3_BUCKET'],
+      folder:    current_user.id
     }
   end
 

@@ -52,7 +52,7 @@
       };
 
 
-      this.upload = function (scope, uri, key, acl, type, accessKey, policy, signature, file) {
+      this.upload = function (scope, uri, key, acl, type, accessKey, policy, signature, file, item) {
         var deferred = $q.defer();
         scope.attempt = true;
 
@@ -76,9 +76,9 @@
         function uploadProgress(e) {
           scope.$apply(function () {
             if (e.lengthComputable) {
-              scope.progress = Math.round(e.loaded * 100 / e.total);
+              item.progress = Math.round(e.loaded * 100 / e.total);
             } else {
-              scope.progress = 'unable to compute';
+              item.progress = 'unable to compute';
             }
             var msg = {type: 'progress', value: scope.progress};
             scope.$emit('s3upload:progress', msg);
@@ -162,9 +162,6 @@
             uploadingKey: 'uploading',
             folder: ''
           }, opts);
-          var bucket = $attrs.bucket;
-
-          console.log(bucket)
 
           var button = angular.element($element.children()[0]),
               file   = angular.element($element.find("input")[0]);
@@ -271,14 +268,15 @@
           // upload file
 
           $scope.uploadItem = function(item) {
-            item.status.upload = true;
-            uploadFile(item.file)
+            uploadFile(item)
           };
 
-          var uploadFile = function (file) {
+          var uploadFile = function (item) {
+            var file = item.file
+            item.status.upload = true
+
             S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
-              //ngModel.$setValidity('uploading', false);
-              var s3Uri = 'https://' + bucket + '.s3.amazonaws.com/';
+              var s3Uri = 'https://' + s3Options.bucket + '.s3.amazonaws.com/';
               var key = opts.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + file.name.split('.').pop();;
               S3Uploader.upload($scope,
                   s3Uri,
@@ -288,50 +286,22 @@
                   s3Options.key,
                   s3Options.policy,
                   s3Options.signature,
-                  file
+                  file,
+                  item
                 ).then(function () {
-                  console.log('done')
-                  //ngModel.$setViewValue(s3Uri + key);
-                  //$scope.filename = ngModel.$viewValue;
-                  //ngModel.$setValidity('uploading', true);
-                  //ngModel.$setValidity('succeeded', true);
+                  //item.status.upload = false;
                 }, function () {
-                  console.log('done!!')
-                  //$scope.filename = ngModel.$viewValue;
-                  //ngModel.$setValidity('uploading', true);
-                  //ngModel.$setValidity('succeeded', false);
+                  //item.status.upload = false;
                 });
   //
             }, function (error) {
               throw Error("Can't receive the needed options for S3 " + error);
             });
+
           };          
 
 
-        }],
-        compile: function (element, attr, linker) {
-          return {
-            pre: function ($scope, $element, $attr) {
-              if (angular.isUndefined($attr.bucket)) {
-                throw Error('bucket is a mandatory attribute');
-              }
-            },
-            post: function (scope, element, attrs, ngModel) {
-              // Build the opts array
-
-
-              // Bind the button click event
-              
-
-              
-
-
-
-
-
-            }
-          };
-        }
+        }]
      };
   }]);
 })(window, document);

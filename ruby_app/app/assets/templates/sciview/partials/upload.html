@@ -6,5 +6,5 @@
           ui-sref="navigator">Cancel
   </button>  
   <!-- Upload box-->
-  <section class="upload" valid-types="['image/png', 'application/octet-stream']" s3-upload bucket="angular_test_" ng-model="product.remote_product_file_url" s3-upload-options="{ getOptionsUri: 'api/v1/s3_options.json', folder: 'images/' }"></section>
+  <section class="upload" valid-types="['application/octet-stream']" s3-upload bucket="angular_test_" ng-model="product.remote_product_file_url" s3-upload-options="{ getOptionsUri: 'api/v1/s3_options.json' }"></section>
 </section>
