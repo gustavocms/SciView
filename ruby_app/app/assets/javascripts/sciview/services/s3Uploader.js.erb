@@ -277,7 +277,7 @@
 
             S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
               var s3Uri = 'https://' + s3Options.bucket + '.s3.amazonaws.com/';
-              var key = opts.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + file.name.split('.').pop();;
+              var key = s3Options.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + file.name.split('.').pop();;
               S3Uploader.upload($scope,
                   s3Uri,
                   key,
