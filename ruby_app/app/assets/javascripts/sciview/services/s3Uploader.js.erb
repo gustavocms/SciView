@@ -148,6 +148,7 @@
           $scope.success = false;
           $scope.uploading = false;
           $scope.uploads = [];
+          $scope.uploadAll = ''
 
           var index   = 0
 
@@ -207,8 +208,15 @@
           };
 
 
-          $scope.queueFile = function(file) {
+          setUploadAll = function() {
+            if( $scope.uploads.some( function(item) { return item.status.upload === 'waiting' }) ) {
+              $scope.uploadAll = "Upload All";
+            } else {
+              $scope.uploadAll = "Finished"
+            };
+          };
 
+          $scope.queueFile = function(file) {
             name = file.name;
             type = file.type;
             size = file.size;
@@ -224,6 +232,7 @@
               if (isNotQueued(name) && checkSize(size) && isTypeValid(type)) {
                 $scope.uploads.push(fileObj);
               }
+              setUploadAll()
             });
           }          
 
@@ -253,12 +262,17 @@
             if (event !== null) {
               event.preventDefault();
             }
-            reader = new FileReader();
-            reader.onload = function(evt) {
-              $scope.queueFile(file);
+
+            files = event.originalEvent.dataTransfer.files;
+            for (i = 0; i < files.length; i++) {
+              (function(file) {
+                reader = new FileReader();
+                reader.onload = function(evt) {
+                  $scope.queueFile(file);
+                };
+                reader.readAsDataURL(file);
+              })(files[i]);
             };
-            file = event.originalEvent.dataTransfer.files[0];
-            reader.readAsDataURL(file);
             return false;
           });
 
@@ -270,6 +284,7 @@
             if(index != -1) {
               $scope.uploads.splice(index, 1);
             }
+            setUploadAll()
           }
 
           // upload file
