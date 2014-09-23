@@ -279,8 +279,12 @@
           };
 
           $scope.cancelUpload = function(item) {
-            item.xhr.abort()
-            item.status.upload = 'canceled'
+            if (item.status.upload === 'uploading') {
+              item.xhr.abort()
+              item.status.upload = 'canceled'
+            } else {
+              $scope.stopUpload(item)
+            };
           }
 
           var uploadFile = function (item) {
@@ -316,6 +320,7 @@
 
 
         }]
-     };
+    }
+
   }]);
 })(window, document);

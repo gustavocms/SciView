@@ -54,14 +54,14 @@
                 <g id="-49" transform="translate(-10.000000, -14.000000)" fill="#00A2CE">
                     <g transform="translate(10.000000, 14.000000)">
                         <rect id="Rectangle-23" fill-opacity="0.1" x="0" y="0" width="65" height="4"></rect>
-                        <rect id="Rectangle-24" x="0" y="0" width="{{ upload.progress }}" height="4"></rect>
+                        <rect id="Rectangle-24" x="0" y="0" ng-attr-width="{{ upload.progress }}" height="4"></rect>
                     </g>
                 </g>
             </g>
           </svg>
           <button class="upload__begin" 
                   ng-click="cancelUpload(upload)"
-                  ng-if="upload.status.upload === 'uploading'">Cancel
+                  ng-if="upload.status.upload === 'uploading' || upload.status.upload === 'waiting'">Cancel
           </button>
         </div>
       </div>
