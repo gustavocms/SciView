@@ -72,21 +72,20 @@
         xhr.addEventListener("abort", uploadCanceled, false);
         scope.$emit('s3upload:start', xhr);
 
+        item.xhr = xhr
+
         // Define event handlers
         function uploadProgress(e) {
-          scope.$apply(function () {
-            if (e.lengthComputable) {
-              item.progress = Math.round(e.loaded * 100 / e.total);
-            } else {
-              item.progress = 'unable to compute';
-            }
-            var msg = {type: 'progress', value: scope.progress};
-            scope.$emit('s3upload:progress', msg);
-            if (typeof deferred.notify === 'function') {
-              deferred.notify(msg);
-            }
-
-          });
+          if (e.lengthComputable) {
+            item.progress = Math.round(e.loaded * 100 / e.total);
+          } else {
+            item.progress = 'unable to compute';
+          }
+          var msg = {type: 'progress', value: scope.progress};
+          scope.$emit('s3upload:progress', msg);
+          if (typeof deferred.notify === 'function') {
+            deferred.notify(msg);
+          }
         }
         function uploadComplete(e) {
           var xhr = e.srcElement || e.target;
@@ -116,13 +115,11 @@
         }
         function uploadCanceled(e) {
           var xhr = e.srcElement || e.target;
-          scope.$apply(function () {
-            self.uploads--;
-            scope.uploading = false;
-            scope.success = false;
-            deferred.reject(xhr);
-            scope.$emit('s3upload:abort', xhr);
-          });
+          self.uploads--;
+          scope.uploading = false;
+          scope.success = false;
+          deferred.reject(xhr);
+          scope.$emit('s3upload:abort', xhr);
         }
 
         // Send the file
@@ -219,7 +216,7 @@
 
             var fileObj = {};
             fileObj.name = name;
-            fileObj.status = { upload: false };
+            fileObj.status = { upload: 'waiting' };
             fileObj.file = file;
             fileObj.progress = 0
 
@@ -281,14 +278,18 @@
             uploadFile(item)
           };
 
+          $scope.cancelUpload = function(item) {
+            item.xhr.abort()
+            item.status.upload = 'canceled'
+          }
+
           var uploadFile = function (item) {
             var file = item.file
-            item.status.upload = true
-
+            item.status.upload = 'uploading'
             S3Uploader.getUploadOptions(opts.getOptionsUri).then(function (s3Options) {
               var s3Uri = 'https://' + s3Options.bucket + '.s3.amazonaws.com/';
               var key = s3Options.folder + (new Date()).getTime() + '-' + S3Uploader.randomString(16) + "." + file.name.split('.').pop();;
-              S3Uploader.upload($scope,
+              uploader = S3Uploader.upload($scope,
                   s3Uri,
                   key,
                   opts.acl,
@@ -299,11 +300,14 @@
                   file,
                   item
                 ).then(function () {
-                  //item.status.upload = false;
+                  if (item.status.upload !== 'canceled') {
+                    item.status.upload = 'done';
+                  };
                 }, function () {
-                  //item.status.upload = false;
+                  if (item.status.upload !== 'canceled') {
+                    item.status.upload = 'done';
+                  };
                 });
-  //
             }, function (error) {
               throw Error("Can't receive the needed options for S3 " + error);
             });
