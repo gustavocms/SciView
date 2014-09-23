@@ -14,8 +14,11 @@ module.controller "MetadataController", [
         series_1: $scope.series.title #from parent controller
       showForm: false
 
+    series_title = ->
+      $scope.$parent.series.title
+
     # wait for the promise to succesfully finish
-    MetadataService.find($scope.$parent.series.title).then(
+    MetadataService.find(series_title()).then(
       (data) ->
         $scope.seriesData = data
         return
