@@ -4,10 +4,10 @@ module.controller "MetadataController", [
   "$scope"
   "$q"
   "$timeout"
-  "MetadataService"
+  "SeriesService"
   "SeriesTagsService"
   "SeriesAttributesService"
-  ($scope, $q, $timeout, MetadataService, SeriesTagsService, SeriesAttributesService) ->
+  ($scope, $q, $timeout, SeriesService, SeriesTagsService, SeriesAttributesService) ->
 
     $scope.metaState =
       parameters:
@@ -18,10 +18,9 @@ module.controller "MetadataController", [
       $scope.$parent.series.title
 
     # wait for the promise to succesfully finish
-    MetadataService.find(series_title()).then(
+    SeriesService.find(series_title()).then(
       (data) ->
         $scope.seriesData = data
-        return
     )
 
     #form model

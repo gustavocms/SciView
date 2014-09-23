@@ -45,11 +45,12 @@ SciView::Application.routes.draw do
       resources :datasets, only: [:show] do
         collection do
           get :multiple
-          get 'metadata/:id' => 'datasets#metadata'
         end
       end
 
       resources :view_states
+
+      resources :series
     end
   end
 end

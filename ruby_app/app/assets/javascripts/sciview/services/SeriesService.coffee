@@ -1,9 +1,17 @@
 module = angular.module('sv.ui.services')
 
-module.factory('SeriesService', [
-  '$resource'
-  ($resource) ->
-    $resource('/datasets/:id.json')
-])
+module.factory "SeriesService", [ "DS", (DS) ->
+  DS.defineResource(
+    name: 'series'
+    endpoint: '/api/v1/series'
+    idAttribute: 'key',
+  )
+]
 
+module.factory "SeriesTagsService", [ "$resource", ($resource) ->
+  $resource "/datasets/:seriesId/tags/:tagId"
+]
 
+module.factory "SeriesAttributesService", [ "$resource", ($resource) ->
+  $resource "/datasets/:seriesId/attributes/:attributeId"
+]
