@@ -218,9 +218,10 @@
             var ext = name.split('.').pop();
 
             var fileObj = {};
-            fileObj['name'] = name;
-            fileObj['status'] = { upload: false };
-            fileObj['file'] = file;
+            fileObj.name = name;
+            fileObj.status = { upload: false };
+            fileObj.file = file;
+            fileObj.progress = 0
 
             $scope.$apply(function(){
               if (isNotQueued(name) && checkSize(size) && isTypeValid(type)) {
@@ -264,6 +265,15 @@
             return false;
           });
 
+
+          // remove upload
+
+          $scope.stopUpload = function(item) {
+            index = $scope.uploads.indexOf(item)
+            if(index != -1) {
+              $scope.uploads.splice(index, 1);
+            }
+          }
 
           // upload file
 
