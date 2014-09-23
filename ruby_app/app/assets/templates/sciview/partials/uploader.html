@@ -67,6 +67,5 @@
       </div>
     </li>
 </ul>
-  <!-- Finish / exit -->
-  <button class="upload__finished"
-      ui-sref="navigator" ng-show='uploads.length'>{{ uploadAll }}</button>
+  <!-- Upload All -->
+  <button class="upload__finished" ng-click='uploadThemAll()' ng-show='uploads.length'>{{ uploadAll }}</button>

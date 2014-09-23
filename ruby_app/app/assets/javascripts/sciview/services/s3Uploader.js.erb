@@ -135,7 +135,7 @@
         return this.uploads > 0;
       };
     }]);
-  angular.module('ngS3upload.directives', []).
+  angular.module('ngS3upload.directives', ['ui.router']).
     directive('s3Upload', ['$parse', 'S3Uploader', function ($parse, S3Uploader) {
       return {
         restrict: 'AEC',
@@ -143,7 +143,7 @@
         transclude: false,
         scope: true,
         templateUrl: "<%= asset_path('sciview/partials/uploader.html') %>",
-        controller: ['$scope', '$element', '$attrs', '$transclude', function ($scope, $element, $attrs, $transclude) {
+        controller: ['$state','$scope', '$element', '$attrs', '$transclude', function ($state, $scope, $element, $attrs, $transclude) {
           $scope.attempt = false;
           $scope.success = false;
           $scope.uploading = false;
@@ -238,7 +238,6 @@
 
           // Choosing file from button
           $element.bind('change', function (nVal) {
-            
             $scope.queueFile(file[0].files[0]);
           });
 
@@ -302,6 +301,23 @@
             };
           }
 
+          $scope.uploadThemAll = function() { 
+            var waiting_uploads = $scope.uploads.filter( function(item) { return item.status.upload === "waiting" });
+            if( waiting_uploads.length ) { 
+
+              for( i = 0; i < waiting_uploads.length; i++ ) {
+                (function(item){
+                  if (item !== undefined) { uploadFile(item); };
+                })(waiting_uploads[i]);
+              };
+
+            } else {
+               $state.go('navigator')
+            }
+
+
+          };
+
           var uploadFile = function (item) {
             var file = item.file
             item.status.upload = 'uploading'
@@ -321,10 +337,12 @@
                 ).then(function () {
                   if (item.status.upload !== 'canceled') {
                     item.status.upload = 'done';
+                    setUploadAll()
                   };
                 }, function () {
                   if (item.status.upload !== 'canceled') {
                     item.status.upload = 'done';
+                    setUploadAll()
                   };
                 });
             }, function (error) {
