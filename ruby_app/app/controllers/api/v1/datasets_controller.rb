@@ -28,7 +28,7 @@ class Api::V1::DatasetsController < ::DatasetsController
     end
   end
 
-  def metadata()
+  def metadata
     render json: Dataset.series_metadata(params[:id])
   end
 
