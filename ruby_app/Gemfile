@@ -82,6 +82,7 @@ gem 'rails-assets-angular-ui-router'
 gem 'rails-assets-angular-ui-utils'
 gem 'rails-assets-angular-data'
 gem 'rails-assets-angular-cache'
+gem 'rails-assets-angular-socket-io'
 
 group :development, :test do
   gem "jasmine", github: "pivotal/jasmine-gem"
