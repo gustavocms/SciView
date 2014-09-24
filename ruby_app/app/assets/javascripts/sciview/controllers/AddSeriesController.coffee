@@ -11,8 +11,16 @@ module.controller "AddSeriesController", [
       $scope.new_series_title = ""
       $scope.placeholder = "Add Series"
 
-    $scope.adding = ->
+    $scope.selectSeries = (chart, series) ->
+      console.log("select series")
+      $scope.addSeries(chart, series)
+      $scope.cancel()
+
+    $scope.adding = (e, chart, series) ->
       $scope.is_adding = true
+      if `e.keyCode == 13`
+        $scope.addSeries(chart, series)
+        $scope.cancel()
 
     $scope.focus = ->
       $scope.placeholder = "Search key, tag or attribute"

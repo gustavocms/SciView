@@ -5,8 +5,16 @@
 }
 
 %small-caps {
+  font-family: $primary_font_family;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+.small-caps {
+  @extend %small-caps;
+  @include rem(font-size, $baby);
+  // font-weight: 700;
+  opacity: 0.3;
 }
 
 %icon-font {

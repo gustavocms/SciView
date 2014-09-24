@@ -41,10 +41,12 @@
         <i class="batch__add-series-action"></i>
          <!-- Override typeahead template -->
         <script id="template/typeahead/typeahead-popup.html" type="text/ng-template">
-          <ul class="batch__search-results" ng-style="{display: isOpen()&&'block' || 'none', top: position.top+'px', left: position.left+'px'}">
-            <li ng-repeat="match in matches" class="batch__search-result" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)">
+          <ul class="batch__search-results" ng-style="{display: isOpen()&&'block' || 'none'}">
+            <li ng-repeat="match in matches" class="batch__search-result" ng-class="{active: isActive($index) }">
                 <span class="batch__search-result-text" ng-click="selectMatch($index)" bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-                <aside ng-if="match.model.hasTags" class="batch__search-result-tags" ng-click="selectMatch($index)">Tags: <span ng-repeat="tag in match.model.tags" bind-html-unsafe="tag + ', ' | typeaheadHighlight:query"></span>
+                <aside ng-if="match.model.hasTags" class="batch__search-result-tags" ng-click="selectMatch($index)"><span class="small-caps">Tags</span> <span class="batch__search-result-tag" ng-repeat="tag in match.model.tags" bind-html-unsafe="tag | typeaheadHighlight:query"></span>
+                </aside>                
+                <aside ng-if="match.model.hasAttributes" class="batch__search-result-tags" ng-click="selectMatch($index)"><span class="small-caps">Attrs</span> <span class="batch__search-result-tag" ng-repeat="(key, value) in match.model.attributes" bind-html-unsafe="key +': '+ value | typeaheadHighlight:query"></span>
                 </aside>
             </li>
           </ul>    
@@ -52,7 +54,7 @@
         <input type="text"
                class="batch__add-series-input"
                ng-model="new_series_title"
-               ng-keypress="adding()"
+               ng-keypress="adding($event, chart, new_series_title.key)"
                ng-focus="focus()"
                typeahead="series as series.key for series in querySeriesList($viewValue) | limitTo:8"
                typeahead-loading="filtering"
