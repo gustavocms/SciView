@@ -45,6 +45,7 @@ SciView::Application.routes.draw do
   # (will eventually replace the datasets resource above)
   namespace :api do
     namespace :v1 do
+      
       resource 's3_options'
       resources :datasets, only: [:show] do 
         collection do
@@ -53,6 +54,8 @@ SciView::Application.routes.draw do
       end
 
       resources :view_states
+
+      resources :series
     end
   end
 end
