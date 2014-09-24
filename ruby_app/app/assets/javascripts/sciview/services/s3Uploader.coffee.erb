@@ -242,11 +242,6 @@
             $element.bind "dragover", processDragOverOrEnter
             $element.bind "dragenter", processDragOverOrEnter
             $element.bind "drop", (event) ->
-              file = undefined
-              name = undefined
-              reader = undefined
-              size = undefined
-              type = undefined
               event.preventDefault()  if event isnt null
               files = event.originalEvent.dataTransfer.files
               i = 0
