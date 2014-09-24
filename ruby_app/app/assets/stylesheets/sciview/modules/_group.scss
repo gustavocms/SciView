@@ -1,7 +1,11 @@
+.batches {
+  @extend %ul-reset;
+  width: 100%;
+  height: 100%;
+}
+
 .batch {
   background-color: rgba($white, 0.01);
-  position: relative;
-
   &:nth-child(odd) {
     background-color: rgba($white, 0.025);
   }
@@ -11,8 +15,6 @@
   background-color: rgba($interface_color, 0.025);
   border: 1px solid rgba($interface_color, 0.1);
   height: 100%;
-  position: relative;
-  overflow-y: auto;
 }
 
 .batch__header {
@@ -33,11 +35,16 @@
   }
 }
 
+.batch__add-channel-action {
+  @extend %batch-icon-mini;
+  &::before {
+    background: asset-url('add-channel.svg') center center no-repeat;
+  }
+}
+
 // List of Data
 .batch__data {
   @extend %ul-reset;
-  height: 100%;
-  padding-bottom: $alpha;
 }
 
 // List of Channels in a group
@@ -68,56 +75,6 @@
     opacity: 0.5;
     background: asset-url('chevron.svg') center center no-repeat;
   }
-}
-
-
-// Adding Series 
-
-.batch__add-series {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  bottom: 0;
-  background-color: rgba($background_color, 0.5);
-
-  &.is-adding-series {
-    @include vp(transition, background-color 0.5s ease);
-    top: $beta;
-    height: 100%;
-    overflow-x: hidden;
-    background-color: rgba($background_color, 1);
-
-    // &::before {
-    //   content: "Adding Series";
-    // }
-  }
-
-}
-
-.batch__add-series-action {
-  @extend %batch-icon-mini;
-  position: absolute;
-  top: .4em;
-  left: .2em;
-  &::before {
-    background: asset-url('add-channel.svg') center center no-repeat;
-  }
-}
-
-.batch__quit-add-action {
-  @extend %button-delete;
-  right: 2em;
-  top: .6em;
-}
-
-.batch__add-series-input {
-  @extend %input-reset;
-  padding-left: $beta*2;
-  width: 100%;
-}
-
-.batch__search-results {
-  @extend %ul-reset;
 }
 
 // Dummy SVG Chart
