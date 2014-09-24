@@ -2,7 +2,7 @@ class Api::V1::SeriesController < ApplicationController
   respond_to :json
 
   def index
-    render json: Dataset.all
+    render json: Dataset.all(params)
   end
 
   def show

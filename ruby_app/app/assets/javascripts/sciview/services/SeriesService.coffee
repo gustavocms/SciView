@@ -4,7 +4,6 @@ module.factory "SeriesService", [ "DS", (DS) ->
   DS.defineResource(
     name: 'series'
     endpoint: '/api/v1/series'
-    idAttribute: 'key',
   )
 ]
 

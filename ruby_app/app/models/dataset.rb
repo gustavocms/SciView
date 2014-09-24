@@ -2,8 +2,8 @@ class Dataset
   include Concerns::Tempo
   class << self
 
-    def all
-      tempodb_client.list_series
+    def all(options = {})
+      tempodb_client.list_series options
     end
 
     def multiple_series(start, stop, series, count = nil)

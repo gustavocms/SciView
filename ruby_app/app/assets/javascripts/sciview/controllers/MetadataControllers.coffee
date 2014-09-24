@@ -18,9 +18,9 @@ module.controller "MetadataController", [
       $scope.$parent.series.title
 
     # wait for the promise to succesfully finish
-    SeriesService.find(series_title()).then(
+    SeriesService.findAll(key: series_title()).then(
       (data) ->
-        $scope.seriesData = data
+        $scope.seriesData = data[0]
     )
 
     #form model
