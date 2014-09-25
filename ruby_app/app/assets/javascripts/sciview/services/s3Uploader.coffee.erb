@@ -353,6 +353,7 @@
                   return
                 , 
                 (error)->
+                  item.status.upload = 'error'
                   throw Error("Can't receive the needed options for S3 #{error}")
               )
               return

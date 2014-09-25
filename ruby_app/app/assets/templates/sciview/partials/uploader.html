@@ -48,8 +48,9 @@
                   ng-click="stopUpload(upload)"
                   ng-if="upload.status.upload === 'done' || upload.status.upload === 'canceled'">
           </button>
+          <span ng-if="upload.status.upload === 'done' || upload.status.upload === 'error' "> {{ upload.status.upload }}</span>
           <!-- Loading SVG -->
-          <svg class="upload__loading" ng-if="upload.status.upload === 'uploading'" viewBox="0 0 65 4" >
+          <svg class="upload__loading" ng-if="upload.status.upload === 'uploading' || upload.status.upload === 'error' " viewBox="0 0 65 4" >
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <g id="-49" transform="translate(-10.000000, -14.000000)" fill="#00A2CE">
                     <g transform="translate(10.000000, 14.000000)">
