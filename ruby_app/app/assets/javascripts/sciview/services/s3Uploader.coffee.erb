@@ -231,7 +231,14 @@
             
             # Choosing file from button
             $element.bind "change", (nVal) ->
-              $scope.queueFile file[0].files[0]
+              i = 0
+              files = file[0].files
+              while i < files.length
+                ((file) ->
+                  $scope.queueFile file
+                ) files[i]
+                i++              
+              
               return
 
             
@@ -305,6 +312,12 @@
               extension = file.name.split('.').pop()
               "#{s3Options.folder}/#{timestamp}-#{randomString}.#{extension}"
 
+            successFullUpload = (item)->
+              if (item.status.upload isnt 'canceled') 
+                item.status.upload = 'done'
+                setUploadAll()
+                return              
+
             uploadFile = (item) ->
               file = item.file
               item.status.upload = 'uploading'
@@ -324,16 +337,10 @@
                     item
                   ).then( 
                     ->
-                      if (item.status.upload isnt 'canceled') 
-                        item.status.upload = 'done'
-                        setUploadAll()
-                        return
+                      successFullUpload(item)
                     , 
                     ->
-                      if (item.status.upload isnt 'canceled')
-                        item.status.upload = 'done'
-                        setUploadAll()
-                        return
+                      successFullUpload(item)
                     )
                   return
                 , 
