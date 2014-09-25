@@ -29,4 +29,5 @@
 # objects by SciView.Models.UIDataset.deserialize.
 #
 class ViewState < ActiveRecord::Base
+  has_many :observations
 end
