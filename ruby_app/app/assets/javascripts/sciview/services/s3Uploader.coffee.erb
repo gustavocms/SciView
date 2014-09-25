@@ -163,9 +163,12 @@
               acl: "public-read"
               uploadingKey: "uploading"
             , opts)
+            
             button = angular.element($element.children()[0])
-            file = angular.element($element.find("input")[0])
+            file = {}
+            
             button.bind "click", (e) ->
+              file = angular.element($element.find("input")[0])
               file[0].click()
               return
 
