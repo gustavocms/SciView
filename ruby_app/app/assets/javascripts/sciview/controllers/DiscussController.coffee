@@ -11,9 +11,5 @@ module.controller "DiscussController", [
 
     Observation.index({ viewStateId: 43 })
       .$promise
-      .then((data) ->
-        console.log("observation data", data)
-        $scope.observations = data
-        window.s = $scope
-      )
+      .then((data) -> $scope.observations = data)
 ]
