@@ -168,7 +168,7 @@ class SciView.FocusChart extends SciView.BasicChart
         tags: s.tags
         attributes: s.attributes
         disabled: disabled
-        annotations: s.annotations
+        observations: s.observations
       }
 
   dataURL: (string) ->
@@ -196,7 +196,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineFocus(d.values))
     
     @focus.select(".x.axis").call(@xAxis)
-    @renderAnnotations()
+    @renderObservations()
 
   brushEnd: =>
     unless @brush.empty()
@@ -390,7 +390,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .call(@zoom)
     @focusTarget.attr('height', @height)
       .attr('width', @width)
-    @annotationCursor()
+    @observationCursor()
 
     @focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     @focusPaths.enter()
@@ -444,7 +444,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("y", -6)
       .attr("height", @height2 + 7)
     thisChart = @
-    @focus.on('mousemove', -> thisChart.annotationCursor(d3.mouse(this)))
+    @focus.on('mousemove', -> thisChart.observationCursor(d3.mouse(this)))
     @focus.on('dblclick', ->
       window.e = d3.select(d3.event.srcElement)
       console.log('double click', d3.select(d3.event.srcElement).datum().key)
@@ -474,7 +474,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
     legend.on "click", (d) => @setSeriesOpacity(d.key)
 
-    @renderAnnotations()
+    @renderObservations()
     @zoomIt()
 
   setSeriesOpacity: (key) =>
@@ -492,19 +492,19 @@ class SciView.FocusChart extends SciView.BasicChart
     #@getData()
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
 
-  renderAnnotations: ->
+  renderObservations: ->
     color = (d) -> lineColor(d.series_key)
-    # 1 annotation_group per series
-    annotation_groups = @focus.selectAll('g.annotations').data(@data())
-    annotation_groups.enter()
+    # 1 observation per series
+    observation_groups = @focus.selectAll('g.observations').data(@data())
+    observation_groups.enter()
       .append('g')
-      .attr('class', 'annotations')
-    # 1 annotation per annotation in the series
-    annotations = annotation_groups.selectAll('g.annotation')
-      .data((d) -> d.annotations or [])
-    groups = annotations.enter()
+      .attr('class', 'observations')
+    # 1 observation per observation in the series
+    observations = observation_groups.selectAll('g.observation')
+      .data((d) -> d.observations or [])
+    groups = observations.enter()
       .append('g')
-      .attr('class', 'annotation')
+      .attr('class', 'observation')
     groups.append('circle')
       .attr('cx', 0)
       .attr('cy', 0)
@@ -517,9 +517,9 @@ class SciView.FocusChart extends SciView.BasicChart
     groups.append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
       .style('fill', color)
       .style('font-weight', 'bold')
-    annotations.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
+    observations.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
 
-  annotationCursor: (coords) ->
+  observationCursor: (coords) ->
     x = (coords or [0, 0])[0]
     @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
       .style('opacity', 0.5)
