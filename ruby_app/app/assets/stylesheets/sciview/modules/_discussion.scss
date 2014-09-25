@@ -1,6 +1,6 @@
 .discussion {
-  @include span-columns(6);
-  @include shift(6);
+  @include span-columns(1);
+  @include shift(11);
   height: 100%;
   position: absolute;
   z-index: $z-index-kilo;

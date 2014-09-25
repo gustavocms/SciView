@@ -446,8 +446,9 @@ class SciView.FocusChart extends SciView.BasicChart
     thisChart = @
     @focus.on('mousemove', -> thisChart.observationCursor(d3.mouse(this)))
     @focus.on('dblclick', ->
-      window.e = d3.select(d3.event.srcElement)
-      console.log('double click', d3.select(d3.event.srcElement).datum().key)
+      cursor = d3.select(d3.event.srcElement)
+      window.e = cursor
+      console.log('double click', d3.mouse(this), cursor)
       d3.event.stopPropagation()
     )
 

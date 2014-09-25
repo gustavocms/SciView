@@ -23,6 +23,7 @@ module.controller('DataSetController', [
 
     $scope.states =
       is_renaming: false
+      is_discussing: false
 
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
