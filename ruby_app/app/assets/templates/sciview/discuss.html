@@ -17,10 +17,10 @@
 
     <section class="observation__main">
       <section class="observation__sidebar">
-        <span class="observation__author-photo" style="background-image: url('{{observation.user.gravatar_url}}')"></span>
+        <span class="observation__author-photo" style="background-image: url('{{observation.user.avatar_url}}')"></span>
       </section>
       <section class="observation__main-info">
-        <span class="observation__author" ng-bind="observation.user.email"></span>
+        <span class="observation__author" ng-bind="observation.user.name"></span>
         <span class="observation__created" ng-bind="observation.created_at | date:'shortTime'"></span>
         <p class="observation__info" ng-bind="observation.message"></p>
       </section>
