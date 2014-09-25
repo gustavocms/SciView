@@ -5,4 +5,11 @@ class Observation < ActiveRecord::Base
   # Other Fields:
   # observed_at (DateTime)
   # message     (Text)
+  #
+
+  def as_json(*args)
+    super(*args).merge({
+      user: user.as_json
+    })
+  end
 end
