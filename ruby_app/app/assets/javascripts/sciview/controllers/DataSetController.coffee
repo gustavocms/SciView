@@ -1,6 +1,6 @@
-app = angular.module('sciview')
+module = angular.module("sv.ui.controllers")
 
-app.controller('DataSetController', [
+module.controller('DataSetController', [
   '$scope'
   '$stateParams'
   '$timeout'
@@ -75,7 +75,12 @@ app.controller('DataSetController', [
     )
 
     # full list of series
-    $scope.seriesList = SeriesService.query()
+
+    # wait for the promise to succesfully finish
+    SeriesService.findAll().then(
+      (data) ->
+        $scope.seriesList = data
+    )
 
     $scope.joinAttributes = (attributes) ->
       attributesList = ''

@@ -2,8 +2,8 @@ class Dataset
   include Concerns::Tempo
   class << self
 
-    def all
-      tempodb_client.list_series
+    def all(options = {})
+      tempodb_client.list_series options
     end
 
     def multiple_series(start, stop, series, count = nil)
@@ -31,6 +31,11 @@ class Dataset
 
     def for_series(name)
       raise('this method is deprecated')
+    end
+
+
+    def series_metadata(key)
+      tempodb_client.get_series(key)
     end
 
     def multiple_series_metadata(series)

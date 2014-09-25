@@ -1,6 +1,6 @@
-app = angular.module('sv.ui.services')
+module = angular.module('sv.ui.services')
 
-app.factory('ViewState', ['$resource',
+module.factory('ViewState', ['$resource',
   ($resource) -> return $resource(
     '/api/v1/view_states/:id.json',
     { id: '@id' }, {

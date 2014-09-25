@@ -1,6 +1,6 @@
-app = angular.module('sciview')
+module = angular.module("sv.ui.controllers")
 
-app.controller("UIChartController", [
+module.controller("UIChartController", [
   '$scope'
   '$element'
   '$window'

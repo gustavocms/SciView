@@ -198,8 +198,10 @@ GEM
     rails-assets-angular (1.2.21)
     rails-assets-angular-animate (1.2.21)
       rails-assets-angular (= 1.2.21)
+    rails-assets-angular-cache (3.1.1)
     rails-assets-angular-cookies (1.2.21)
       rails-assets-angular (= 1.2.21)
+    rails-assets-angular-data (0.10.5)
     rails-assets-angular-mocks (1.2.21)
       rails-assets-angular (= 1.2.21)
     rails-assets-angular-resource (1.2.21)
@@ -335,7 +337,9 @@ DEPENDENCIES
   rails (~> 4.1.0)
   rails-assets-angular
   rails-assets-angular-animate
+  rails-assets-angular-cache
   rails-assets-angular-cookies
+  rails-assets-angular-data
   rails-assets-angular-mocks
   rails-assets-angular-resource
   rails-assets-angular-route
