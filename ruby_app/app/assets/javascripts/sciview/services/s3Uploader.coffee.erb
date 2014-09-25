@@ -307,10 +307,8 @@
               item.status.upload = 'uploading'
               S3Uploader.getUploadOptions(opts.getOptionsUri).then( 
                 (s3Options)->
-                  k = s3Key(s3Options)
-                  console.log k
                   s3Uri = "https://#{s3Options.bucket}.s3.amazonaws.com/"
-                  key = k
+                  key = s3Key(s3Options)
                   uploader = S3Uploader.upload($scope,
                     s3Uri,
                     key,
