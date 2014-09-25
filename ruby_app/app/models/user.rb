@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
     @gravatar_profile ||= JSON.parse(gravatar_profile_response.body).fetch("entry", []).first
   end
 
-  def full_name
+  def full_name_or_email
     try_profile_attributes(["name", "formatted"], ["displayName"], email)
   end
 
@@ -32,8 +32,11 @@ class User < ActiveRecord::Base
   # { "name" => { "formatted"  => "My Name" }}
   def try_profile_attributes(*attr_groups, default)
     attr_groups.each do |*attrs, final|
-      attrs.inject(gravatar_profile) { |hash, attr| hash.fetch(attr, {}) }[final].tap {|x| return x if x }
+      attrs.inject(gravatar_profile) { |hash, attr| hash.fetch(attr, {}) }[final].tap do |attr| 
+        return attr if attr
+      end
     end
+
     default
   end
 
