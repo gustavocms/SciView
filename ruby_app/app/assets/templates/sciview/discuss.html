@@ -11,17 +11,18 @@
 <ul class="discuss__feed">
   <li class="observation" ng-repeat="observation in observations">
     <header class="observation__header">
-      <span class="observation__header-data-set" ng-bind="observation.data_set"></span>
-      <span class="observation__header-data-point" ng-bind="observation.data_point"></span>
+      <span class="observation__header-data-set" ng-bind="observation.data_set || '*DataSet'"></span>
+      <span class="observation__header-data-point" ng-bind="observation.data_point || '*point'"></span>
     </header>
+
     <section class="observation__main">
       <section class="observation__sidebar">
         <span class="observation__author-photo" style="background-image: url('{{observation.img}}')"></span>
       </section>
       <section class="observation__main-info">
-        <span class="observation__author" ng-bind="observation.author"></span>
-        <span class="observation__created" ng-bind="observation.created | date:'shortTime'"></span>
-        <p class="observation__info" ng-bind="observation.observation"></p>
+        <span class="observation__author" ng-bind="observation.user_id"></span>
+        <span class="observation__created" ng-bind="observation.created_at | date:'shortTime'"></span>
+        <p class="observation__info" ng-bind="observation.message"></p>
       </section>
     </section>
   </li> 

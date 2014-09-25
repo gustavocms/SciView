@@ -2,8 +2,8 @@ module = angular.module('sv.ui.services')
 
 module.factory("Observation", ['$resource',
   ($resource) -> return $resource(
-    'api/v1/view_states/:view_state_id/observations/:id.json'
-    { id: '@id' }, {
+    'api/v1/view_states/:viewStateId/observations/:id.json'
+    { viewStateId: '@viewStateId', id: '@id' }, {
       index: { method: 'GET', isArray: true }
       update: { method: 'PUT' }
       create: { method: 'POST' }
