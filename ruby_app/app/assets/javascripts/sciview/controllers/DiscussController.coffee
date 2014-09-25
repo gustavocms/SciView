@@ -5,7 +5,7 @@ module.controller "DiscussController", [
   "Observation"
   "$stateParams"
   ($scope, Observation, $stateParams) ->
-    Observation.index({ dataSetId: $stateParams.dataSetId })
+    Observation.index($stateParams)
       .$promise
       .then((data) -> $scope.observations = data)
 ]
