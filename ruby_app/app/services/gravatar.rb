@@ -6,10 +6,18 @@ class Gravatar
   end
 
   def to_s
-    "https://secure.gravatar.com/avatar/#{email_hash}"
+    avatar_url
   end
 
   alias_method :to_str, :to_s
+
+  def avatar_url
+    "https://secure.gravatar.com/avatar/#{email_hash}"
+  end
+
+  def profile_url
+    "https://secure.gravatar.com/#{email_hash}"
+  end
 
   private
 
