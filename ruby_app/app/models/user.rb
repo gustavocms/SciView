@@ -3,5 +3,6 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :charts, dependent: :destroy
+  has_many :tdms_files, dependent: :destroy
 
 end

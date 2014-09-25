@@ -43,6 +43,12 @@
 
         deferred.promise
 
+      @queueFileForProcessing = (item)->
+        $http.post('/api/v1/queue_tdms_files.json', { filepath: item.key }).success((response, status) ->
+          return
+        ).error (error, status) ->
+          return        
+
       @randomString = (length) ->
         chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         result = ""
@@ -55,6 +61,7 @@
 
       @upload = (scope, uri, key, acl, type, accessKey, policy, signature, file, item) ->
         
+        item.key = key
         # Define event handlers
         uploadProgress = (e) ->
           if e.lengthComputable
@@ -316,6 +323,7 @@
               if (item.status.upload isnt 'canceled') 
                 item.status.upload = 'done'
                 setUploadAll()
+                S3Uploader.queueFileForProcessing(item)
                 return              
 
             uploadFile = (item) ->

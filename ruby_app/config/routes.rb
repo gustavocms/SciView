@@ -46,7 +46,8 @@ SciView::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       
-      resource 's3_options'
+      resource :s3_options
+      resources :queue_tdms_files, only: [:create]
       resources :datasets, only: [:show] do 
         collection do
           get :multiple
