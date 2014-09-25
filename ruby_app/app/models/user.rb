@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_many :charts, dependent: :destroy
 
   def as_json(*args)
-    super(*args).merge({ gravatar_url: gravatar_url })
+    super(*args).merge({ gravatar_url: gravatar_url, name: full_name_or_email })
   end
 
   def gravatar_url
