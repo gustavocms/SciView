@@ -129,7 +129,7 @@ class SciView.FocusChart extends SciView.BasicChart
         else
           @hidePleaseWait()
           msg = "Data could not be retrieved (tried #{retryCount} times). Please check the series names and try again."
-          alert(msg)
+          console.log(msg)
     })
   
   showPleaseWait: ->
