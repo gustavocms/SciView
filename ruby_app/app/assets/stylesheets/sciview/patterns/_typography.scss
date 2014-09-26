@@ -30,3 +30,114 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+%icon-font__data-sets {
+  &::before {
+    @extend %icon-font;
+    content: "\e604";
+  }
+}
+
+%icon-font__navigator {
+  &::before {
+    @extend %icon-font;
+    content: "\e608";
+  }
+}
+
+%icon-font__add-data-set {
+  &::before {
+    @extend %icon-font;
+    content: "\e601";
+  }
+}
+
+%icon-font__channel {
+  &::before {
+    @extend %icon-font;
+    content: "\e607";
+  }
+}
+
+%icon-font__add-channel {
+  &::before {
+    @extend %icon-font;
+    content: "\e602";
+  }
+}
+
+%icon-font__graph {
+  &::before {
+    @extend %icon-font;
+    content: "\e607";
+  }
+}
+
+%icon-font__x {
+  &::before {
+    @extend %icon-font;
+    content: "\e60b";
+  }
+}
+
+%icon-font__upload {
+  &::before {
+    @extend %icon-font;
+    content: "\e60a";
+  }
+}
+
+%icon-font__share {
+  &::before {
+    @extend %icon-font;
+    content: "\e609";
+  }
+}
+
+%icon-font__download {
+  &::before {
+    @extend %icon-font;
+    content: "\e606";
+  }
+}
+
+%icon-font__discuss {
+  &::before {
+    @extend %icon-font;
+    content: "\e605";
+  }
+}
+
+%icon-font__chevron{
+  &::before {
+    @extend %icon-font;
+    content: "\e603";
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

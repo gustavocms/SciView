@@ -26,16 +26,18 @@
 }
 
 .batch__title {
+  @include shift(1);
   @extend %batch-item-title;
   font-style: italic;
   color: rgba($font_color, 0.5);
 }
 
 .batch__title-icon {
-  @extend %batch-icon-mini;
-  &::before {
-    background: asset-url('graph-title.svg') center center no-repeat;
-  }
+  @extend %icon-font__graph;
+  position: absolute;
+  padding-top: .4em;
+  padding-left: .4em;
+  opacity: 0.2;
 }
 
 // List of Data
@@ -88,35 +90,42 @@
 }
 
 .batch__add-series-action {
-  @extend %batch-icon-mini;
+  @extend %icon-font__add-channel;
+  line-height: 1.9;
+
   &::before {
-    opacity: 0.5;
-    background: asset-url('add-channel.svg') center center no-repeat;
+    @include rem(font-size, $baby);
+    opacity: 0.3;
   }
+
   &:hover {
     cursor: pointer;
     &::before {
       opacity: 1;
     }
     &::after {
-      @include rem(font-size, $baby);
+      @include rem(font-size, $normal);
       // background-color: rgba($background_color, 0.3);
       content: "Add Series";
       position: absolute;
       display: block;
+      font-style: normal;
       text-align: right;
-      width: 5em;
-      left: -5.5em;
-      top: .9em;
+      width: 6em;
+      left: -7em;
+      top: 0;
     }    
   }
 
 }
 
 .batch__quit-add-action {
-  @extend %button-delete;
+  position: absolute;
   right: 2em;
   top: .6em;
+  &::before {
+    @extend %icon-font__x;
+  }
 }
 
 .batch__add-series-input {
@@ -194,11 +203,11 @@
     @extend .small-caps;
     padding: 1em 4.25em;
     &::before {
-      content: "";
-      width: 2rem;
-      height: 2rem;
-      background-size: 1.5rem;
-      background: asset-url('add-channel.svg') center center no-repeat;
+      @extend %icon-font__add-channel;
+      position: absolute;
+      left: 0.5em;
+      top: 1.3em;
+      opacity: 0.5;
     }
   }
 
