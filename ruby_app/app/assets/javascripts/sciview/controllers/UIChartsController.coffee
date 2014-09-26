@@ -5,6 +5,22 @@ module.controller("UIChartController", [
   '$element'
   '$window'
   ($scope, $element, $window) ->
+    
+    $scope.is_adding = false
+
+    $scope.addSeriesWindow = ->
+      $scope.is_adding = true
+
+    $scope.cancel = ->
+      $scope.is_adding = false
+      $scope.new_series_title = ""
+
+    $scope.addSeriesRemoveWindow = (item, model, label, chart) ->
+      $scope.addSeries(chart, item.key)
+      # TODO: error state/callback is save fails 
+      $scope.is_adding = false
+      $scope.new_series_title = ""
+
     $scope.addSeries = (ui_chart, series_title, group = null) ->
       console.log(ui_chart, $scope.chart, series_title)
       if group

@@ -41,7 +41,7 @@
 // List of Data
 .batch__data {
   @extend %ul-reset;
-  height: 15.6675rem;
+  height: 18.2925rem;
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -82,48 +82,35 @@
 
 .batch__add-series {
   width: 100%;
-  height: auto;
   position: absolute;
-  bottom: 0;
   background-color: rgba($background_color, 0.5);
-
-  &.is-adding-series {
-    @include vp(transition, background-color 0.5s ease);
-    top: $beta;
-    overflow-x: hidden;
-    background-color: rgba($background_color, 1);
-
-    &::before {
-      content: "Adding Series";
-      display: block;
-      @extend .small-caps;
-      padding: 1em 4.25em;
-    }
-    
-    .batch__add-series-action {
-      top: 0;
-    }
-
-    .batch__quit-add-action {
-      top: 0;
-    }
-
-    .batch__add-series-input {
-      padding-left: $alpha;
-    }
-
-  }
-
+  display: none;  
 }
 
 .batch__add-series-action {
   @extend %batch-icon-mini;
-  position: absolute;
-  top: .4em;
-  left: .2em;
   &::before {
+    opacity: 0.5;
     background: asset-url('add-channel.svg') center center no-repeat;
   }
+  &:hover {
+    cursor: pointer;
+    &::before {
+      opacity: 1;
+    }
+    &::after {
+      @include rem(font-size, $baby);
+      // background-color: rgba($background_color, 0.3);
+      content: "Add Series";
+      position: absolute;
+      display: block;
+      text-align: right;
+      width: 5em;
+      left: -5.5em;
+      top: .9em;
+    }    
+  }
+
 }
 
 .batch__quit-add-action {
@@ -179,6 +166,51 @@
 }
 
 
+.is-active {
+  &.batch__search-result {
+    background-color: $highlight_color;
+    color: $white;    
+  }
+}
+
+
+.is-adding-series {
+
+  .batch__add-series-action {
+    display: none;
+  }
+
+  .batch__add-series {
+    @include vp(transition, background-color 0.5s ease);
+    top: 2.1875rem;
+    overflow-x: hidden;
+    background-color: rgba($background_color, 1);
+    display: block;  
+    height: 18.2925rem; // Add height to this
+  }
+
+  .batch__add-series-title {
+    display: block;
+    @extend .small-caps;
+    padding: 1em 4.25em;
+    &::before {
+      content: "";
+      width: 2rem;
+      height: 2rem;
+      background-size: 1.5rem;
+      background: asset-url('add-channel.svg') center center no-repeat;
+    }
+  }
+
+  .batch__quit-add-action {
+    top: 0;
+  }
+
+  .batch__add-series-input {
+    padding-left: 1em;
+  }
+
+}
 
 
 
