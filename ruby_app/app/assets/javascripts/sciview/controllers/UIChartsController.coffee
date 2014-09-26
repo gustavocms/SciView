@@ -8,6 +8,8 @@ module.controller("UIChartController", [
     
     $scope.is_adding = false
 
+    console.log($scope)
+
     $scope.addSeriesWindow = ->
       $scope.is_adding = true
 

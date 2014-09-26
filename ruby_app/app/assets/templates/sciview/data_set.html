@@ -37,7 +37,7 @@
         </li>
       </ul>
       <section class="batch__add-series" ng-keydown="keyThroughMatches($event, selectMatch($index))">
-        <span class="batch__add-series-title">Add Series</span>
+        <span class="batch__add-series-title">Adding Series</span>
        <input  type="text"
                id="add_series_input"
                class="batch__add-series-input"
@@ -51,8 +51,8 @@
         <i class="batch__quit-add-action" ng-if="is_adding" ng-click="cancel()"></i>
          <!-- Override typeahead template -->
         <script id="template/typeahead/typeahead-popup.html" type="text/ng-template">
-          <ul class="batch__search-results" ng-style="{display: isOpen()&&'block'}">
-            <li ng-repeat="match in matches" class="batch__search-result" ng-class="{'is-active': isActive($index) }" ng-click="selectMatch($index)">
+          <ul class="batch__search-results" ng-style="{ display: isOpen()&&'block' }" >
+            <li ng-repeat="match in matches" class="batch__search-result" ng-mouseenter="selectActive($index)" ng-class="{'is-active': isActive($index) || hover }" ng-click="selectMatch($index)">
                 <span class="batch__search-result-text" bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
                 <aside ng-if="match.model.hasTags" class="batch__search-result-tags"><span class="small-caps">Tags</span> <span class="batch__search-result-tag" ng-repeat="tag in match.model.tags" bind-html-unsafe="tag | typeaheadHighlight:query"></span>
                 </aside>                
