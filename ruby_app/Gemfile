@@ -80,7 +80,15 @@ gem 'rails-assets-angular-mocks'
 gem 'rails-assets-angular-ui-bootstrap-bower'
 gem 'rails-assets-angular-ui-router'
 gem 'rails-assets-angular-ui-utils'
-gem 'rails-assets-angular-data'
+
+# NOTE: There is a version discrepency between the version currently
+# offered by Bower (0.10.5) and NPM (1.0.0-Rc1). The newer version
+# includes nested routing features that are necessary to map to 
+# our Rails routes. I have disabled this gem temporarily until
+# it is brought up to version parity, and have installed the angular-data.js library
+# directly in assets/javascripts/. --zach
+#
+# gem 'rails-assets-angular-data'
 gem 'rails-assets-angular-cache'
 
 group :development, :test do
