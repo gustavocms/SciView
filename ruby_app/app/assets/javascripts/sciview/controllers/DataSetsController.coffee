@@ -14,11 +14,7 @@ module.controller('DataSetsController', [
     ViewState.index()
       .$promise
       .then((data) ->
-        for raw in data
-          do (raw) ->
-            dataset = SciView.Models.UIDataset.deserialize(raw)
-            $scope.data_sets.push(dataset)
-
+        $scope.data_sets = (SciView.Models.UIDataset.deserialize(raw) for raw in data)
         $scope.deferredDatasetsLoading.resolve()
       )
 
