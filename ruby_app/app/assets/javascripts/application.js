@@ -15,6 +15,7 @@
 //= require jquery-ui
 //= require bootstrap-sprockets
 //= require d3.v3
+//= require socket.io
 //= require angular/angular
 //= require angular-mocks/angular-mocks
 //= require angular-route/angular-route

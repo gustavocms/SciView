@@ -84,6 +84,8 @@ gem 'rails-assets-angular-data'
 gem 'rails-assets-angular-cache'
 gem 'rails-assets-angular-socket-io'
 
+gem 'socket.io-rails'
+
 group :development, :test do
   gem "jasmine", github: "pivotal/jasmine-gem"
 end
