@@ -110,13 +110,13 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
       chart_uuid: @uuid
     )
 
-    @chart.observationCallback(@_observationFunction) if @_observationFunction
+    #@chart.observationCallback(@_observationFunction) if @_observationFunction
 
   setObservationFunction: (func) ->
     console.log("setObservationFunction")
     @_observationFunction = func(@uuid)
-    if @chart
-      @chart.observationCallback(@_observationFunction)
+    #if @chart
+    #  @chart.observationCallback(@_observationFunction)
 
   addChannel: (channel) ->
     if channel

@@ -546,7 +546,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   hidePleaseWait:       noOp
   renderLegend:         noOp
   replaceState:         noOp
-  _observationCallback:  noOp
+  #_observationCallback: noOp
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
