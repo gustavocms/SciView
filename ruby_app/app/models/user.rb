@@ -12,10 +12,6 @@ class User < ActiveRecord::Base
     gravatar.avatar_url
   end
 
-  def gravatar_profile
-    @gravatar_profile ||= JSON.parse(gravatar_profile_response.body).fetch("entry", []).first
-  end
-
   def full_name_or_email
     try_profile_attributes(["name", "formatted"], ["displayName"], email)
   end
@@ -32,7 +28,7 @@ class User < ActiveRecord::Base
   # { "name" => { "formatted"  => "My Name" }}
   def try_profile_attributes(*attr_groups, default)
     attr_groups.each do |*attrs, final|
-      attrs.inject(gravatar_profile) { |hash, attr| hash.fetch(attr, {}) }[final].tap do |attr| 
+      attrs.inject(gravatar.profile) { |hash, attr| hash.fetch(attr, {}) }[final].tap do |attr| 
         return attr if attr
       end
     end
@@ -41,15 +37,7 @@ class User < ActiveRecord::Base
   end
 
   def gravatar
-    Gravatar.new(email)
-  end
-
-  def gravatar_profile_uri
-    URI.parse("#{gravatar.profile_url}.json")
-  end
-
-  def gravatar_profile_response
-    Net::HTTP.get_response(gravatar_profile_uri)
+    @gravatar ||= Gravatar.new(email)
   end
 
 end
