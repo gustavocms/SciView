@@ -4,34 +4,44 @@ module.controller('DataSetController', [
   '$scope'
   '$stateParams'
   '$timeout'
+  '$q'
   'ViewState'
   'SeriesService'
   'Observation'
-  ($scope, $stateParams, $timeout, ViewState, SeriesService, Observation) ->
+  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation) ->
 
-#  waits for the parent loading to finish
+    # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
 
-  #   find the correct dataset in parent's scope
+      # find the correct dataset in parent's scope
       filteredDS = $scope.$parent.data_sets.filter (ds) ->
         ds.id.toString() == $stateParams.dataSetId
 
       $scope.current_data_set = filteredDS[0]
 
       observationFunction = (uuid) ->
-        -> console.log("observation function for uuid #{uuid} and $scope #{$scope}!")
-
+        -> console.log("observation function for uuid #{uuid} and $scope #{$scope}")
 
       chart.setObservationFunction(observationFunction) for chart in $scope.current_data_set.charts
       
-      Observation.index($stateParams)
-        .$promise
-        .then((data) -> $scope.observations = data)
-
-
-  #   used to manage changes that may be reverted
+      # used to manage changes that may be reverted
       $scope.temporary_data_set =
         title: $scope.current_data_set.title
+
+
+    # TODO: is this necessary to keep in this controller? Can it all be moved into DiscussController?
+    # There will need to be a callback function generated somewhere along the line to allow
+    # interaction on the D3 chart to trigger a newObservation call. Can this just be threaded through
+    # $parent from the other controller?
+    $scope.observationsLoading = $q.defer()
+    $scope.observations = []
+    Observation.index($stateParams)
+      .$promise
+      .then((data) ->
+        $scope.observations = data
+        $scope.observationsLoading.resolve()
+      )
+
 
     $scope.states =
       is_renaming: false
