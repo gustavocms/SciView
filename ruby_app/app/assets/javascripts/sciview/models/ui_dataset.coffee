@@ -103,10 +103,20 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     #@initializeChart()
 
   initializeChart: (element) ->
+    console.log("initializeChart")
     @chart = new SciView.D3.FocusChart(
       element: element
       url: @dataUrl
+      chart_uuid: @uuid
     )
+
+    @chart.observationCallback(@_observationFunction) if @_observationFunction
+
+  setObservationFunction: (func) ->
+    console.log("setObservationFunction")
+    @_observationFunction = func(@uuid)
+    if @chart
+      @chart.observationCallback(@_observationFunction)
 
   addChannel: (channel) ->
     if channel
@@ -142,7 +152,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
       seriesKeys.push(key) for key in channel.seriesKeys()
     return seriesKeys
 
-  @serialized_attributes: ['title']
+  @serialized_attributes: ['title', 'uuid']
   @serializable_collections:
     channels: SciView.Models.UIChannel
 
@@ -159,7 +169,7 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
   removeChart: -> # TODO
 
   # Triggers a data load/d3 redraw
-  refresh: -> 
+  refresh: ->
     chart.refresh() for chart in @charts
 
   @serialized_attributes: ['id', 'title']

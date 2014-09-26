@@ -6,7 +6,8 @@ module.controller('DataSetController', [
   '$timeout'
   'ViewState'
   'SeriesService'
-  ($scope, $stateParams, $timeout, ViewState, SeriesService) ->
+  'Observation'
+  ($scope, $stateParams, $timeout, ViewState, SeriesService, Observation) ->
 
 #  waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -16,6 +17,17 @@ module.controller('DataSetController', [
         ds.id.toString() == $stateParams.dataSetId
 
       $scope.current_data_set = filteredDS[0]
+
+      observationFunction = (uuid) ->
+        -> console.log("observation function for uuid #{uuid} and $scope #{$scope}!")
+
+
+      chart.setObservationFunction(observationFunction) for chart in $scope.current_data_set.charts
+      
+      Observation.index($stateParams)
+        .$promise
+        .then((data) -> $scope.observations = data)
+
 
   #   used to manage changes that may be reverted
       $scope.temporary_data_set =

@@ -546,6 +546,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   hidePleaseWait:       noOp
   renderLegend:         noOp
   replaceState:         noOp
+  _observationCallback:  noOp
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
@@ -554,7 +555,8 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     super(options)
 
   initializeBaseVariables: (options) ->
-    @element = options.element or 'body'
+    @chart_uuid = options.chart_uuid
+    @element    = options.element or 'body'
     bh = @baseHeight()
     h1 = bh * 0.85
     h2 = bh - h1
@@ -601,3 +603,11 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       @initializeD3Components()
       @setSvgAttributes()
       @render()
+
+  observationCallback: (callback_function) ->
+    if callback_function
+      @_observationCallback = callback_function
+      return @
+    else
+      @_observationCallback
+

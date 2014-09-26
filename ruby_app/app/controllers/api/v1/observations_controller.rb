@@ -24,6 +24,6 @@ class Api::V1::ObservationsController < ApplicationController
   end
 
   def observation_params
-    params.require(:observation).permit(:observed_at, :message)
+    params.require(:observation).permit(:observed_at, :message, :chart_uuid)
   end
 end
