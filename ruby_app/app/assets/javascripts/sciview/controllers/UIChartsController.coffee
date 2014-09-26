@@ -2,13 +2,16 @@ module = angular.module("sv.ui.controllers")
 
 module.controller("UIChartController", [
   '$scope'
+  '$rootScope'
   '$element'
   '$window'
-  ($scope, $element, $window) ->
+  ($scope, $rootScope, $element, $window) ->
     
     $scope.is_adding = false
 
-    console.log($scope)
+    $scope.setGlobalChannel = (channel) ->
+      # TODO: use service (or similar) and get rid of rootScope
+      $rootScope.globalChannel = channel
 
     $scope.addSeriesWindow = ->
       $scope.is_adding = true

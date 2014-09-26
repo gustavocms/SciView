@@ -10,25 +10,58 @@
 }
 
 .channel__dropdown {
-  @extend %channel-icon-chevron;
   @extend %user-select-none;
+  position: absolute;
+  left: 1rem;
+  top: 1.3rem;
+  opacity: 0.2;
+  width: .35rem;
+  height: .35rem;
+  @include vp(transform, rotate(0deg));
 
   &::before {
-    opacity: 0.2;
-    background: asset-url('chevron.svg') center center no-repeat;
-    -webkit-transform: rotate(270deg);
+    @extend %icon-font__chevron;
+    position: absolute;
+    top: 0;
+    left: 0;
+    @include rem(font-size, .35rem);
   }
 
   &:hover {
-    &::before {
-      opacity: 1;
-    }
+    cursor: pointer;
+    opacity: 1;
   }
+}
+
+.is-retracted {
+  .channel__dropdown {
+  @include vp(transform, rotate(270deg));
+    // @include vp(transform-origin, 90% 75%);
+  }
+}
+
+.channel__active {
+  position: absolute;
+  left: 1.025rem;
+  top: 2.3rem;  
+  width: .3rem;
+  height: .3rem;
+  border-radius: 50%;
+  background-color: rgba($white, 0.1);
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($white, 0.7);
+  }
+}
+
+.channel__active.is-active {
+  background-color: rgba($white, 1);
 }
 
 .channel__title {
   @extend %monospaced-style;
-  @include shift(.5);
+  @include shift(1.5);
   @include span-columns(9);
   height: 100%;
   vertical-align: middle;
@@ -48,7 +81,7 @@
 }
 
 .channel__category {
-  @include shift(.5);
+  @include shift(1.5);
   @include span-columns(9);
   opacity: 0.3;
 }
