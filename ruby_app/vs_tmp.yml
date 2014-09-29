@@ -1,0 +1,77 @@
+---
+- !ruby/object:ViewState
+  attributes:
+    id: 36
+    user_id: 
+    title: New Dataset
+    charts:
+    - title: Untitled Chart
+      channels:
+      - title: default channel
+        state: is-expanded
+        series:
+        - title: test
+          category: default category
+          key:
+            color: "#F1C40F"
+            style: solid
+          state: is-retracted
+    created_at: 2014-08-23 00:37:25.690408000 Z
+    updated_at: 2014-08-26 21:35:39.104533000 Z
+- !ruby/object:ViewState
+  attributes:
+    id: 2
+    user_id: 
+    title: TestDataSet
+    charts:
+    - title: Untitled Chart
+      channels:
+      - title: default channel
+        state: expanded
+        series:
+        - title: test
+          category: default category
+          key:
+            color: "#F1C40F"
+            style: solid
+          state: is-retracted
+        - title: paul-sin-1
+          category: default category
+          key:
+            color: "#9B59B6"
+            style: solid
+          state: is-retracted
+    created_at: 2014-08-07 19:19:47.255189000 Z
+    updated_at: 2014-08-29 17:53:29.026552000 Z
+- !ruby/object:ViewState
+  attributes:
+    id: 41
+    user_id: 
+    title: New Dataset
+    charts: []
+    created_at: 2014-09-18 20:27:31.163109000 Z
+    updated_at: 2014-09-18 20:27:31.163109000 Z
+- !ruby/object:ViewState
+  attributes:
+    id: 37
+    user_id: 
+    title: TEST
+    charts: 
+    created_at: 2014-08-23 00:38:07.771594000 Z
+    updated_at: 2014-08-26 01:36:28.944756000 Z
+- !ruby/object:ViewState
+  attributes:
+    id: 38
+    user_id: 
+    title: New Dataset
+    charts: 
+    created_at: 2014-08-26 01:43:11.838782000 Z
+    updated_at: 2014-08-26 01:43:15.886427000 Z
+- !ruby/object:ViewState
+  attributes:
+    id: 40
+    user_id: 
+    title: New Dataset
+    charts: []
+    created_at: 2014-08-26 01:44:43.641481000 Z
+    updated_at: 2014-08-26 01:44:43.641481000 Z

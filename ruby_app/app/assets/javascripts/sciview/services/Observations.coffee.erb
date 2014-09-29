@@ -12,28 +12,6 @@ module.factory("Observation", ["DS",
     )
 ])
 
-
-module.factory("Post", ["DS",
-  (DS) ->
-    DS.defineResource(
-      name: "posts"
-    )
-])
-
-module.factory("Comment", ["DS",
-
-  (DS) ->
-    DS.defineResource(
-      name: "comments"
-      relations:
-        belongsTo:
-          posts:
-            parent: true
-            localKey: "postId"
-            localField: "post"
-    )
-])
-
 #module.factory("Observation", ['$resource',
   #($resource) -> return $resource(
     #'api/v1/view_states/:dataSetId/observations/:id.json'
