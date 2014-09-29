@@ -3,11 +3,25 @@ module = angular.module('sv.ui.services')
 module.factory("Observation", ["DS",
   (DS) ->
     DS.defineResource(
-      name: "observations"
+      name: "viewState"
+      endpoint: 'view_states'
+      baseUrl: '/api/v1'
+      relations:
+        hasMany:
+          observation:
+            localField: 'observations'
+            foreignKey: 'viewStateId'
+    )
+
+    DS.defineResource(
+      name: "observation"
+      endpoint: 'observations'
+      baseUrl: '/api/v1'
       relations:
         belongsTo:
-          viewStates:
+          viewState:
             localKey: "viewStateId"
+            localField: 'viewState'
             parent: true
     )
 ])

@@ -2,7 +2,7 @@ class Api::V1::ObservationsController < ApplicationController
   respond_to :json
 
   def index
-    respond_with view_state.observations
+    render json: view_state.observations
   end
 
   def create

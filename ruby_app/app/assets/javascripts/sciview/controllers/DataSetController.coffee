@@ -8,7 +8,8 @@ module.controller('DataSetController', [
   'ViewState'
   'SeriesService'
   'Observation'
-  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation) ->
+  'DS'
+  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS) ->
 
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -36,13 +37,13 @@ module.controller('DataSetController', [
     $scope.observationsLoading = $q.defer()
     $scope.observations = []
     window.o = Observation
-    Observation.index($stateParams)
-      .$promise
-      .then((data) ->
-        $scope.observations = data
+
+    DS.find('viewState', $stateParams.dataSetId).then((viewState) ->
+      DS.loadRelations('viewState', viewState, ['observation']).then((viewState) ->
+        $scope.observations = viewState.observations
         $scope.observationsLoading.resolve()
       )
-
+    )
 
     $scope.states =
       is_renaming: false

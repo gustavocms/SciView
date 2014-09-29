@@ -6,7 +6,7 @@ class Api::V1::ViewStatesController < ApplicationController
   end
 
   def show
-    respond_with view_state
+    render json: view_state
   end
 
   def create
