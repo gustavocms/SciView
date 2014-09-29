@@ -1,16 +1,50 @@
 module = angular.module('sv.ui.services')
 
-module.factory("Observation", ['$resource',
-  ($resource) -> return $resource(
-    'api/v1/view_states/:dataSetId/observations/:id.json'
-    { dataSetId: '@dataSetId', id: '@id' }, {
-      index: { method: 'GET', isArray: true }
-      update: { method: 'PUT' }
-      create: { method: 'POST' }
-      delete: { method: 'DELETE' }
-    }
-  )
+module.factory("Observation", ["DS",
+  (DS) ->
+    DS.defineResource(
+      name: "observations"
+      relations:
+        belongsTo:
+          viewStates:
+            localKey: "viewStateId"
+            parent: true
+    )
 ])
+
+
+module.factory("Post", ["DS",
+  (DS) ->
+    DS.defineResource(
+      name: "posts"
+    )
+])
+
+module.factory("Comment", ["DS",
+
+  (DS) ->
+    DS.defineResource(
+      name: "comments"
+      relations:
+        belongsTo:
+          posts:
+            parent: true
+            localKey: "postId"
+            localField: "post"
+    )
+])
+
+#module.factory("Observation", ['$resource',
+  #($resource) -> return $resource(
+    #'api/v1/view_states/:dataSetId/observations/:id.json'
+    #{ dataSetId: '@dataSetId', id: '@id' }, {
+      #index: { method: 'GET', isArray: true }
+      #update: { method: 'PUT' }
+      #create: { method: 'POST' }
+      #delete: { method: 'DELETE' }
+    #}
+  #)
+#])
 
 # module.service "Observations", ->
 #   Observations = {}
