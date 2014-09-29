@@ -8,8 +8,7 @@ module.controller('DataSetController', [
   'ViewState'
   'SeriesService'
   'Observation'
-  'Comment'
-  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, Comment) ->
+  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation) ->
 
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -37,7 +36,6 @@ module.controller('DataSetController', [
     $scope.observationsLoading = $q.defer()
     $scope.observations = []
     window.o = Observation
-    window.c = Comment
     Observation.index($stateParams)
       .$promise
       .then((data) ->
