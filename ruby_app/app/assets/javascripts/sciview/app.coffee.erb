@@ -71,22 +71,13 @@ app.factory('mySocket', (socketFactory) ->
     ioSocket: io.connect('http://localhost:5001')
   )
   mySocket.forward('error')
-  return mySocket
+  mySocket
 )
 
 # bind sockets with and refresh DS collections
 app.run([
   '$rootScope'
   'mySocket',
-  'SeriesService',
-  ($rootScope, mySocket, SeriesService) ->
-    $rootScope.$on('socket:error', (ev, data) ->
-      console.log data
-    )
-
-    mySocket.on('updateSeries', (series) ->
-      console.log 'updateSeries event -> '
-      console.log series
-      SeriesService.inject(series)
-    )
+  ($rootScope, mySocket) ->
+    $rootScope.$on('socket:error', (_, data) -> console.log data)
 ])

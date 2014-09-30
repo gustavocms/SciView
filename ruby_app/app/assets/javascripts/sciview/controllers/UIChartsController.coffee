@@ -11,6 +11,7 @@ module.controller("UIChartController", [
         # TODO: do something with the group
       else
         ui_chart.addSeries(series_title)
+        $scope.$parent.registerSocketWatchers()
 
     $scope.chart.initializeChart($element.find('.batch__chart')[0]) # TODO: any way not to need $element in the controller?
     $scope.chart.refresh()

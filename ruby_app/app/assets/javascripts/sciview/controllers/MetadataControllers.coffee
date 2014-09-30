@@ -50,6 +50,12 @@ module.controller "MetadataController", [
 
       return
 
+    withSocketEvent = (callback) ->
+      ->
+        callback()
+        mySocket.emit('updateSeries', $scope.seriesData)
+        return
+
     saveNewTag = ->
       tagData =
         tag: $scope.newMetadata.tag
@@ -58,11 +64,8 @@ module.controller "MetadataController", [
         seriesId: $scope.seriesData.key,
         tagData,
         #onSuccess promise function
-        ->
-          #update scope with new object and emit event for socket listeners
-          $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1
-          mySocket.emit('updateSeries', $scope.seriesData)
-          return
+        #update scope with new object and emit event for socket listeners
+        withSocketEvent(-> $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1)
       ).$promise
 
       #return promise of the saving call
@@ -77,11 +80,8 @@ module.controller "MetadataController", [
         seriesId: $scope.seriesData.key,
         attrData,
         #onSuccess promise function
-        ->
-          #update scope with new object and emit event for socket listeners
-          $scope.seriesData.attributes[attrData.attribute] = attrData.value
-          mySocket.emit('updateSeries', $scope.seriesData)
-          return
+        #update scope with new object and emit event for socket listeners
+        withSocketEvent(-> $scope.seriesData.attributes[attrData.attribute] = attrData.value)
       ).$promise
 
       #return promise of the saving call
@@ -142,12 +142,12 @@ module.controller "MetadataController", [
       SeriesTagsService.delete(
         deleteData, {},
         # onSuccess promise function
-        ->
+        withSocketEvent( ->
           # update scope removing object and emit socket event
           $scope.seriesData.tags.splice($scope.seriesData.tags.indexOf(tag), 1)
-          mySocket.emit('updateSeries', $scope.seriesData)
           $scope.deleteMeta.remove_screen = false
           $scope.removeFlash()
+        )
       )
 
     $scope.removeAttribute = (key) ->
@@ -158,11 +158,11 @@ module.controller "MetadataController", [
       SeriesAttributesService.delete(
         deleteData, {},
         # onSuccess promise function
-        ->
+        withSocketEvent(->
           # update scope removing object and emit socket event
           delete $scope.seriesData.attributes[key]
-          mySocket.emit('updateSeries', $scope.seriesData)
           $scope.deleteMeta.remove_screen = false
           $scope.removeFlash()
+        )
       )
 ]
