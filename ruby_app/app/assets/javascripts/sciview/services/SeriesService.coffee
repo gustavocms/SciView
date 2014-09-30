@@ -1,10 +1,13 @@
 module = angular.module('sv.ui.services')
 
-module.factory "SeriesService", [ "DS", (DS) ->
+module.factory "SeriesService", [ "DS", "mySocket", (DS, mySocket) ->
   DS.defineResource(
     name: 'series'
     endpoint: 'series'
     baseUrl: '/api/v1'
+    idAttribute: 'key'
+    afterUpdate: (resourceName, attrs, cb) ->
+      mySocket.emit('updateSeries', attrs)
   )
 ]
 

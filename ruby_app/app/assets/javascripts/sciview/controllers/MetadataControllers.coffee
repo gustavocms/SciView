@@ -19,10 +19,8 @@ module.controller "MetadataController", [
       $scope.$parent.series.title
 
     # as the result query is an array, needed to process the promise to bind just the first result
-    SeriesService.findAll(key: series_title()).then(
-      (data) ->
-        SeriesService.bindOne($scope, 'seriesData', data[0].id)
-    )
+    SeriesService.find(series_title())
+    SeriesService.bindOne($scope, 'seriesData', series_title())
 
     #form model
     $scope.newMetadata =
@@ -59,17 +57,10 @@ module.controller "MetadataController", [
     saveNewTag = ->
       tagData =
         tag: $scope.newMetadata.tag
-      #ajax call
-      promise = SeriesTagsService.save(
-        seriesId: $scope.seriesData.key,
-        tagData,
-        #onSuccess promise function
-        #update scope with new object and emit event for socket listeners
-        withSocketEvent(-> $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1)
-      ).$promise
-
-      #return promise of the saving call
-      promise
+      #change the object to be be persisted through DS repository
+      $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1
+      #ajax call and return promise of the saving call
+      SeriesService.save($scope.seriesData.key)
 
     saveNewAttribute = ->
       attrData =
