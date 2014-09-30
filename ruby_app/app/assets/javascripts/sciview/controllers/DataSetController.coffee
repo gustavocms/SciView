@@ -75,12 +75,8 @@ module.controller('DataSetController', [
     )
 
     # full list of series
-
-    # wait for the promise to succesfully finish
-    SeriesService.findAll().then(
-      (data) ->
-        $scope.seriesList = data
-    )
+    SeriesService.findAll()
+    SeriesService.bindAll($scope, 'seriesList', {})
 
     $scope.joinAttributes = (attributes) ->
       attributesList = ''
