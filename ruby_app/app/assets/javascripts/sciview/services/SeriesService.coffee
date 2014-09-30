@@ -8,20 +8,13 @@ module.factory "SeriesService", [ "DS", "mySocket", (DS, mySocket) ->
     idAttribute: 'key'
     afterUpdate: (resourceName, attrs, cb) ->
       mySocket.emit('updateSeries', attrs)
+      # proceed with the lifecycle
+      cb(null, attrs);
   )
 ]
 
-module.factory "SeriesTagsService", [ "$resource", ($resource) ->
-  $resource "/datasets/:seriesId/tags/:tagId"
-]
-
-module.factory "SeriesAttributesService", [ "$resource", ($resource) ->
-  $resource "/datasets/:seriesId/attributes/:attributeId"
-]
-
-
 # sockets
-angular.module('sciview').run([
+module.run([
   'mySocket'
   'SeriesService'
   (mySocket, SeriesService) ->

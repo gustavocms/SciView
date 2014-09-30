@@ -20,8 +20,8 @@
     </button>
 </li>
 <li class="channel__meta-item-new">
-    <span class="channel__meta-add" ng-class="{'is-active': metaState.showForm}" ng-click="metaState.showForm = true"><i class='fa fa-plus'></i> Add Meta Data</span>
-    <section class="channel__meta-item-input" ng-if="metaState.showForm">
+    <span class="channel__meta-add" ng-class="{'is-active': newMetadata.showForm}" ng-click="newMetadata.showForm = true"><i class='fa fa-plus'></i> Add Meta Data</span>
+    <section class="channel__meta-item-input" ng-if="newMetadata.showForm">
         <input class="channel__meta-item-new-tag"
                type="text"
                ng-model="newMetadata.tag"
@@ -38,7 +38,7 @@
         </fieldset>
 
         <button class="channel__meta-item-close"
-                ng-click="metaState.showForm = false">Close
+                ng-click="newMetadata.showForm = false">Close
         </button>
         <button class="channel__meta-item-save"
                 ng-click="saveMetaChannel(channel, meta)">Save
