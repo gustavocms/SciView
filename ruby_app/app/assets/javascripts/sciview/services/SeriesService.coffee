@@ -3,7 +3,8 @@ module = angular.module('sv.ui.services')
 module.factory "SeriesService", [ "DS", (DS) ->
   DS.defineResource(
     name: 'series'
-    endpoint: '/api/v1/series'
+    endpoint: 'series'
+    baseUrl: '/api/v1'
   )
 ]
 

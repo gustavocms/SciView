@@ -9,4 +9,8 @@ class Api::V1::SeriesController < ApplicationController
     render json: Dataset.series_metadata(params[:id])
   end
 
+  def update
+    render json: Dataset.update_series(params[:series])
+  end
+
 end

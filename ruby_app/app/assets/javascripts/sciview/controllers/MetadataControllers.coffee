@@ -53,18 +53,10 @@ module.controller "MetadataController", [
     saveNewTag = ->
       tagData =
         tag: $scope.newMetadata.tag
-      #ajax call
-      promise = SeriesTagsService.save(
-        seriesId: $scope.seriesData.key,
-        tagData,
-        #onSuccess promise function
-        ->
-          #update scope with new object and emit event for socket listeners
-          $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1
-          mySocket.emit('updateSeries', $scope.seriesData)
-          return
-      ).$promise
-
+      #modify seriesData object
+      $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1
+      #ajax call to persist modified object
+      promise = SeriesService.save($scope.seriesData.id)
       #return promise of the saving call
       promise
 
