@@ -6,7 +6,8 @@ module.controller('DataSetController', [
   '$timeout'
   'ViewState'
   'SeriesService'
-  ($scope, $stateParams, $timeout, ViewState, SeriesService) ->
+  'mySocket'
+  ($scope, $stateParams, $timeout, ViewState, SeriesService, mySocket) ->
 
 #  waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -15,7 +16,10 @@ module.controller('DataSetController', [
       filteredDS = $scope.$parent.data_sets.filter (ds) ->
         ds.id.toString() == $stateParams.dataSetId
 
+      window.socket = mySocket
+      window.s = $scope
       $scope.current_data_set = filteredDS[0]
+      mySocket.join(key) for key in $scope.current_data_set.seriesKeys()
 
   #   used to manage changes that may be reverted
       $scope.temporary_data_set =

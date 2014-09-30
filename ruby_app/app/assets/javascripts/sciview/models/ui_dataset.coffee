@@ -159,8 +159,16 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
   removeChart: -> # TODO
 
   # Triggers a data load/d3 redraw
-  refresh: -> 
+  refresh: ->
     chart.refresh() for chart in @charts
+
+  # Recursively returns all series keys in the nested data structure.
+  seriesKeys: ->
+    seriesKeys = []
+    for chart in @charts
+      seriesKeys = seriesKeys.concat(chart._allSeriesKeys())
+    seriesKeys
+
 
   @serialized_attributes: ['id', 'title']
   @serializable_collections:

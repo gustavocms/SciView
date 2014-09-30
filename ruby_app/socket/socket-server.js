@@ -9,6 +9,7 @@ io.on('connection', function(socket){
 
   socket.on('updateSeries', function (data) {
     console.log(data)
+    console.log("KEY", data.key)
     socket.broadcast.emit('updateSeries', data);
   });
 });
