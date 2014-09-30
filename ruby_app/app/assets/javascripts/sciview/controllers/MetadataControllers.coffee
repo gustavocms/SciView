@@ -9,7 +9,6 @@ module.controller "MetadataController", [
     series_key = ->
       $scope.$parent.series.title
 
-    # as the result query is an array, needed to process the promise to bind just the first result
     SeriesService.find(series_key())
     SeriesService.bindOne($scope, 'seriesData', series_key())
 
