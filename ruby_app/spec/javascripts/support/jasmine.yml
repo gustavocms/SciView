@@ -38,7 +38,9 @@ stylesheets:
 #   - helpers/**/*.js
 #
 helpers:
-  - 'helpers/**/*.{js,coffee}'
+  - 'helpers/sinon.js'
+  - 'helpers/angular-mocks.js'
+  - 'helpers/angular-data-mocks.js'
 
 # spec_files
 #
