@@ -4,7 +4,7 @@ io.on('connection', function(socket){
   console.log('a user connected');
 
   socket.on('listenTo', function(key) {
-    console.log("socket joining ", key, socket);
+    console.log("socket joining ", key);
     socket.join(key); // TODO error handling
   });
 
@@ -17,8 +17,9 @@ io.on('connection', function(socket){
   });
 
   // key is of the form "viewState_123"
-  socket.on('updateObservations', function(key) {
-    socket.broadcast.to(key).emit('updateObservations', key);
+  socket.on('updateObservations', function(key, params) {
+    console.log('updateObservations', key, params);
+    socket.broadcast.to(key).emit('updateObservations', key, params);
   });
 
   socket.on('updateSeries', function(data) {

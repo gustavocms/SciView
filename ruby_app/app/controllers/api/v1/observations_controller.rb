@@ -5,23 +5,36 @@ class Api::V1::ObservationsController < ApplicationController
     render json: observations
   end
 
+  def show
+    render json: observation
+  end
+
   def create
-    if observation.save
-      render json: observation.as_json
+    if new_observation.save
+      render json: new_observation.as_json
     else
-      render json: observation.errors, status: :unprocessable_entity
+      render json: new_observation.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    if observation.destroy
+      render json: true
     end
   end
 
   private
 
+  def observation
+    @observation ||= Observation.find(params[:id])
+  end
+
   def observations
     Observation.where({ view_state_id: params[:view_state_id] }.compact)
   end
 
-  def observation
-    puts "observation_params #{observation_params.inspect}"
-    @observation ||= view_state.observations.new(observation_params.merge(user_id_params))
+  def new_observation
+    @new_observation ||= view_state.observations.new(observation_params.merge(user_id_params))
   end
 
   def view_state

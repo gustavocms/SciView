@@ -31,20 +31,6 @@ module.controller('DataSetController', [
       $scope.temporary_data_set =
         title: $scope.current_data_set.title
 
-
-    # TODO: is this necessary to keep in this controller? Can it all be moved into DiscussController?
-    # There will need to be a callback function generated somewhere along the line to allow
-    # interaction on the D3 chart to trigger a newObservation call. Can this just be threaded through
-    # $parent from the other controller?
-    $scope.observationsLoading = $q.defer()
-    $scope.observations = []
-    window.o = Observation
-
-    Observation.findAll({ view_state_id: $stateParams.dataSetId }).then((data) ->
-      $scope.observations = data
-      $scope.observationsLoading.resolve()
-    )
-
     $scope.states =
       is_renaming: false
       is_discussing: false
