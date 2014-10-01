@@ -2,7 +2,7 @@ class Api::V1::ObservationsController < ApplicationController
   respond_to :json
 
   def index
-    render json: view_state.observations
+    render json: observations
   end
 
   def create
@@ -14,6 +14,10 @@ class Api::V1::ObservationsController < ApplicationController
   end
 
   private
+
+  def observations
+    Observation.where({ view_state_id: params[:view_state_id] }.compact)
+  end
 
   def observation
     puts "observation_params #{observation_params.inspect}"

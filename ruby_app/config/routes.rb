@@ -44,7 +44,7 @@ SciView::Application.routes.draw do
   namespace :api do
     namespace :v1 do
 
-      resources :observations, only: [:create] # Angular-data is posting to this route for some reason.
+      resources :observations, only: [:index, :create] # Angular-data is posting to this route for some reason.
 
       resources :datasets, only: [:show] do
         collection do
