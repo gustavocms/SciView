@@ -38,12 +38,11 @@ module.controller('DataSetController', [
     # $parent from the other controller?
     $scope.observationsLoading = $q.defer()
     $scope.observations = []
+    window.o = Observation
 
-    DS.find('viewState', $stateParams.dataSetId).then((viewState) ->
-      DS.loadRelations('viewState', viewState, ['observation']).then((viewState) ->
-        $scope.observations = viewState.observations
-        $scope.observationsLoading.resolve()
-      )
+    Observation.findAll({ view_state_id: $stateParams.dataSetId }).then((data) ->
+      $scope.observations = data
+      $scope.observationsLoading.resolve()
     )
 
     $scope.states =
@@ -91,8 +90,9 @@ module.controller('DataSetController', [
 
     $scope.registerSocketWatchers = ->
       mySocket.emit('resetWatchers')
+      mySocket.emit('listenTo', "viewState_#{$scope.current_data_set.id}")
       for seriesName in $scope.current_data_set.seriesKeys()
-        mySocket.emit('watchSeries', seriesName)
+        mySocket.emit('listenTo', seriesName)
 
 #   as seen here:
 #   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs

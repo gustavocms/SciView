@@ -15,14 +15,3 @@ module.factory "SeriesAttributesService", [ "$resource", ($resource) ->
   $resource "/datasets/:seriesId/attributes/:attributeId"
 ]
 
-
-# sockets
-angular.module('sciview').run([
-  'mySocket'
-  'SeriesService'
-  (mySocket, SeriesService) ->
-    mySocket.on('updateSeries', (series) ->
-      console.log('updateSeries event -> ', series)
-      SeriesService.inject(series)
-    )
-])
