@@ -9,7 +9,7 @@ class Api::V1::ObservationsController < ApplicationController
     if observation.save
       render json: observation.as_json
     else
-      respond_with observation.errors, status: :unprocessable_entity
+      render json: observation.errors, status: :unprocessable_entity
     end
   end
 
