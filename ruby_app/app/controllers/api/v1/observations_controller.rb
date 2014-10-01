@@ -29,6 +29,6 @@ class Api::V1::ObservationsController < ApplicationController
   end
 
   def user_id_params
-    {}.tap {|hash| hash.merge({ user_id: current_user.id }) if current_user }
+    {}.tap {|hash| hash[:user_id] = current_user.id if current_user }
   end
 end
