@@ -16,7 +16,8 @@ class Api::V1::ObservationsController < ApplicationController
   private
 
   def observation
-    @observation ||= view_state.observations.new(observation_params.merge(user_id: current_user.id))
+    puts "observation_params #{observation_params.inspect}"
+    @observation ||= view_state.observations.new(observation_params.merge(user_id_params))
   end
 
   def view_state
@@ -24,6 +25,10 @@ class Api::V1::ObservationsController < ApplicationController
   end
 
   def observation_params
-    params.require(:observation).permit(:observed_at, :message, :chart_uuid)
+    params.require(:observation).permit(:observed_at, :message, :chart_uuid, :view_state_id)
+  end
+
+  def user_id_params
+    {}.tap {|hash| hash.merge({ user_id: current_user.id }) if current_user }
   end
 end

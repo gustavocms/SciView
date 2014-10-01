@@ -38,7 +38,6 @@ module.controller('DataSetController', [
     # $parent from the other controller?
     $scope.observationsLoading = $q.defer()
     $scope.observations = []
-    window.o = Observation
 
     DS.find('viewState', $stateParams.dataSetId).then((viewState) ->
       DS.loadRelations('viewState', viewState, ['observation']).then((viewState) ->
