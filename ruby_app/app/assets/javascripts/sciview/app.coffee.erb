@@ -7,6 +7,7 @@ app = angular.module('sciview', [
   'ui.utils'
   'angular-data.DS'
   'angular-data.DSCacheFactory'
+  'btford.socket-io'
   'sv.ui.controllers'
   'sv.ui.services'
 ])
@@ -62,4 +63,21 @@ app.config(['$urlRouterProvider', '$stateProvider',
           templateUrl: '<%= asset_path('sciview/partials/upload.html') %>',
           controller: 'UploadController'
       })
+])
+
+#sockets configuration
+app.factory('mySocket', (socketFactory) ->
+  mySocket = socketFactory(
+    ioSocket: io.connect('http://localhost:5001')
+  )
+  mySocket.forward('error')
+  mySocket
+)
+
+# bind sockets with and refresh DS collections
+app.run([
+  '$rootScope'
+  'mySocket',
+  ($rootScope, mySocket) ->
+    $rootScope.$on('socket:error', (_, data) -> console.log data)
 ])

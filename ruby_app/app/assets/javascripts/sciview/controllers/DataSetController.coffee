@@ -9,7 +9,8 @@ module.controller('DataSetController', [
   'SeriesService'
   'Observation'
   'DS'
-  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS) ->
+  'mySocket'
+  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
 
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -18,7 +19,8 @@ module.controller('DataSetController', [
       filteredDS = $scope.$parent.data_sets.filter (ds) ->
         ds.id.toString() == $stateParams.dataSetId
 
-      $scope.current_data_set = filteredDS[0]
+      $scope.setCurrentDataSet(filteredDS[0])
+      $scope.registerSocketWatchers()
 
       observationFunction = (uuid) ->
         -> console.log("observation function for uuid #{uuid} and $scope #{$scope}")
@@ -76,6 +78,10 @@ module.controller('DataSetController', [
           $scope.$state.go('data-sets')
         )
 
+    $scope.setCurrentDataSet = (dataset) ->
+      $scope.current_data_set = dataset
+      $scope.registerSocketWatchers()
+
     $scope.saveRenaming = ->
       $scope.current_data_set.title = $scope.temporary_data_set.title
       $scope.states.is_renaming = false
@@ -83,6 +89,11 @@ module.controller('DataSetController', [
     $scope.cancelRenaming = ->
       $scope.temporary_data_set.title = $scope.current_data_set.title
       $scope.states.is_renaming = false
+
+    $scope.registerSocketWatchers = ->
+      mySocket.emit('resetWatchers')
+      for seriesName in $scope.current_data_set.seriesKeys()
+        mySocket.emit('watchSeries', seriesName)
 
 #   as seen here:
 #   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
@@ -100,12 +111,8 @@ module.controller('DataSetController', [
     )
 
     # full list of series
-
-    # wait for the promise to succesfully finish
-    SeriesService.findAll().then(
-      (data) ->
-        $scope.seriesList = data
-    )
+    SeriesService.findAll()
+    SeriesService.bindAll($scope, 'seriesList', {})
 
     $scope.joinAttributes = (attributes) ->
       attributesList = ''

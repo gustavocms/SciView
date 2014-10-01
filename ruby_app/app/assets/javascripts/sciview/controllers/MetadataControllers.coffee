@@ -4,10 +4,11 @@ module.controller "MetadataController", [
   "$scope"
   "$q"
   "$timeout"
+  "mySocket"
   "SeriesService"
   "SeriesTagsService"
   "SeriesAttributesService"
-  ($scope, $q, $timeout, SeriesService, SeriesTagsService, SeriesAttributesService) ->
+  ($scope, $q, $timeout, mySocket, SeriesService, SeriesTagsService, SeriesAttributesService) ->
 
     $scope.metaState =
       parameters:
@@ -17,10 +18,10 @@ module.controller "MetadataController", [
     series_title = ->
       $scope.$parent.series.title
 
-    # wait for the promise to succesfully finish
+    # as the result query is an array, needed to process the promise to bind just the first result
     SeriesService.findAll(key: series_title()).then(
       (data) ->
-        $scope.seriesData = data[0]
+        SeriesService.bindOne($scope, 'seriesData', data[0].id)
     )
 
     #form model
@@ -49,6 +50,12 @@ module.controller "MetadataController", [
 
       return
 
+    withSocketEvent = (callback) ->
+      ->
+        callback()
+        mySocket.emit('updateSeries', $scope.seriesData)
+        return
+
     saveNewTag = ->
       tagData =
         tag: $scope.newMetadata.tag
@@ -57,10 +64,8 @@ module.controller "MetadataController", [
         seriesId: $scope.seriesData.key,
         tagData,
         #onSuccess promise function
-        ->
-          #update scope with new object
-          $scope.seriesData.tags.push tagData.tag  if $scope.seriesData.tags.indexOf(tagData.tag) is -1
-          return
+        #update scope with new object and emit event for socket listeners
+        withSocketEvent(-> $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1)
       ).$promise
 
       #return promise of the saving call
@@ -75,10 +80,8 @@ module.controller "MetadataController", [
         seriesId: $scope.seriesData.key,
         attrData,
         #onSuccess promise function
-        ->
-          #update scope with new object
-          $scope.seriesData.attributes[attrData.attribute] = attrData.value
-          return
+        #update scope with new object and emit event for socket listeners
+        withSocketEvent(-> $scope.seriesData.attributes[attrData.attribute] = attrData.value)
       ).$promise
 
       #return promise of the saving call
@@ -139,11 +142,12 @@ module.controller "MetadataController", [
       SeriesTagsService.delete(
         deleteData, {},
         # onSuccess promise function
-        ->
-          # update scope removing object
+        withSocketEvent( ->
+          # update scope removing object and emit socket event
           $scope.seriesData.tags.splice($scope.seriesData.tags.indexOf(tag), 1)
           $scope.deleteMeta.remove_screen = false
           $scope.removeFlash()
+        )
       )
 
     $scope.removeAttribute = (key) ->
@@ -154,10 +158,11 @@ module.controller "MetadataController", [
       SeriesAttributesService.delete(
         deleteData, {},
         # onSuccess promise function
-        ->
-          # update scope removing object
+        withSocketEvent(->
+          # update scope removing object and emit socket event
           delete $scope.seriesData.attributes[key]
           $scope.deleteMeta.remove_screen = false
           $scope.removeFlash()
+        )
       )
 ]

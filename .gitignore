@@ -38,3 +38,4 @@ python_app/python_app.iml
 python_app/sciview-python.iml
 *.rdb
 .ctrlp
+**/node_modules

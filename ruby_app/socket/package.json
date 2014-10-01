@@ -1,0 +1,9 @@
+{
+  "name" : "sciview-socket-server",
+  "description" : "providing real-time sychronization for sciview",
+  "version" : "0.0.1",
+  "repository": {},
+  "dependencies" : {
+    "socket.io" : "1.1.0"
+  }
+}
