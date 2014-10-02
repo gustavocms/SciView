@@ -17,15 +17,7 @@ module.controller "DiscussController", [
     Observation.findAll({ view_state_id: $stateParams.dataSetId })
     Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId })
 
-    _observationPayload = (message, options = {}) ->
-      tap { message: message }, (obj) ->
-        (obj[attr] = options[attr] if options[attr]) for attr in ["chart_uuid", "observed_at"]
-
-    #$scope.newObservation = (message, options = {}) ->
-    #Observation.save({ dataSetId: $stateParams.dataSetId, observation: _observationPayload(message, options) })
-    #.$promise
-    #.then((data) -> $scope.observations.push(data))
-
+    # sets the newObservation model and associated state variables
     _newObservation = ->
       $scope.observationFormPlaceholder = "New message..."
       $scope.saving = false
@@ -33,8 +25,17 @@ module.controller "DiscussController", [
         message: ''
         view_state_id: $stateParams.dataSetId
 
-
     _newObservation()
+
+    $scope.chartUuids = ->
+      # TODO: need to be able to update this variable when the parent scope changes
+      @_chartUuids or= $scope.$parent.current_data_set.chartUuids()
+
+    $scope.observationLabel = (obs) ->
+      if obs.chart_uuid
+        $scope.chartUuids()[obs.chart_uuid]
+      else
+        $scope.$parent.current_data_set.name
 
     emitUpdateObservations = (params = {}) ->
       mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
@@ -50,7 +51,4 @@ module.controller "DiscussController", [
         console.log('destroy', data)
       emitUpdateObservations({ id: observation.id, action: 'eject' })
 
-
-
-    window.s = $scope
 ]

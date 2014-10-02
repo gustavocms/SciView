@@ -17,14 +17,21 @@
       <button class="channel__meta-item-save" ng-if="newObservation.message.length > 0">
         Save
       </button>
+      <label>
+        Applies to:
+        <select ng-model="newObservation.chart_uuid">
+          <option value="">Entire Dataset</option>
+          <option ng-repeat="(uuid, title) in chartUuids()" value="{{uuid}}">{{title}}</option>
+        </select>
+      </label>
     </form>
   </li>
 
   <li class="observation" ng-repeat="observation in observations | orderBy: '-created_at'">
     <header class="observation__header">
-      <span class="observation__header-data-set" ng-bind="observation.data_set || '*DataSet'"></span>
-      <span class="observation__header-data-point" ng-bind="observation.data_point || '*point'"></span>
-      <span class="observation__header-clear" ng-click="deleteObservation(observation)">x</span>
+      <a class="observation__header-clear" ng-click="deleteObservation(observation)">x</a>
+      <span class="observation__header-data-set" ng-bind="observationLabel(observation)"></span>
+      <!--<span class="observation__header-data-point" ng-bind="observation.data_point || 'point'"></span>-->
     </header>
 
     <section class="observation__main">

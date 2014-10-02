@@ -179,6 +179,12 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
       seriesKeys = seriesKeys.concat(chart._allSeriesKeys())
     seriesKeys
 
+  chartUuids: ->
+    _charts = {}
+    _charts[chart.uuid] = chart.title for chart in @charts
+    _charts
+
+
 
   @serialized_attributes: ['id', 'title']
   @serializable_collections:
