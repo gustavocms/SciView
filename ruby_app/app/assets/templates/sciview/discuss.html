@@ -24,6 +24,7 @@
           <option ng-repeat="(uuid, title) in chartUuids()" value="{{uuid}}">{{title}}</option>
         </select>
       </label>
+      <span ng-if="newObservation.observed_at">{{newObservation.observed_at}}</span>
     </form>
   </li>
 

@@ -15,7 +15,10 @@ module.controller "DiscussController", [
 
 
     Observation.findAll({ view_state_id: $stateParams.dataSetId })
-    Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId })
+    Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
+      console.log('bindAll', data, $scope.observations)
+      $scope.$parent.current_data_set.observations($scope.observations)
+    )
 
     # sets the newObservation model and associated state variables
     _newObservation = ->

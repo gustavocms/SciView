@@ -168,7 +168,6 @@ class SciView.FocusChart extends SciView.BasicChart
         tags: s.tags
         attributes: s.attributes
         disabled: disabled
-        observations: s.observations
       }
 
   dataURL: (string) ->
@@ -496,29 +495,25 @@ class SciView.FocusChart extends SciView.BasicChart
   renderObservations: ->
     color = (d) -> lineColor(d.series_key)
     # 1 observation per series
-    observation_groups = @focus.selectAll('g.observations').data(@data())
-    observation_groups.enter()
-      .append('g')
-      .attr('class', 'observations')
+    groups = @focus.selectAll('g.observation').data(@_observations or [])
     # 1 observation per observation in the series
-    observations = observation_groups.selectAll('g.observation')
-      .data((d) -> d.observations or [])
-    groups = observations.enter()
+    groups.enter()
       .append('g')
       .attr('class', 'observation')
-    groups.append('circle')
+      .append('circle')
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', 3)
       .style('stroke', 'none')
       .style('fill', color)
-    groups.append('line').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', @height)
+    groups.enter()
+      .append('line').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', @height)
       .style('stroke', color)
       .attr('stroke-dasharray', '1,3')
-    groups.append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
+    groups.enter().append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
       .style('fill', color)
       .style('font-weight', 'bold')
-    observations.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
+    groups.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
 
   observationCursor: (coords) ->
     x = (coords or [0, 0])[0]
@@ -610,4 +605,12 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       return @
     else
       @_observationCallback
+
+  observations: (observations) ->
+    if observations
+      @_observations = observations
+      @renderObservations()
+      return @
+    else
+      @_observations
 

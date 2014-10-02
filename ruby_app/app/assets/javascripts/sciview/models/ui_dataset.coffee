@@ -184,6 +184,14 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
     _charts[chart.uuid] = chart.title for chart in @charts
     _charts
 
+  # Expects an array of observation objects.
+  observations: (observations) ->
+    for chart in @charts
+      do (chart) ->
+        console.log(chart.uuid)
+        chart.chart.observations(observations.filter((obs) -> obs.chart_uuid == chart.uuid))
+
+
 
 
   @serialized_attributes: ['id', 'title']
