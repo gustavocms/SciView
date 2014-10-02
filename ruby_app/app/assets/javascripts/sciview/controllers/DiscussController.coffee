@@ -26,10 +26,12 @@ module.controller "DiscussController", [
     #.$promise
     #.then((data) -> $scope.observations.push(data))
 
-    $scope.newObservation =
-      message: 'autogen'
-      view_state_id: $stateParams.dataSetId
+    _newObservation = ->
+      $scope.newObservation = 
+        message: ''
+        view_state_id: $stateParams.dataSetId
 
+    _newObservation()
 
     emitUpdateObservations = (params = {}) ->
       mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
@@ -37,6 +39,7 @@ module.controller "DiscussController", [
     $scope.createObservation = (observation) ->
       Observation.create(observation).then (data) ->
         emitUpdateObservations({ id: data.id, action: 'find' })
+      _newObservation()
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->

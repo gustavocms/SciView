@@ -11,21 +11,21 @@ class TimeAgoInWords
     year: 31557600
 
   time_ago_in_words: ->
-    diff = @_difference_in_seconds()
-    console.log(diff)
-    f = (switch
-      when diff < @thresholds.minute then @_seconds
-      when diff < @thresholds.hour then @diff_for('minute')
-      when diff < @thresholds.day then @diff_for('hour')
-      when diff < @thresholds.month then @diff_for('day')
-      when diff < @thresholds.year then @diff_for('month')
-      else @diff_for('year')
-    )
-    console.log(f)
-    f(diff)
+    try
+      diff = @_difference_in_seconds()
+      (switch
+        when diff < @thresholds.minute then @_seconds
+        when diff < @thresholds.hour then @diff_for('minute')
+        when diff < @thresholds.day then @diff_for('hour')
+        when diff < @thresholds.month then @diff_for('day')
+        when diff < @thresholds.year then @diff_for('month')
+        else @diff_for('year')
+      )(diff)
+    catch error
+      console.log(error)
+      return @seconds
 
   diff_for: (threshold_name) ->
-    console.log('diff_for', threshold_name)
     (diff) =>
       multiples = Math.round(parseFloat(diff) / (@thresholds[threshold_name]))
       str = if multiples > 1 then "#{threshold_name}s" else threshold_name
@@ -42,7 +42,6 @@ class TimeAgoInWords
 
 angular.module('sv.ui.filters', [])
   .filter('timeAgo', ->
-    console.log("timeAgoFilter")
     (input) ->
       (new TimeAgoInWords (input)).time_ago_in_words()
   )

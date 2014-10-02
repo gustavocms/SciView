@@ -10,6 +10,14 @@
 </header>
 
 <ul class="discuss__feed">
+  <li class="observation observation__new">
+    <!-- TODO: replace these css classes -->
+    <input class="channel__meta-item-new-tag" type="text" ng-model="newObservation.message">
+    <button class="channel__meta-item-save" ng-click="createObservation(newObservation)" ng-if="newObservation.message.length > 0">
+      Save
+    </button>
+  </li>
+
   <li class="observation" ng-repeat="observation in observations | orderBy: '-created_at'">
     <header class="observation__header">
       <span class="observation__header-data-set" ng-bind="observation.data_set || '*DataSet'"></span>
@@ -23,7 +31,7 @@
       </section>
       <section class="observation__main-info">
         <span class="observation__author" ng-bind="observation.user.name"></span>
-        <span class="observation__created" ng-bind="observation.created_at | timeAgo"><span>
+        <span class="observation__created" ng-bind="observation.created_at | timeAgo"></span>
         <p class="observation__info" ng-bind="observation.message"></p>
       </section>
     </section>
