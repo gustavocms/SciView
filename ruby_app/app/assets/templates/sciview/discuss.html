@@ -10,7 +10,7 @@
 </header>
 
 <ul class="discuss__feed">
-  <li class="observation" ng-repeat="observation in observations | orderBy:'created_at'">
+  <li class="observation" ng-repeat="observation in observations | orderBy: '-created_at'">
     <header class="observation__header">
       <span class="observation__header-data-set" ng-bind="observation.data_set || '*DataSet'"></span>
       <span class="observation__header-data-point" ng-bind="observation.data_point || '*point'"></span>
