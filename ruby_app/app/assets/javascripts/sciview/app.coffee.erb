@@ -37,7 +37,7 @@ app.run(['$rootScope', '$state', '$stateParams',
 app.config(['$urlRouterProvider', '$stateProvider',
   ($urlRouterProvider, $stateProvider) ->
 
-    $urlRouterProvider.otherwise('/data-sets')
+    $urlRouterProvider.otherwise('/data-sets/1')
 
     $stateProvider
       .state('data-sets', {

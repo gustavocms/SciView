@@ -3,12 +3,12 @@
   @include pad($gamma);
   @include omega;
   @include rem(font-size, $normal);
-  background-color: rgba(darken($background_color, 10%), 0.2);
+  background-color: rgba($background_color, 0.2);
   font-family: $mono_font_family;
 }
 
 .tools {
-  background-color: rgba(darken($background_color, 3%), 0.8);
+  background-color: rgba($background_color, 0.2);
   // @include pad($baby 0);
   @include span-columns(12);
   position: fixed;
