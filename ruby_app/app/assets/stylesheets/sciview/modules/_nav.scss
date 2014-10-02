@@ -1,14 +1,38 @@
 // Modules
 // -- Nav
 
+// --- Placeholders
+%nav-items {
+  display: inline-block;
+  height: 100%;
+  font-size: $gamma;
+  margin: 0;
+  color: rgba($white, 0.3);
+  padding: .8rem 2rem .9rem 3rem;
+  &::before {
+    @extend %icon-font;
+    color: rgba($font_color, 0.3);
+    font-size: 75%;
+    position: absolute;
+    top: 37%;
+    left: 15%;
+  }
+  &:hover {
+    color: $font_color;
+    cursor: pointer;
+  }
+}
+
 .nav {
-  padding: $gamma $alpha $alpha $alpha;
   position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba($background_color, 0.5);
 }
 
 .nav__locations {
-  @extend %ul-reset;
-  display: inline-block;
+  @extend %ul-reset;  
 }
 
 // Location items
@@ -24,4 +48,10 @@
   &::before {
     @extend %icon-font__navigator;
   }
+}
+
+.nav__account {
+  @extend %nav-items;
+  float: right;
+  margin: 0 1em;
 }

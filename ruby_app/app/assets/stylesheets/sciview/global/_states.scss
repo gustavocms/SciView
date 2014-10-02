@@ -10,10 +10,12 @@
 
   &.nav__data-sets {
     color: $font_color;
+    background-color: rgba($white, 0.05);
   }
 
   &.nav__navigator {
     color: $font_color;
+    background-color: rgba($white, 0.05);
   }
 
   &.data-sets__item {
