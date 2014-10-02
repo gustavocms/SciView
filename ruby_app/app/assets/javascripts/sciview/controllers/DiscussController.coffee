@@ -5,7 +5,8 @@ module.controller "DiscussController", [
   "$stateParams"
   "Observation"
   "mySocket"
-  ($scope, $stateParams, Observation, mySocket) ->
+  "timeAgoFilter"
+  ($scope, $stateParams, Observation, mySocket, timeAgoFilter) ->
 
     # TODO: put this somewhere useful
     tap = (obj, func) ->

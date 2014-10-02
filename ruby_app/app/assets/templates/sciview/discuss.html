@@ -23,7 +23,7 @@
       </section>
       <section class="observation__main-info">
         <span class="observation__author" ng-bind="observation.user.name"></span>
-        <span class="observation__created" ng-bind="observation.created_at | date:'shortTime'"></span>
+        <span class="observation__created" ng-bind="observation.created_at | timeAgo"><span>
         <p class="observation__info" ng-bind="observation.message"></p>
       </section>
     </section>
