@@ -444,10 +444,16 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("height", @height2 + 7)
     thisChart = @
     @focus.on('mousemove', -> thisChart.observationCursor(d3.mouse(this)))
+
+    x = @x
+    obsCallback = @_observationCallback
     @focus.on('dblclick', ->
       cursor = d3.select(d3.event.srcElement)
       window.e = cursor
-      console.log('double click', d3.mouse(this), cursor)
+      window.x = x.invert
+      observed_at = x.invert(d3.mouse(this)[0])
+      console.log('double click', observed_at)
+      obsCallback({ message: "New message from D3..." })
       d3.event.stopPropagation()
     )
 
@@ -507,13 +513,15 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('stroke', 'none')
       .style('fill', color)
     groups.enter()
-      .append('line').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', @height)
+      .append('line').attr('x1', 0).attr('x2', 0).attr('y1', 10).attr('y2', @height)
       .style('stroke', color)
       .attr('stroke-dasharray', '1,3')
     groups.enter().append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
       .style('fill', color)
       .style('font-weight', 'bold')
-    groups.attr('transform', (d) => "translate(#{@x(new Date(d.timestamp))}, 0)")
+    #groups.attr('transform', (d) => "translate(#{@x(new Date(d.observed_at))}, 0)")
+    groups.attr('transform', (d) => "translate(10, 20)")
+    groups.exit().remove() # TODO: this isn't working
 
   observationCursor: (coords) ->
     x = (coords or [0, 0])[0]
@@ -541,7 +549,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   hidePleaseWait:       noOp
   renderLegend:         noOp
   replaceState:         noOp
-  #_observationCallback: noOp
+  _observationCallback: noOp
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
@@ -601,6 +609,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   observationCallback: (callback_function) ->
     if callback_function
+      console.info("D3:: setting callback_function")
       @_observationCallback = callback_function
       return @
     else

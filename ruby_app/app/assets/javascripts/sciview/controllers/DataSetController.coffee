@@ -12,6 +12,7 @@ module.controller('DataSetController', [
   'mySocket'
   ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
 
+    $scope.datasetLoading = $q.defer()
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
 
@@ -20,13 +21,7 @@ module.controller('DataSetController', [
         ds.id.toString() == $stateParams.dataSetId
 
       $scope.setCurrentDataSet(filteredDS[0])
-      $scope.registerSocketWatchers()
 
-      observationFunction = (uuid) ->
-        -> console.log("observation function for uuid #{uuid} and $scope #{$scope}")
-
-      chart.setObservationFunction(observationFunction) for chart in $scope.current_data_set.charts
-      
       # used to manage changes that may be reverted
       $scope.temporary_data_set =
         title: $scope.current_data_set.title
@@ -64,6 +59,7 @@ module.controller('DataSetController', [
 
     $scope.setCurrentDataSet = (dataset) ->
       $scope.current_data_set = dataset
+      $scope.datasetLoading.resolve()
       $scope.registerSocketWatchers()
 
     $scope.saveRenaming = ->

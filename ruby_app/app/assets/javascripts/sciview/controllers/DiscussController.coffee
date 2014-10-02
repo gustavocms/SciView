@@ -15,24 +15,37 @@ module.controller "DiscussController", [
 
 
     Observation.findAll({ view_state_id: $stateParams.dataSetId })
+    #$scope.datasetLoading.promise.then ->
     Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
-      console.log('bindAll', data, $scope.observations)
-      $scope.$parent.current_data_set.observations($scope.observations)
+      try
+        $scope.$parent.current_data_set.observations($scope.observations)
     )
 
     # sets the newObservation model and associated state variables
-    _newObservation = ->
-      $scope.observationFormPlaceholder = "New message..."
+
+    $scope.chartUuids = ->
+      try
+        # TODO: need to be able to update this variable when the parent scope changes
+        @_chartUuids or= $scope.$parent.current_data_set.chartUuids()
+      catch
+        []
+
+    $scope.observationFormPlaceholder = "New message..."
+
+    _newObservation = (params = {}) ->
+      console.log("_newObservation")
+      window.s = $scope
       $scope.saving = false
       $scope.newObservation =
         message: ''
         view_state_id: $stateParams.dataSetId
+      $scope.newObservation[key] = value for key, value of params
+
+    $scope.datasetLoading.promise.then ->
+      $scope.$parent.current_data_set.observationCallback(_newObservation)
 
     _newObservation()
 
-    $scope.chartUuids = ->
-      # TODO: need to be able to update this variable when the parent scope changes
-      @_chartUuids or= $scope.$parent.current_data_set.chartUuids()
 
     $scope.observationLabel = (obs) ->
       if obs.chart_uuid

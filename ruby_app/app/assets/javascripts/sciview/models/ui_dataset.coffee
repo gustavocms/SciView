@@ -110,13 +110,13 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
       chart_uuid: @uuid
     )
 
-    #@chart.observationCallback(@_observationFunction) if @_observationFunction
+    @chart.observationCallback(@_observationFunction) if @_observationFunction
 
   setObservationFunction: (func) ->
-    console.log("setObservationFunction")
-    @_observationFunction = func(@uuid)
-    #if @chart
-    #  @chart.observationCallback(@_observationFunction)
+    console.info("UI: setObservationFunction")
+    @_observationFunction = func
+    if @chart
+      @chart.observationCallback(@_observationFunction)
 
   addChannel: (channel) ->
     if channel
@@ -184,13 +184,24 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
     _charts[chart.uuid] = chart.title for chart in @charts
     _charts
 
+  filterObservations = (observations, chart_uuid) ->
+    observations.filter((obs) ->
+      obs.chart_uuid == chart.uuid and
+        obs.observed_at
+    )
   # Expects an array of observation objects.
   observations: (observations) ->
     for chart in @charts
       do (chart) ->
-        console.log(chart.uuid)
         chart.chart.observations(observations.filter((obs) -> obs.chart_uuid == chart.uuid))
 
+  observationCallback: (closure) ->
+    for chart in @charts
+      chart.setObservationFunction(
+        (params = {}) ->
+          params.chart_uuid = chart.uuid
+          console.log('hello from inside the callback:', params, closure(params))
+      )
 
 
 
