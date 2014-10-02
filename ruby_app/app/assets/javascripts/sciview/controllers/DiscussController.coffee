@@ -40,6 +40,8 @@ module.controller "DiscussController", [
         message: ''
         view_state_id: $stateParams.dataSetId
       $scope.newObservation[key] = value for key, value of params
+      try
+        $scope.$digest()
 
     $scope.datasetLoading.promise.then ->
       $scope.$parent.current_data_set.observationCallback(_newObservation)
