@@ -27,9 +27,12 @@ module.controller "DiscussController", [
     #.then((data) -> $scope.observations.push(data))
 
     _newObservation = ->
-      $scope.newObservation = 
+      $scope.observationFormPlaceholder = "New message..."
+      $scope.saving = false
+      $scope.newObservation =
         message: ''
         view_state_id: $stateParams.dataSetId
+
 
     _newObservation()
 
@@ -37,9 +40,10 @@ module.controller "DiscussController", [
       mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
 
     $scope.createObservation = (observation) ->
+      $scope.saving = true
       Observation.create(observation).then (data) ->
         emitUpdateObservations({ id: data.id, action: 'find' })
-      _newObservation()
+        _newObservation()
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->
