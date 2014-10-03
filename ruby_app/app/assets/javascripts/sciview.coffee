@@ -447,13 +447,9 @@ class SciView.FocusChart extends SciView.BasicChart
 
     x = @x
     obsCallback = @_observationCallback
-    @focus.on('dblclick', ->
-      cursor = d3.select(d3.event.srcElement)
-      window.e = cursor
-      window.x = x.invert
+    @focus.on('dblclick', -> # TODO: does this conflict with the other dblclick (in zoomEnd)?
       observed_at = x.invert(d3.mouse(this)[0])
-      console.log('double click', observed_at)
-      obsCallback({ message: "New message from D3..." })
+      obsCallback({ observed_at: observed_at, message: "New message from D3..." })
       d3.event.stopPropagation()
     )
 
@@ -499,29 +495,34 @@ class SciView.FocusChart extends SciView.BasicChart
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
 
   renderObservations: ->
-    color = (d) -> lineColor(d.series_key)
-    # 1 observation per series
+    #color = (d) -> lineColor(d.series_key) # no longer based on series
+    color = 'white'
     groups = @focus.selectAll('g.observation').data(@_observations or [])
-    # 1 observation per observation in the series
-    groups.enter()
+    y_height = (_, i) -> (i % 6) * 20 + 20
+    gr_enter = groups.enter()
       .append('g')
       .attr('class', 'observation')
+    gr_enter
       .append('circle')
       .attr('cx', 0)
-      .attr('cy', 0)
+      .attr('cy', y_height)
       .attr('r', 3)
       .style('stroke', 'none')
       .style('fill', color)
-    groups.enter()
+    gr_enter
       .append('line').attr('x1', 0).attr('x2', 0).attr('y1', 10).attr('y2', @height)
+      .attr('class', 'observation-line')
       .style('stroke', color)
       .attr('stroke-dasharray', '1,3')
-    groups.enter().append('text').text((d) -> d.message).attr('x', 5).attr('y', 5)
+    gr_enter
+      .append('text')
+      .text((d) -> d.message)
+      .attr('x', 5).attr('y', y_height)
       .style('fill', color)
       .style('font-weight', 'bold')
-    #groups.attr('transform', (d) => "translate(#{@x(new Date(d.observed_at))}, 0)")
-    groups.attr('transform', (d) => "translate(10, 20)")
-    groups.exit().remove() # TODO: this isn't working
+      .style('font-size', '8pt')
+    groups.attr('transform', (d) => "translate(#{@x(new Date(d.observed_at))}, 0)")
+    groups.exit().remove()
 
   observationCursor: (coords) ->
     x = (coords or [0, 0])[0]
@@ -609,7 +610,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
 
   observationCallback: (callback_function) ->
     if callback_function
-      console.info("D3:: setting callback_function")
       @_observationCallback = callback_function
       return @
     else

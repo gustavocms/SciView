@@ -185,22 +185,20 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
     _charts
 
   filterObservations = (observations, chart_uuid) ->
-    observations.filter((obs) ->
-      obs.chart_uuid == chart.uuid and
-        obs.observed_at
-    )
+    observations.filter((obs) -> (obs.chart_uuid == chart_uuid) and obs.observed_at)
+
   # Expects an array of observation objects.
   observations: (observations) ->
     for chart in @charts
       do (chart) ->
-        chart.chart.observations(observations.filter((obs) -> obs.chart_uuid == chart.uuid))
+        chart.chart.observations(filterObservations(observations, chart.uuid))
 
   observationCallback: (closure) ->
     for chart in @charts
       chart.setObservationFunction(
         (params = {}) ->
           params.chart_uuid = chart.uuid
-          console.log('hello from inside the callback:', params, closure(params))
+          closure(params)
       )
 
 
