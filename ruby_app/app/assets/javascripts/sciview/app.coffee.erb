@@ -62,6 +62,16 @@ app.config(['$urlRouterProvider', '$stateProvider',
           url: '/upload',
           templateUrl: '<%= asset_path('sciview/partials/upload.html') %>',
           controller: 'UploadController'
+      })      
+      .state('signup', {
+          url: '/signup',
+          templateUrl: '<%= asset_path('sciview/signup.html') %>',
+          controller: 'FormController'
+      })      
+      .state('login', {
+          url: '/login',
+          templateUrl: '<%= asset_path('sciview/login.html') %>',
+          controller: 'FormController'
       })
 ])
 
