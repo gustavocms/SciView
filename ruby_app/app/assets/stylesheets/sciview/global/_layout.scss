@@ -38,7 +38,6 @@
 
 .batch__sidebar {
   @extend %sidebar-width;
-  overflow-y: scroll;
 }
 
 .batch__chart {
