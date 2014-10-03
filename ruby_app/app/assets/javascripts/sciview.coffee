@@ -497,7 +497,7 @@ class SciView.FocusChart extends SciView.BasicChart
   renderObservations: ->
     #color = (d) -> lineColor(d.series_key) # no longer based on series
     color = 'white'
-    groups = @focus.selectAll('g.observation').data(@_observations or [])
+    groups = @focus.selectAll('g.observation').data(@_observations or [], (d) -> d.id)
     y_height = (_, i) -> (i % 6) * 20 + 20
     gr_enter = groups.enter()
       .append('g')
@@ -514,7 +514,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('class', 'observation-line')
       .style('stroke', color)
       .attr('stroke-dasharray', '1,3')
-    gr_enter
+    text = gr_enter
       .append('text')
       .text((d) -> d.message)
       .attr('x', 5).attr('y', y_height)
