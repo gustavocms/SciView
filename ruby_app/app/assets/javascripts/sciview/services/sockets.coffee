@@ -20,6 +20,4 @@ angular.module('sciview').run([
       #Observation.findAll({ view_state_id: key.split(/_/)[0] })
     )
 
-    window.Observation = Observation
-
 ])

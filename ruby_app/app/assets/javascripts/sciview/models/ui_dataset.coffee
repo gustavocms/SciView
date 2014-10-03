@@ -103,7 +103,6 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     #@initializeChart()
 
   initializeChart: (element) ->
-    console.log("initializeChart")
     @chart = new SciView.D3.FocusChart(
       element: element
       url: @dataUrl
@@ -113,7 +112,6 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     @chart.observationCallback(@_observationFunction) if @_observationFunction
 
   setObservationFunction: (func) ->
-    console.info("UI: setObservationFunction")
     @_observationFunction = func
     if @chart
       @chart.observationCallback(@_observationFunction)

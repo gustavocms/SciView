@@ -33,8 +33,6 @@ module.controller "DiscussController", [
     $scope.observationFormPlaceholder = "New message..."
 
     _newObservation = (params = {}) ->
-      console.log("_newObservation")
-      window.s = $scope
       $scope.saving = false
       $scope.newObservation =
         message: ''
