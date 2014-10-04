@@ -1,10 +1,10 @@
-class ProcessTdmsWorker
+class ProcessUploadWorker
   include Sidekiq::Worker
 
 
-  def perform(tdms_file_id)
+  def perform(upload_id)
     #TODO process file here
-    tdms = TdmsFile.find(tdms_file_id)
+    tdms = Upload.find(upload_id)
     logger.debug "Processing file #{tdms.filepath}"
   end
 
