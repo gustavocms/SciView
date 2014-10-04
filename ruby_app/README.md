@@ -27,6 +27,18 @@ Mac:
 
     $ rake db:setup
 
+#### Setup socket.io for node server
+
+Make sure you have installed node and npm:
+
+    $ npm --version
+    $ node --version
+
+Install socket.io server library
+
+    $ cd socket
+    $ npm install socket.io
+
 ### Running the app
 
 #### Launch the web server and redis

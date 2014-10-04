@@ -50,11 +50,6 @@
     @extend %batch-retract-animation;
   }
 
-  // Meta
-  .channel__dropdown {
-    @extend %channel-rotate-chevron;
-  }
-
   .channel__meta {
     @extend %batch-retract-animation;
     display: none;
