@@ -550,7 +550,7 @@ class SciView.FocusChart extends SciView.BasicChart
     circles.exit().remove()
 
   _focusPathIntersection = (x_coord, path) ->
-    node       = path[0]
+    node       = path
     target     = undefined
     pos        = undefined
     end        = node.getTotalLength()
@@ -571,12 +571,12 @@ class SciView.FocusChart extends SciView.BasicChart
 
 
   _focusPathIntersections: (x_coord) =>
-    try
-      selector = if @isZoomed then 'path.focus.zoom' else 'path.focus.init'
-      paths = @focus.selectAll(selector)
-      _focusPathIntersection(x_coord, path) for path in paths
-    catch
-      []
+    #try
+    selector = if @isZoomed then 'path.focus.zoom' else 'path.focus.init'
+    paths = @focus.selectAll(selector)[0]
+    _focusPathIntersection(x_coord, path) for path in paths
+    #catch
+    #[]
 
 
 # subclassing the chart for the Angular app (so the basic html app doesn't break)
