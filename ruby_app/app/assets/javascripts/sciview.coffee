@@ -340,7 +340,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   render: ->
     if @isZoomed
-     @_renderZoomData()
+      @_renderZoomData()
     else
       @_renderInitialData()
 
@@ -356,6 +356,7 @@ class SciView.FocusChart extends SciView.BasicChart
       @brushEnd()
 
   _renderZoomData: ->
+    console.log("_renderZoomData")
     @focus.selectAll('.init').attr('opacity', 0)
     zoomFocusPaths = @focus.selectAll('path.focus.zoom').data(@_zoomData)
     zoomFocusPaths.enter()
@@ -378,6 +379,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @y2.domain(@y.domain())
 
   _renderInitialData: ->
+    console.log("_renderInitialData")
     @setDomains()
 
     @focusTarget or= @focus.append('rect')
@@ -525,7 +527,7 @@ class SciView.FocusChart extends SciView.BasicChart
     groups.exit().remove()
 
   observationCursor: (coords) ->
-    x = (coords or [0, 0])[0]
+    x = (coords or [0])[0]
     @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
       .style('opacity', 0.5)
       .style('stroke', 'white')
@@ -540,6 +542,33 @@ class SciView.FocusChart extends SciView.BasicChart
     x2 = @x2(@x.invert(x))
     @focusCursor.attr('x1', x).attr('x2', x)
     @contextCursor.attr('x1', x2).attr('x2', x2)
+
+    @focusIntersects or= @focus.append('g').attr('class', 'focusIntercepts')
+    circles = @focusIntersects.selectAll('circle').data(@_focusPathIntersections(x))
+    circles.enter()
+      .append('circle')
+      .attr('r', 2)
+      .style('fill', 'white')
+      .style('stroke', 'none')
+
+    circles.attr('cx', x)
+    circles.attr('cy', (d) -> d)
+    circles.exit().remove()
+
+    console.log("cursor #{x}", @_focusPathIntersections(x))
+
+  _focusPathIntersection = (x_coord, path) ->
+    path[0].getPointAtLength(x_coord)
+
+  _focusPathIntersections: (x_coord) =>
+    try
+      selector = if @isZoomed then 'path.focus.zoom' else 'path.focus.init'
+      console.log(@isZoomed, selector)
+      paths = @focus.selectAll(selector)
+      _focusPathIntersection(x_coord, path).y for path in paths
+    catch
+      []
+
 
 # subclassing the chart for the Angular app (so the basic html app doesn't break)
 class SciView.D3.FocusChart extends SciView.FocusChart
