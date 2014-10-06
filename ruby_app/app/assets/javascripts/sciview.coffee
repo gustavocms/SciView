@@ -66,10 +66,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .on("brush", @brushed)
       .on("brushend", @brushEndDelayed)
 
-    # @lineFocus = d3.svg.line()
-    #   .x((d) => @x(d.x))
-    #  .y((d) => @y(d.y))
-    #  .interpolate('linear')
     @lineFocus = d3.svg.area()
       .x((d) => @x(d.x))
       .y0(@height)
@@ -356,7 +352,6 @@ class SciView.FocusChart extends SciView.BasicChart
       @brushEnd()
 
   _renderZoomData: ->
-    console.log("_renderZoomData")
     @focus.selectAll('.init').attr('opacity', 0)
     zoomFocusPaths = @focus.selectAll('path.focus.zoom').data(@_zoomData)
     zoomFocusPaths.enter()
@@ -379,7 +374,6 @@ class SciView.FocusChart extends SciView.BasicChart
     @y2.domain(@y.domain())
 
   _renderInitialData: ->
-    console.log("_renderInitialData")
     @setDomains()
 
     @focusTarget or= @focus.append('rect')
@@ -547,25 +541,45 @@ class SciView.FocusChart extends SciView.BasicChart
     circles = @focusIntersects.selectAll('circle').data(@_focusPathIntersections(x))
     circles.enter()
       .append('circle')
-      .attr('r', 2)
-      .style('fill', 'white')
+      .attr('r', 4)
+      .style('fill', (d) -> lineColor(d.key))
       .style('stroke', 'none')
 
     circles.attr('cx', x)
-    circles.attr('cy', (d) -> d)
+    circles.attr('cy', (d) -> d.position.y)
     circles.exit().remove()
 
-    console.log("cursor #{x}", @_focusPathIntersections(x))
-
   _focusPathIntersection = (x_coord, path) ->
-    path[0].getPointAtLength(x_coord)
+    node       = path[0]
+    target     = undefined
+    pos        = undefined
+    xPos       = x_coord
+    pathLength = node.getTotalLength()
+    x          = xPos
+    beginning  = x
+    end        = pathLength
+    window.p = d3.select(path)
+    window.n = node
+
+    while (true)
+      target = Math.floor((beginning + end) / 2)
+      pos    = node.getPointAtLength(target)
+      break if ((target is end or target is beginning) and pos.x isnt x)
+
+      if (pos.x > x)
+        end = target
+      else if (pos.x < x)
+        beginning = target
+      else
+        break #position found
+    { position: pos, key: node.__data__.key }
+
 
   _focusPathIntersections: (x_coord) =>
     try
       selector = if @isZoomed then 'path.focus.zoom' else 'path.focus.init'
-      console.log(@isZoomed, selector)
       paths = @focus.selectAll(selector)
-      _focusPathIntersection(x_coord, path).y for path in paths
+      _focusPathIntersection(x_coord, path) for path in paths
     catch
       []
 
