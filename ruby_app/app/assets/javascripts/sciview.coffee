@@ -553,19 +553,14 @@ class SciView.FocusChart extends SciView.BasicChart
     node       = path[0]
     target     = undefined
     pos        = undefined
-    xPos       = x_coord
-    pathLength = node.getTotalLength()
-    x          = xPos
+    end        = node.getTotalLength()
+    x          = x_coord
     beginning  = x
-    end        = pathLength
-    window.p = d3.select(path)
-    window.n = node
 
     while (true)
       target = Math.floor((beginning + end) / 2)
       pos    = node.getPointAtLength(target)
       break if ((target is end or target is beginning) and pos.x isnt x)
-
       if (pos.x > x)
         end = target
       else if (pos.x < x)
