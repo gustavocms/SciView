@@ -39,3 +39,5 @@ python_app/sciview-python.iml
 *.rdb
 .ctrlp
 **/node_modules
+tdms/pkg/*
+tdms/Gemfile.lock
