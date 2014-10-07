@@ -15,7 +15,7 @@ module.controller "DiscussController", [
 
 
     Observation.findAll({ view_state_id: $stateParams.dataSetId })
-    #$scope.datasetLoading.promise.then ->
+    #$scope.viewStateLoading.promise.then ->
     Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
       try
         $scope.$parent.viewState.observations($scope.observations)
@@ -41,7 +41,7 @@ module.controller "DiscussController", [
       try
         $scope.$digest()
 
-    $scope.datasetLoading.promise.then ->
+    $scope.viewStateLoading.promise.then ->
       $scope.$parent.viewState.observationCallback(_newObservation)
 
     _newObservation()

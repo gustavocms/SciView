@@ -12,7 +12,7 @@ module.controller('DataSetController', [
   'mySocket'
   ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
 
-    $scope.datasetLoading = $q.defer()
+    $scope.viewStateLoading = $q.defer()
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
 
@@ -23,7 +23,7 @@ module.controller('DataSetController', [
       $scope.setCurrentDataSet(filteredDS[0])
 
       # used to manage changes that may be reverted
-      $scope.temporary_data_set =
+      $scope.tempViewState =
         title: $scope.viewState.title
 
     $scope.states =
@@ -54,26 +54,26 @@ module.controller('DataSetController', [
       console.log('saving')
 
     $scope.deleteDataset = ->
-      dataset_id = $scope.viewState.id
-      ViewState.delete({ id: dataset_id })
+      viewStateId = $scope.viewState.id
+      ViewState.delete({ id: viewStateId })
         .$promise
         .then(->
           window.s = $scope
-          $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt dataset_id)
+          $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt viewStateId)
           $scope.$state.go('data-sets')
         )
 
-    $scope.setCurrentDataSet = (dataset) ->
-      $scope.viewState = dataset
-      $scope.datasetLoading.resolve()
+    $scope.setCurrentDataSet = (viewState) ->
+      $scope.viewState = viewState
+      $scope.viewStateLoading.resolve()
       $scope.registerSocketWatchers()
 
     $scope.saveRenaming = ->
-      $scope.viewState.title = $scope.temporary_data_set.title
+      $scope.viewState.title = $scope.tempViewState.title
       $scope.states.is_renaming = false
 
     $scope.cancelRenaming = ->
-      $scope.temporary_data_set.title = $scope.viewState.title
+      $scope.tempViewState.title = $scope.viewState.title
       $scope.states.is_renaming = false
 
     $scope.registerSocketWatchers = ->
