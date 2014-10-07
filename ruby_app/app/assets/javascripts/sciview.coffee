@@ -518,6 +518,9 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('font-weight', 'bold')
       .style('font-size', '8pt')
     groups.attr('transform', (d) => "translate(#{@x(new Date(d.observed_at))}, 0)")
+    #points = (@x(new Date(d.observed_at)) for d in groups.data())
+    #console.log(@_focusPathIntersections(x) for x in points)
+    #intersections = @focus.selectAll('circle.intersection').data(points)
     groups.exit().remove()
 
   observationCursor: (coords) ->
