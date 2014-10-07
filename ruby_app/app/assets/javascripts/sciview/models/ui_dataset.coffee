@@ -156,7 +156,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
 
   afterDeserialize: -> @_computeDataUrl()
 
-class SciView.Models.UIDataset extends SciView.Models.UIBase
+class SciView.Models.ViewState extends SciView.Models.UIBase
   constructor: (@id, @title) ->
     @charts = []
 
