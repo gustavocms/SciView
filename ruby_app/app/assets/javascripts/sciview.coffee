@@ -537,7 +537,10 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('y1', 0).attr('y2', @height2)
 
     format = @xAxis.scale().tickFormat()
-    @cursorCallback()(format(@x.invert(x)))
+    data               =  {}
+    data.time          = format(@x.invert(x))
+    data.intersections = @_focusPathIntersections(x)
+    @cursorCallback()(data)
 
     x2 = @x2(@x.invert(x))
     @focusCursor.attr('x1', x).attr('x2', x)

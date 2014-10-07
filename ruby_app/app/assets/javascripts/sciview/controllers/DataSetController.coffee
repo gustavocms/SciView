@@ -81,8 +81,8 @@ module.controller('DataSetController', [
       $scope.viewStateLoading.resolve()
       $scope.registerSocketWatchers()
       viewState.cursorCallback((data) ->
-          $scope.obsTime = data
-          $scope.$digest()
+        $scope.obsTime = data
+        $scope.$digest()
           #callback() for callback in ($scope.onCursor or [])
       )
 
