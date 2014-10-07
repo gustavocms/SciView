@@ -86,6 +86,8 @@ gem 'rails-assets-angular-socket-io'
 
 gem 'socket.io-rails'
 
+gem 'faye-websocket'
+
 group :development, :test do
   gem "jasmine", github: "pivotal/jasmine-gem"
 end
