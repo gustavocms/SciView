@@ -18,7 +18,7 @@ module.controller "DiscussController", [
     #$scope.datasetLoading.promise.then ->
     Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
       try
-        $scope.$parent.current_data_set.observations($scope.observations)
+        $scope.$parent.viewState.observations($scope.observations)
     )
 
     # sets the newObservation model and associated state variables
@@ -26,7 +26,7 @@ module.controller "DiscussController", [
     $scope.chartUuids = ->
       try
         # TODO: need to be able to update this variable when the parent scope changes
-        @_chartUuids or= $scope.$parent.current_data_set.chartUuids()
+        @_chartUuids or= $scope.$parent.viewState.chartUuids()
       catch
         []
 
@@ -42,7 +42,7 @@ module.controller "DiscussController", [
         $scope.$digest()
 
     $scope.datasetLoading.promise.then ->
-      $scope.$parent.current_data_set.observationCallback(_newObservation)
+      $scope.$parent.viewState.observationCallback(_newObservation)
 
     _newObservation()
 
@@ -51,7 +51,7 @@ module.controller "DiscussController", [
       if obs.chart_uuid
         $scope.chartUuids()[obs.chart_uuid]
       else
-        $scope.$parent.current_data_set.name
+        $scope.$parent.viewState.name
 
     emitUpdateObservations = (params = {}) ->
       mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)

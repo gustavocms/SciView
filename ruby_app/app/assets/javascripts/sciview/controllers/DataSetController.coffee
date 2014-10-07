@@ -24,7 +24,7 @@ module.controller('DataSetController', [
 
       # used to manage changes that may be reverted
       $scope.temporary_data_set =
-        title: $scope.current_data_set.title
+        title: $scope.viewState.title
 
     $scope.states =
       is_renaming: false
@@ -34,21 +34,27 @@ module.controller('DataSetController', [
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
     $scope.addChart = ->
-      @current_data_set.addChart()
+      @viewState.addChart()
 
     $scope.logDataset = ->
-      console.log(@current_data_set)
-      console.log(angular.toJson(@current_data_set.serialize()))
+      console.log(@viewState)
+      console.log(angular.toJson(@viewState.serialize()))
+
+    $scope.dblClickEvent = (data) ->
+      @observationCallback(data)
+
+    $scope.observationCallback = (data) ->
+      console.info('observationCallback')
 
     $scope.saveDataset = ->
       ViewState.update(
-        { id: $scope.current_data_set.id },
-        $scope.current_data_set.serialize()
+        { id: $scope.viewState.id },
+        $scope.viewState.serialize()
       )
       console.log('saving')
 
     $scope.deleteDataset = ->
-      dataset_id = $scope.current_data_set.id
+      dataset_id = $scope.viewState.id
       ViewState.delete({ id: dataset_id })
         .$promise
         .then(->
@@ -58,22 +64,22 @@ module.controller('DataSetController', [
         )
 
     $scope.setCurrentDataSet = (dataset) ->
-      $scope.current_data_set = dataset
+      $scope.viewState = dataset
       $scope.datasetLoading.resolve()
       $scope.registerSocketWatchers()
 
     $scope.saveRenaming = ->
-      $scope.current_data_set.title = $scope.temporary_data_set.title
+      $scope.viewState.title = $scope.temporary_data_set.title
       $scope.states.is_renaming = false
 
     $scope.cancelRenaming = ->
-      $scope.temporary_data_set.title = $scope.current_data_set.title
+      $scope.temporary_data_set.title = $scope.viewState.title
       $scope.states.is_renaming = false
 
     $scope.registerSocketWatchers = ->
       mySocket.emit('resetWatchers')
-      mySocket.emit('listenTo', "viewState_#{$scope.current_data_set.id}")
-      for seriesName in $scope.current_data_set.seriesKeys()
+      mySocket.emit('listenTo', "viewState_#{$scope.viewState.id}")
+      for seriesName in $scope.viewState.seriesKeys()
         mySocket.emit('listenTo', seriesName)
 
 #   as seen here:
@@ -86,7 +92,7 @@ module.controller('DataSetController', [
         callback()
 
     $scope.$watch(
-      'current_data_set.serialize()'
+      'viewState.serialize()'
       () -> afterInitialization($scope.saveDataset)
       true
     )

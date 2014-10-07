@@ -10,7 +10,7 @@
 
 <section class="data-set__current">
   <ul class="batches">
-    <li class="batch" ng-repeat="chart in current_data_set.charts" ng-controller="UIChartController" ng-class="{'is-adding-series': is_adding }">
+    <li class="batch" ng-repeat="chart in viewState.charts" ng-controller="UIChartController" ng-class="{'is-adding-series': is_adding }">
       <!-- Sidebar / Data representation for gjkkraph -->
       <section class="batch__sidebar">
         <section class="batch__header">
