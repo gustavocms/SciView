@@ -15,16 +15,30 @@ module.controller('DataSetController', [
     $scope.viewStateLoading = $q.defer()
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
-
-      # find the correct dataset in parent's scope
       filteredDS = $scope.$parent.data_sets.filter (ds) ->
         ds.id.toString() == $stateParams.dataSetId
-
-      $scope.setCurrentDataSet(filteredDS[0])
+      $scope._setViewState(filteredDS[0])
 
       # used to manage changes that may be reverted
       $scope.tempViewState =
         title: $scope.viewState.title
+
+    $scope.observationsLoading = $q.defer()
+    obs_params = view_state_id: $stateParams.dataSetId
+    Observation.findAll(obs_params)
+    Observation.bindAll($scope, 'observations', obs_params, ->
+      console.log("Observation bindAll callback")
+      try
+        $scope.$parent.viewState.observations($scope.observations)
+    )
+
+    window.dss = $scope
+
+    $scope.tooltip =
+      time: "00:00:00:00"
+      unit: "seconds"
+
+    $scope.obsTime = "000"
 
     $scope.states =
       is_renaming: false
@@ -58,15 +72,19 @@ module.controller('DataSetController', [
       ViewState.delete({ id: viewStateId })
         .$promise
         .then(->
-          window.s = $scope
           $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt viewStateId)
           $scope.$state.go('data-sets')
         )
 
-    $scope.setCurrentDataSet = (viewState) ->
+    $scope._setViewState = (viewState) ->
       $scope.viewState = viewState
       $scope.viewStateLoading.resolve()
       $scope.registerSocketWatchers()
+      viewState.cursorCallback((data) ->
+          $scope.obsTime = data
+          $scope.$digest()
+          #callback() for callback in ($scope.onCursor or [])
+      )
 
     $scope.saveRenaming = ->
       $scope.viewState.title = $scope.tempViewState.title

@@ -110,11 +110,17 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     )
 
     @chart.observationCallback(@_observationFunction) if @_observationFunction
+    @chart.cursorCallback(@_cursorCallback) if @_cursorCallback
 
   setObservationFunction: (func) ->
     @_observationFunction = func
     if @chart
       @chart.observationCallback(@_observationFunction)
+
+  setCursorCallback: (func) ->
+    @_cursorCallback = func
+    if @chart
+      @chart.cursorCallback(@_cursorCallback)
 
   addChannel: (channel) ->
     if channel
@@ -199,7 +205,8 @@ class SciView.Models.ViewState extends SciView.Models.UIBase
           closure(params)
       )
 
-
+  cursorCallback: (closure) ->
+    chart.setCursorCallback(closure) for chart in @charts
 
   @serialized_attributes: ['id', 'title']
   @serializable_collections:

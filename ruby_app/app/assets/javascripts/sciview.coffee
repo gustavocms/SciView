@@ -536,6 +536,9 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('stroke', 'white')
       .attr('y1', 0).attr('y2', @height2)
 
+    format = @xAxis.scale().tickFormat()
+    @cursorCallback()(format(@x.invert(x)))
+
     x2 = @x2(@x.invert(x))
     @focusCursor.attr('x1', x).attr('x2', x)
     @contextCursor.attr('x1', x2).attr('x2', x2)
@@ -592,6 +595,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   renderLegend:         noOp
   replaceState:         noOp
   _observationCallback: noOp
+  _cursorCallback:      noOp
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
@@ -633,6 +637,8 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       .ticks((@y.ticks(10).length + 1) * 4)
       .tickSize(20, 10)
 
+    window.xaxis = @xAxis
+
   baseWidth: ->
     parseInt(@elementSelection().style('width'))
 
@@ -663,4 +669,11 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       return @
     else
       @_observations
+
+  cursorCallback: (func) ->
+    if func
+      @_cursorCallback = func
+      return @
+    else
+      @_cursorCallback
 

@@ -14,19 +14,24 @@ module.controller "DiscussController", [
       obj
 
 
-    Observation.findAll({ view_state_id: $stateParams.dataSetId })
+    # Observations now loaded by DataSetController
+    #Observation.findAll({ view_state_id: $stateParams.dataSetId })
     #$scope.viewStateLoading.promise.then ->
-    Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
-      try
-        $scope.$parent.viewState.observations($scope.observations)
-    )
+    #Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
+    #try
+    #$scope.$parent.viewState.observations($scope.observations)
+    #)
+    #
+
+
+    window.obs = $scope
 
     # sets the newObservation model and associated state variables
 
     $scope.chartUuids = ->
       try
         # TODO: need to be able to update this variable when the parent scope changes
-        @_chartUuids or= $scope.$parent.viewState.chartUuids()
+        @_chartUuids or= $scope.viewState.chartUuids()
       catch
         []
 

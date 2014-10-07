@@ -2,10 +2,12 @@ module = angular.module("sv.ui.controllers")
 
 module.controller "ToolController", [
   "$scope"
-  "$rootScope"
-  ($scope, $rootScope) ->
+  ($scope) ->
+    ### TODO: this doesn't work
+    $scope.$parent.onCursor or= []
+    _digest = -> console.log('scope digest'); $scope.$digest()
+    $scope.$parent.onCursor.push($scope.$digest)
+    ###
+    #window.ts = $scope
 
-    $scope.data_set =
-      time: "00:20:38:12"
-      unit: "seconds"
 ]
