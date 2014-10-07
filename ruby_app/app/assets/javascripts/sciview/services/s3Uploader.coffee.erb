@@ -1,0 +1,366 @@
+((window, document)->
+
+  #Create all modules and define dependencies to make sure they exist
+  #and are loaded in the correct order to satisfy dependency injection
+  #before all nested files are concatenated by Grunt
+
+  #Config
+  angular.module("ngS3upload.config", []).value("ngS3upload.config",
+    debug: true
+  ).config [
+    "$compileProvider"
+    ($compileProvider) ->
+      if angular.isDefined($compileProvider.urlSanitizationWhitelist)
+        $compileProvider.urlSanitizationWhitelist /^\s*(https?|ftp|mailto|file|data):/
+      else
+        $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|file|data):/
+  ]
+
+  # Modules
+  angular.module "ngS3upload.directives", []
+  angular.module "ngS3upload", [
+    "ngS3upload.config"
+    "ngS3upload.directives"
+    "ngS3upload.services"
+    "ngSanitize"
+  ]
+  angular.module("ngS3upload.services", []).service "S3Uploader", [
+    "$http"
+    "$q"
+    "$window"
+    ($http, $q, $window) ->
+      @uploads = 0
+      self = this
+      
+      @getUploadOptions = (uri) ->
+        deferred = $q.defer()
+        $http.get(uri).success((response, status) ->
+          deferred.resolve response
+          return
+        ).error (error, status) ->
+          deferred.reject error
+          return
+
+        deferred.promise
+
+      @queueFileForProcessing = (item)->
+        $http.post('/api/v1/queue_uploads.json', { filepath: item.key }).success((response, status) ->
+          return
+        ).error (error, status) ->
+          return        
+
+      @randomString = (length) ->
+        chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        result = ""
+        i = length
+
+        while i > 0
+          result += chars[Math.round(Math.random() * (chars.length - 1))]
+          --i
+        result
+
+      @upload = (scope, uri, key, acl, type, accessKey, policy, signature, file, item) ->
+        
+        item.key = key
+        # Define event handlers
+        uploadProgress = (e) ->
+          if e.lengthComputable
+            item.progress = Math.round(e.loaded * 100 / e.total)
+          else
+            item.progress = "unable to compute"
+          msg =
+            type: "progress"
+            value: scope.progress
+
+          scope.$emit "s3upload:progress", msg
+          deferred.notify msg  if typeof deferred.notify is "function"
+          return
+        uploadComplete = (e) ->
+          xhr = e.srcElement or e.target
+          scope.$apply ->
+            self.uploads--
+            scope.uploading = false
+            if xhr.status is 204 # successful upload
+              scope.success = true
+              deferred.resolve xhr
+              scope.$emit "s3upload:success", xhr
+            else
+              scope.success = false
+              deferred.reject xhr
+              scope.$emit "s3upload:error", xhr
+            return
+
+          return
+        uploadFailed = (e) ->
+          xhr = e.srcElement or e.target
+          scope.$apply ->
+            self.uploads--
+            scope.uploading = false
+            scope.success = false
+            deferred.reject xhr
+            scope.$emit "s3upload:error", xhr
+            return
+
+          return
+        uploadCanceled = (e) ->
+          xhr = e.srcElement or e.target
+          self.uploads--
+          scope.uploading = false
+          scope.success = false
+          deferred.reject xhr
+          scope.$emit "s3upload:abort", xhr
+          return
+        deferred = $q.defer()
+        scope.attempt = true
+        fd = new FormData()
+        fd.append "key", key
+        fd.append "acl", acl
+        fd.append "Content-Type", file.type
+        fd.append "AWSAccessKeyId", accessKey
+        fd.append "policy", policy
+        fd.append "signature", signature
+        fd.append "file", file
+        xhr = new XMLHttpRequest()
+        xhr.upload.addEventListener "progress", uploadProgress, false
+        xhr.addEventListener "load", uploadComplete, false
+        xhr.addEventListener "error", uploadFailed, false
+        xhr.addEventListener "abort", uploadCanceled, false
+        scope.$emit "s3upload:start", xhr
+        item.xhr = xhr
+        
+        # Send the file
+        scope.uploading = true
+        @uploads++
+        xhr.open "POST", uri, true
+        xhr.send fd
+        deferred.promise
+
+      @isUploading = ->
+        @uploads > 0
+      return
+  ]
+
+  angular.module("ngS3upload.directives", ["ui.router"]).directive "s3Upload", [
+    "$parse"
+    "S3Uploader"
+    ($parse, S3Uploader) ->
+      return (
+        restrict: "AEC"
+        require: "?ngModel"
+        transclude: false
+        scope: true
+        templateUrl: "<%= asset_path('sciview/partials/uploader.html') %>"
+        controller: [
+          "$state"
+          "$scope"
+          "$element"
+          "$attrs"
+          "$transclude"
+          ($state, $scope, $element, $attrs, $transclude) ->
+            $scope.attempt = false
+            $scope.success = false
+            $scope.uploading = false
+            $scope.uploads = []
+            $scope.uploadAll = ""
+            index = 0
+            opts = angular.extend({}, $scope.$eval($attrs.s3UploadOptions or $attrs.options))
+            opts = angular.extend(
+              submitOnChange: true
+              getOptionsUri: "/getS3Options"
+              acl: "public-read"
+              uploadingKey: "uploading"
+            , opts)
+            
+            button = angular.element($element.children()[0])
+            file = {}
+            
+            button.bind "click", (e) ->
+              file = angular.element($element.find("input")[0])
+              file[0].click()
+              return
+
+            $scope.barClass = ->
+              "bar-success": $scope.attempt and not $scope.uploading and $scope.success
+
+            validMimeTypes = $attrs.validTypes
+            checkSize = undefined
+            isTypeValid = undefined
+            checkSize = (size) ->
+              _ref = undefined
+              if ((_ref = $attrs.maxFileSize) is (undefined) or _ref is "") or (size / 1024) / 1024 < $attrs.maxFileSize
+                true
+              else
+                alert "File must be smaller than " + $attrs.maxFileSize + " MB"
+                false
+
+            isTypeValid = (type) ->
+              if (validMimeTypes is (undefined) or validMimeTypes is "") or validMimeTypes.indexOf(type) > -1
+                true
+              else
+                alert "Invalid file type.  File must be one of following types " + validMimeTypes
+                false
+
+            isNotQueued = (name) ->
+              if $scope.uploads.some((el) ->
+                el["name"] is name
+              )
+                alert "This file is already queued for upload please reaname the file if you think this is a mistake"
+                false
+              else
+                true
+
+            setUploadAll = ->
+              if $scope.uploads.some((item) ->
+                item.status.upload is "waiting"
+              )
+                $scope.uploadAll = "Upload All"
+              else
+                $scope.uploadAll = "Finished"
+              return
+
+            $scope.queueFile = (file) ->
+              name = file.name
+              type = file.type
+              size = file.size
+              ext = name.split(".").pop()
+              fileObj = {}
+              fileObj.name = name
+              fileObj.status = upload: "waiting"
+              fileObj.file = file
+              fileObj.progress = 0
+              $scope.$apply ->
+                $scope.uploads.push fileObj  if isNotQueued(name) and checkSize(size) and isTypeValid(type)
+                setUploadAll()
+                return
+
+              return
+
+            
+            # Choosing file from button
+            $element.bind "change", (nVal) ->
+              i = 0
+              files = file[0].files
+              while i < files.length
+                ((file) ->
+                  $scope.queueFile file
+                ) files[i]
+                i++              
+              
+              return
+
+            
+            # Drag n Drop
+            processDragOverOrEnter = (event) ->
+              event.preventDefault()  if event isnt null
+              event.originalEvent.dataTransfer.effectAllowed = "copy"
+              false
+
+            $element.bind "dragover", processDragOverOrEnter
+            $element.bind "dragenter", processDragOverOrEnter
+            $element.bind "drop", (event) ->
+              event.preventDefault()  if event isnt null
+              files = event.originalEvent.dataTransfer.files
+              i = 0
+              while i < files.length
+                ((file) ->
+                  reader = new FileReader()
+                  reader.onload = (evt) ->
+                    $scope.queueFile file
+                    return
+
+                  reader.readAsDataURL file
+                  return
+                ) files[i]
+                i++
+              false
+
+            
+            # remove upload
+            $scope.stopUpload = (item) ->
+              index = $scope.uploads.indexOf(item)
+              $scope.uploads.splice index, 1  unless index is -1
+              setUploadAll()
+              return
+
+            
+            # upload file
+            $scope.uploadItem = (item) ->
+              uploadFile item
+              return
+
+            $scope.cancelUpload = (item) ->
+              if item.status.upload is "uploading"
+                item.xhr.abort()
+                item.status.upload = "canceled"
+              else
+                $scope.stopUpload item
+              return
+
+            $scope.uploadThemAll = ->
+              waiting_uploads = $scope.uploads.filter((item) ->
+                item.status.upload is "waiting"
+              )
+              if waiting_uploads.length
+                i = 0
+                while i < waiting_uploads.length
+                  ((item) ->
+                    uploadFile item  if item isnt `undefined`
+                    return
+                  ) waiting_uploads[i]
+                  i++
+              else
+                $state.go "navigator"
+              return
+            
+
+            s3Key = (s3Options)-> 
+              timestamp = (new Date()).getTime()
+              randomString = S3Uploader.randomString(16)
+              extension = file.name.split('.').pop()
+              "#{s3Options.folder}/#{timestamp}-#{randomString}.#{extension}"
+
+            successFullUpload = (item)->
+              if (item.status.upload isnt 'canceled') 
+                item.status.upload = 'done'
+                setUploadAll()
+                S3Uploader.queueFileForProcessing(item)
+                return              
+
+            uploadFile = (item) ->
+              file = item.file
+              item.status.upload = 'uploading'
+              S3Uploader.getUploadOptions(opts.getOptionsUri).then( 
+                (s3Options)->
+                  s3Uri = "https://#{s3Options.bucket}.s3.amazonaws.com/"
+                  key = s3Key(s3Options)
+                  uploader = S3Uploader.upload($scope,
+                    s3Uri,
+                    key,
+                    opts.acl,
+                    file.type,
+                    s3Options.key,
+                    s3Options.policy,
+                    s3Options.signature,
+                    file,
+                    item
+                  ).then( 
+                    ->
+                      successFullUpload(item)
+                    , 
+                    ->
+                      successFullUpload(item)
+                    )
+                  return
+                , 
+                (error)->
+                  item.status.upload = 'error'
+                  throw Error("Can't receive the needed options for S3 #{error}")
+              )
+              return
+            return
+            
+        ]
+      )
+  ]
+  
+) window, document

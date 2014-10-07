@@ -1,4 +1,5 @@
 SciView::Application.routes.draw do
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
@@ -34,6 +35,8 @@ SciView::Application.routes.draw do
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
   get 'series/list' => 'data#list_series'
   get "d3/gf_style"
+
+
   #get "welcome/index"
   resources :posts
   root 'welcome#index'
@@ -42,7 +45,10 @@ SciView::Application.routes.draw do
   # (will eventually replace the datasets resource above)
   namespace :api do
     namespace :v1 do
-      resources :datasets, only: [:show] do
+      
+      resource :s3_options
+      resources :queue_uploads, only: [:create]
+      resources :datasets, only: [:show] do 
         collection do
           get :multiple
         end
