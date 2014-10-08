@@ -10,38 +10,37 @@ module ChatDemo
     CHANNEL        = "chat-demo"
 
     def initialize(app)
-
-      p ["adasd"]
-
       @app     = app
       @clients = []
-      uri = URI.parse(ENV["REDISCLOUD_URL"])
-      @redis = Redis.new(host: uri.host, port: uri.port, password: uri.password)
-      Thread.new do
-        redis_sub = Redis.new(host: uri.host, port: uri.port, password: uri.password)
-        redis_sub.subscribe(CHANNEL) do |on|
-          on.message do |channel, msg|
-            @clients.each {|ws| ws.send(msg) }
-          end
-        end
-      end
+      # uri = URI.parse(ENV["REDISCLOUD_URL"])
+      # @redis = Redis.new(host: uri.host, port: uri.port, password: uri.password)
+      # Thread.new do
+      #   redis_sub = Redis.new(host: uri.host, port: uri.port, password: uri.password)
+      #   redis_sub.subscribe(CHANNEL) do |on|
+      #     on.message do |channel, msg|
+      #       p [:redis_broadcast, @clients.length, channel, msg]
+      #       @clients.each {|ws| ws.send(msg) }
+      #     end
+      #   end
+      # end
     end
 
     def call(env)
       if Faye::WebSocket.websocket?(env)
         ws = Faye::WebSocket.new(env, nil, {ping: KEEPALIVE_TIME })
         ws.on :open do |event|
-          p [:open, ws.object_id]
           @clients << ws
+          p [:open, @clients.length, ws.object_id]
         end
 
         ws.on :message do |event|
-          p [:message, event.data]
-          @redis.publish(CHANNEL, sanitize(event.data))
+          p [:message, @clients.length, event.data]
+          # @redis.publish(CHANNEL, sanitize(event.data))
+          @clients.each {|ws| ws.send(event.data) }
         end
 
         ws.on :close do |event|
-          p [:close, ws.object_id, event.code, event.reason]
+          p [:close, @clients.length, ws.object_id, event.code, event.reason]
           @clients.delete(ws)
           ws = nil
         end

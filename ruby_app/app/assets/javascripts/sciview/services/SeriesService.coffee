@@ -18,8 +18,7 @@ module.run([
   'mySocket'
   'SeriesService'
   (mySocket, SeriesService) ->
-    mySocket.on('updateSeries', (series) ->
-      console.log('updateSeries event -> ', series)
+    mySocket.onEvent('updateSeries', (series) ->
       SeriesService.inject(series)
     )
 ])

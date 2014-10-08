@@ -66,9 +66,9 @@ module.controller('DataSetController', [
       $scope.states.is_renaming = false
 
     $scope.registerSocketWatchers = ->
-      mySocket.emit('resetWatchers')
-      for seriesName in $scope.current_data_set.seriesKeys()
-        mySocket.emit('watchSeries', seriesName)
+#      mySocket.emit('resetWatchers')
+#      for seriesName in $scope.current_data_set.seriesKeys()
+#        mySocket.emit('watchSeries', seriesName)
 
 #   as seen here:
 #   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
