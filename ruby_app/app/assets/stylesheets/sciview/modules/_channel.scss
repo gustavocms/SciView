@@ -1,0 +1,244 @@
+.channel {
+  @extend %monospaced-style;
+  @include span-columns(12);
+  padding: $normal 0;
+
+  &:nth-child(odd) {
+    background-color: rgba($interface_color, 0.025);
+  }
+
+}
+
+.channel__dropdown {
+  @extend %user-select-none;
+  position: absolute;
+  left: 1rem;
+  top: 1.3rem;
+  opacity: 0.2;
+  width: .35rem;
+  height: .35rem;
+  @include vp(transform, rotate(0deg));
+
+  &::before {
+    @extend %icon-font__chevron;
+    position: absolute;
+    top: 0;
+    left: 0;
+    @include rem(font-size, .35rem);
+  }
+
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+}
+
+.is-retracted {
+  .channel__dropdown {
+  @include vp(transform, rotate(270deg));
+    // @include vp(transform-origin, 90% 75%);
+  }
+}
+
+.channel__active {
+  position: absolute;
+  left: 1.025rem;
+  top: 2.3rem;  
+  width: .3rem;
+  height: .3rem;
+  border-radius: 50%;
+  background-color: rgba($white, 0.1);
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($white, 0.7);
+  }
+}
+
+.channel__active.is-active {
+  background-color: rgba($white, 1);
+}
+
+.channel__title {
+  @extend %monospaced-style;
+  @include shift(1.5);
+  @include span-columns(9);
+  height: 100%;
+  vertical-align: middle;
+  display: block;
+  word-wrap: break-word;
+}
+
+.channel__key {
+  position: relative;
+  top: .5rem;
+  right: 1rem;
+  width: 1rem;
+  height: 0.2rem;
+  float: right;
+  display: inline-block;
+  border-bottom-width: 2px;
+}
+
+.channel__category {
+  @include shift(1.5);
+  @include span-columns(9);
+  opacity: 0.3;
+}
+
+.channel__meta {
+  @extend %ul-reset;
+  @include span-columns(12);
+  @include rem(padding-left, $alpha);
+  @include rem(padding-top, $baby);
+  @include rem(padding-bottom, $baby);
+  @extend %batch-expand-animation;
+
+}
+
+.channel__meta-item {
+  @include pad($baby/4 $normal);
+  word-wrap: break-word;
+  &:nth-child(odd) {
+    background-color: rgba($white, 0.02);
+  }
+}
+
+.channel__meta-add {
+  @extend %small-caps;
+  font-size: $baby;
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.channel__meta-item-new {
+  @extend .channel__meta-item;
+//  &::before {
+//    @include rem(padding-right, $baby);
+//    content: '+';
+//  }
+}
+
+%channel__meta-item-new-input {
+  @include pad($baby/2 0);
+  opacity: 0.3;
+  background-color: transparent;
+  border: none;
+  outline: 0;
+  border-bottom: 1px solid rgba($white, 0.5);
+  color: $white;
+  &:active,
+  &:focus {
+    opacity: 1;
+    outline: 0;
+    border-bottom-color: $white;
+  }
+}
+
+.channel__meta-item-new-tag {
+  margin-top: $baby;
+  @include span-columns(12);
+  @extend %channel__meta-item-new-input;
+}
+.channel__meta-item-split {
+  @include span-columns(12);
+  margin-top: $baby;
+}
+.channel__meta-item-pair {
+  @include span-columns(12);
+  border: 0;
+  padding: 0;
+}
+.channel__meta-item-new-key {
+  @include span-columns(6);
+  @extend %channel__meta-item-new-input;
+}
+.channel__meta-item-new-value {
+  @include span-columns(6);
+  @extend %channel__meta-item-new-input;
+}
+
+.channel__meta-item-save {
+  @include span-columns(6);
+  @extend %button-reset;
+  margin-top: $baby;
+}
+
+.channel__meta-item-close {
+  @extend .channel__meta-item-save;
+}
+
+.channel__meta-item-key {
+  &::after {
+    opacity: 0.3;
+    font-weight: 500;
+    content: " :";
+  }
+}
+
+.channel__meta-item-remove {
+  @extend %button-delete;
+  @include vp(transform, translateY(-1rem));
+  right: $normal;
+  top: 50%;
+}
+
+// Mini Modal View
+.channel__meta-remove-view {
+  position: absolute;
+  top: 0;
+  background-color: darken($background_color, 5%);
+  padding: 2em;
+  overflow: hidden;
+}
+
+.channel__meta-remove-no {
+  @extend %button-reset;
+  float: right;
+}
+
+.channel__meta-remove-yes {
+  @extend %button-reset;
+  margin-left: 2em;
+  float: right;
+}
+
+.channel__meta-remove-delete {
+  @extend %button-delete;
+  top: 0;
+  right: $normal;
+}
+
+.channel__meta-remove-info {
+  display: block;
+  font-family: $primary_font_family;
+  margin-bottom: 1em;
+  line-height: 1.7;
+}
+
+.channel__meta-remove-tag {
+  @extend %monospaced-style;
+  @include pad($baby/4 $baby);
+  word-break: break-word;
+  line-height: 1.95;
+  margin-right: .3em;
+  background-color: rgba($white, 0.1);
+}
+
+.channel__meta-remove-flash {
+  @include vp(transition, all .3s ease);
+  position: absolute;
+  top: 0;
+  background-color: rgba($highlight_color, 0.95);
+  color: $font_color;
+  padding: .5em 1em;
+  opacity: 1;
+}
+
+
+
+
+

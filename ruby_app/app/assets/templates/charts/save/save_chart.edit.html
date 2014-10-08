@@ -1,8 +1,14 @@
+<div class="row">
+    <div class="col-sm-6">
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 
-<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-<div><label>Suggested Name</label></div>
-<div><input type="text" ng-model="chart.name" /></div>
-<div>
-    <a class="btn btn-primary" ng-click="confirm()">Confirm</a>
-    <a class="btn btn-default" ui-sref="^">Cancel</a>
+        <div class="form-group">
+            <label>Suggested Name</label>
+            <input type="text" ng-model="chart.name" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <a class="btn btn-primary" ng-click="confirm()">Confirm</a>
+            <a class="btn btn-default" ui-sref="^">Cancel</a>
+        </div>
+    </div>
 </div>

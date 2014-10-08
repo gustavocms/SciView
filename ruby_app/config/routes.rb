@@ -1,18 +1,25 @@
 SciView::Application.routes.draw do
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
+
+  namespace :ng do
+    root 'base#home'
+  end
+  
 
   resources :charts, only: [:index, :show, :create] do
     collection do
       get :multiple
     end
   end
-  
+
   resources :datasets, only: [:index, :show] do
     collection do
       get :multiple
       get :profile
       get :metadata
+      get :status
     end
 
     resources :tags, only: [:create, :destroy]
@@ -28,7 +35,28 @@ SciView::Application.routes.draw do
   get 'data/:key' => 'data#show', :constraints => { :key => /([^\/])+?/, :format => false }
   get 'series/list' => 'data#list_series'
   get "d3/gf_style"
+
+
   #get "welcome/index"
   resources :posts
   root 'welcome#index'
+
+  # JSON API for the angular app
+  # (will eventually replace the datasets resource above)
+  namespace :api do
+    namespace :v1 do
+      
+      resource :s3_options
+      resources :queue_uploads, only: [:create]
+      resources :datasets, only: [:show] do 
+        collection do
+          get :multiple
+        end
+      end
+
+      resources :view_states
+
+      resources :series
+    end
+  end
 end

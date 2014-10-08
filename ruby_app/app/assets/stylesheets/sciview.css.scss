@@ -1,0 +1,45 @@
+/*
+ *= require_self
+ *= require charts
+ *= require font-awesome
+*/
+
+@import "sciview/config";
+@import "sciview/lib/bourbon/bourbon";
+@import "sciview/lib/neat/neat";
+@import "sciview/global/mixins";
+
+@import "sciview/base";
+
+@import "sciview/global/layout";
+@import "sciview/global/mixins";
+@import "sciview/global/states";
+
+@import "sciview/patterns/icons";
+@import "sciview/patterns/animations";
+@import "sciview/patterns/batch";
+@import "sciview/patterns/channel";
+@import "sciview/patterns/formatting";
+@import "sciview/patterns/gradients";
+@import "sciview/patterns/input";
+@import "sciview/patterns/layout";
+@import "sciview/patterns/nav";
+@import "sciview/patterns/navigator";
+@import "sciview/patterns/overlay";
+@import "sciview/patterns/transitions";
+@import "sciview/patterns/typography";
+
+@import "sciview/modules/batch";
+@import "sciview/modules/channel";
+@import "sciview/modules/data-sets";
+@import "sciview/modules/discuss";
+@import "sciview/modules/discussion";
+@import "sciview/modules/form";
+@import "sciview/modules/main";
+@import "sciview/modules/nav";
+@import "sciview/modules/navigator";
+@import "sciview/modules/observation";
+@import "sciview/modules/source";
+@import "sciview/modules/tools";
+@import "sciview/modules/upload";
+@import "sciview/modules/views";

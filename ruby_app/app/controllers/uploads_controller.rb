@@ -8,6 +8,12 @@ class UploadsController < ApplicationController
   end
 
   def create
+    job_id = CsvUploadWorker.perform_async(series_name, csv)
+    puts "JOB_ID #{job_id}"
+    redirect_to_temp_chart
+  end
+
+  def old_create
     FileUtils.mkdir_p 'tmp/uploads'
     tmp = File.new(filepath, 'w')
     tmp.write(csv.read)
@@ -46,7 +52,15 @@ class UploadsController < ApplicationController
     @csv ||= params[:csv]
   end
 
+  def s3_path
+    "//#{s3_host}/#{csv}"
+  end
+
   def series_name
-    @series_name ||= params[:series_name].presence || csv.original_filename.pathmap("%n")
+    @series_name ||= params[:series_name].presence || csv.pathmap("%n")
+  end
+
+  def s3_host
+    URI(S3_BUCKET.url).host
   end
 end

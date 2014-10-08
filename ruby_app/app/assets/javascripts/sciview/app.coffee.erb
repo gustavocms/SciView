@@ -1,0 +1,93 @@
+app = angular.module('sciview', [
+  'ngAnimate'
+  'ngCookies'
+  'ngRoute'
+  'ui.router'
+  'ui.bootstrap'
+  'ui.utils'
+  'angular-data.DS'
+  'angular-data.DSCacheFactory'
+  'btford.socket-io'
+  'sv.ui.controllers'
+  'sv.ui.services'
+  'ngS3upload'
+])
+
+# register additional modules
+angular.module("sv.ui.controllers", [])
+angular.module('sv.ui.services', ['ngResource'])
+
+# first thing to run after loading
+app.run(['$rootScope', '$state', '$stateParams',
+  ($rootScope, $state, $stateParams) ->
+#     It's very handy to add references to $state and $stateParams to the $rootScope
+#     so that you can access them from any scope within your applications.For example,
+#     <li ui-sref-active="active }"> will set the <li> # to active whenever
+#     'contacts.list' or one of its decendents is active.
+    $rootScope.$state = $state
+    $rootScope.$stateParams = $stateParams
+    $rootScope.$on('$stateChangeError',
+        (event, toState, toParams, fromState, fromParams, error) ->
+            console.log(error)
+    )
+])
+
+#routing configuration
+app.config(['$urlRouterProvider', '$stateProvider',
+  ($urlRouterProvider, $stateProvider) ->
+
+    $urlRouterProvider.otherwise('/data-sets')
+
+    $stateProvider
+      .state('data-sets', {
+          url: '/data-sets',
+          templateUrl: '<%= asset_path('sciview/data_sets.html') %>',
+          controller: 'DataSetsController'
+      })
+      .state('data-sets.single', {
+          url: '/:dataSetId',
+          templateUrl: '<%= asset_path('sciview/data_set.html') %>',
+          controller: 'DataSetController'
+      })
+      .state('data-sets.single.discuss', {
+          url: '/discuss',
+          templateUrl: '<%= asset_path('sciview/discuss.html') %>',
+          controller: 'DiscussController'
+      })
+      .state('navigator', {
+          url: '/navigator',
+          templateUrl: '<%= asset_path('sciview/navigator.html') %>',
+          controller: 'NavigatorController'
+      })
+      .state('navigator.upload', {
+          url: '/upload',
+          templateUrl: '<%= asset_path('sciview/partials/upload.html') %>',
+      })      
+      .state('signup', {
+          url: '/signup',
+          templateUrl: '<%= asset_path('sciview/signup.html') %>',
+          controller: 'FormController'
+      })      
+      .state('login', {
+          url: '/login',
+          templateUrl: '<%= asset_path('sciview/login.html') %>',
+          controller: 'FormController'
+      })
+])
+
+#sockets configuration
+app.factory('mySocket', (socketFactory) ->
+  mySocket = socketFactory(
+    ioSocket: io.connect('http://localhost:5001')
+  )
+  mySocket.forward('error')
+  mySocket
+)
+
+# bind sockets with and refresh DS collections
+app.run([
+  '$rootScope'
+  'mySocket',
+  ($rootScope, mySocket) ->
+    $rootScope.$on('socket:error', (_, data) -> console.log data)
+])

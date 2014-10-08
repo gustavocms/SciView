@@ -2,57 +2,89 @@
 <html>
 <head>
   <title>SciView</title>
-  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= stylesheet_link_tag "application", media: "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<div class="ui one column page grid">
-
-  <div class="ui one column row">
-    <div class="column">
-      <h1 class="ui header">SciView</h1>
-
-      <nav class="ui secondary menu">
-        <div class="right menu">
-          <% if user_signed_in? %>
-            <span class="item"><%= current_user.email %></span>
-            <span class="item"><%= link_to "My Charts", [:charts] %></span>
-            <%= button_to "Sign Out", destroy_user_session_path,
-                                      method: :delete,
-                                      form_class: "item", class: "ui button" %>
-          <% else %>
-            <div class="ui buttons item">
-              <%= link_to "Sign Up", new_user_registration_path, class: "ui button" %>
-              <%= link_to "Sign In", new_user_session_path, class: "ui positive button" %>
-            </div>
-          <% end %>
-        </div>
-      </nav>
-    </div>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">SciView</a>
   </div>
 
-  <div class="ui one column row">
-    <div class="column">
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav navbar-right navbar-user">
+      <% if user_signed_in? %>
+          <li>
+            <%= link_to edit_user_registration_path do %>
+                <i class='fa fa-user'></i> <%= current_user.email %>
+            <% end %>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <%= link_to [:charts] do %>
+                <i class='fa fa-bar-chart-o '></i> My Charts
+            <% end %>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <%= link_to destroy_user_session_path, method: :delete do %>
+                <i class='fa fa-sign-out'></i> Sign Out
+            <% end %>
+          </li>
+
+      <% else %>
+          <li>
+            <%= link_to [:charts] do %>
+                <i class='fa fa-bar-chart-o '></i> Charts
+            <% end %>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <%= link_to new_user_registration_path do %>
+                <i class='fa fa-user '></i> Sign Up
+            <% end %>
+          </li>
+          <li class="divider-vertical"></li>
+          <li>
+            <%= link_to new_user_session_path do %>
+                <i class='fa fa-sign-in '></i> Sign In
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row" id="page-alert">
+    <div class="col-sm-12">
       <% if notice %>
-        <div class="ui info message">
-          <i class="close icon"></i>
-          <div class="notice header"><%= notice %></div>
-        </div>
+          <div class="alert alert-dismissable alert-success">
+            <i class="close icon"></i>
+            <strong><%= notice %></strong>
+          </div>
       <% end %>
 
       <% if alert %>
-        <div class="ui error message">
-          <i class="close icon"></i>
-          <div class="alert header"><%= alert %></div>
-        </div>
+          <div class="alert alert-dismissable alert-danger">
+            <i class="close icon"></i>
+            <strong><%= alert %></strong>
+          </div>
       <% end %>
     </div>
   </div>
 
-  <%= yield %>
-
+  <div id="page-wrapper">
+    <%= yield %>
+  </div>
 </div>
 
 </body>

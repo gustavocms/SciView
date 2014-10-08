@@ -1,0 +1,26 @@
+---
+:path: "/'Results_Noise data'/'Res_Noise_3'"
+:properties:
+  unit_string: Pa
+  datatype: DT_DOUBLE
+  description: Characteristic values for Noise_3
+  registerint6: 0
+  registerint4: 0
+  registerint5: 0
+  maximum: 0.845526438444971
+  registertxt1: ''
+  registerint1: 0
+  registerint3: 0
+  registertxt3: ''
+  minimum: -2.6357360171682
+  registerint2: 0
+  registertxt2: ''
+  displaytype: Numeric
+  monotony: not monotone
+  novaluekey: 'No'
+:values:
+- -2.6357360171682016
+- -0.9992827839777052
+- 0.8455264384449706
+- -8.10995697590216e-06
+- 0.09162456696409574

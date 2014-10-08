@@ -1,0 +1,10 @@
+<!-- Modal container -->
+<section class="overlay">
+
+  <!-- Cancel / Close modal -->
+  <button class="upload__cancel"
+          ui-sref="navigator">Cancel
+  </button>  
+  <!-- Upload box-->
+  <section class="upload" valid-types="['application/octet-stream', 'text/csv']" s3-upload bucket="angular_test_" ng-model="product.remote_product_file_url" s3-upload-options="{ getOptionsUri: 'api/v1/s3_options.json' }"></section>
+</section>

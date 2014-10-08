@@ -1,47 +1,42 @@
-<div class="ui three column row">
-  <div class="column"></div>
-  <div class="column">
-    <h2 class="ui header">Please choose a dataset to view:</h2>
-    <div class="ui form segment">
-      <%= form_for :chart do |f| %>
-        <div class="field">
-          <%= f.label :dataset %>
-          <div class="ui input">
-            <%= f.text_field :dataset, placeholder: "Series Key", class: 'chart_dataset' %>
+<div class="row">
+  <div class="col-sm-6">
+    <h3>Please choose a dataset to view:</h3>
+    <%= form_for :chart do |f| %>
+        <div class="row top5 field">
+          <div class="col-sm-2">
+            <%= f.label :dataset %>
+          </div>
+          <div class="col-sm-10">
+            <%= f.text_field :dataset, placeholder: "Series Key", class: 'form-control chart_dataset' %>
           </div>
         </div>
-        <div class="row">
-          <%= f.submit "Graph it!", class: "ui submit button", id: "view_chart" %>
-          <%= link_to "More Datasets", '', class: "ui submit button", id: "add_more_data_sets" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-  <div class="column">
-  </div>
 
+        <div class="row top5">
+          <div class="col-sm-12">
+            <%= link_to "+ Add dataset", '', class: "btn btn-default", id: "add_more_data_sets" %>
+            <%= f.submit "Graph it!", class: "btn btn-primary", id: "view_chart" %>
+          </div>
+        </div>
+    <% end %>
+  </div>
 </div>
 
-<div class="ui three column row">
-  <div class="column"></div>
-  <div class="column">
-    <h2 class="ui header">Upload a CSV file:</h2>
+<div class="row">
+  <div class="col-sm-6">
+    <h3>Upload a CSV file:</h3>
     <%= render "uploads/form" %>
   </div>
-  <div class="column"></div>
 </div>
 
 <%- if user_signed_in? -%>
-  <div class="ui three column row">
-    <div class="column"></div>
-    <div class="column">
-      <h2 class="ui header">Or choose one of your saved charts</h2>
-      <ul>
-        <% current_user.charts.each do |chart| %>
-          <li><%= link_to chart.name, chart %></li> 
-        <% end %>      
-      </ul>
+    <div class="row">
+      <div class="col-sm-6">
+        <h3>Or choose one of your saved charts</h3>
+        <ul>
+          <% current_user.charts.each do |chart| %>
+              <li><%= link_to chart.name, chart %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
-    <div class="column"></div>
-  </div>
 <%- end -%>

@@ -30,10 +30,14 @@ python_app/env
 ruby_app/.generators
 ruby_app/.rakeTasks
 ruby_app/ruby_app.iml
-ruby_app/vendor/assets/
+ruby_app/public/assets/
 python_app/.ipynb_checkpoints
 python_app/out
 *.pyc
 python_app/python_app.iml
 python_app/sciview-python.iml
 *.rdb
+.DS_Store
+tdms/pkg/
+
+**/node_modules

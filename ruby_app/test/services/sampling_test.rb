@@ -12,7 +12,7 @@ describe Sampling do
   describe Sampling::RandomSample do
     specify 'sample 900' do
       sample = Sampling::RandomSample.sample(dataset, 900)
-      sample.length.must_be_within_delta(900, 10)
+      sample.length.must_be_within_delta(900, 20)
     end
   end
 

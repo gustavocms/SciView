@@ -1,0 +1,143 @@
+%monospaced-style {
+  font-family: $mono_font_family;
+  font-size: $normal;
+  font-weight: 400;
+}
+
+%small-caps {
+  font-family: $primary_font_family;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.small-caps {
+  @extend %small-caps;
+  @include rem(font-size, $baby);
+  // font-weight: 700;
+  opacity: 0.3;
+}
+
+%icon-font {
+  font-family: 'Sciview';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+%icon-font__data-sets {
+  &::before {
+    @extend %icon-font;
+    content: "\e604";
+  }
+}
+
+%icon-font__navigator {
+  &::before {
+    @extend %icon-font;
+    content: "\e608";
+  }
+}
+
+%icon-font__add-data-set {
+  &::before {
+    @extend %icon-font;
+    content: "\e601";
+  }
+}
+
+%icon-font__channel {
+  &::before {
+    @extend %icon-font;
+    content: "\e607";
+  }
+}
+
+%icon-font__add-channel {
+  &::before {
+    @extend %icon-font;
+    content: "\e600";
+  }
+}
+
+%icon-font__graph {
+  &::before {
+    @extend %icon-font;
+    content: "\e607";
+  }
+}
+
+%icon-font__x {
+  &::before {
+    @extend %icon-font;
+    content: "\e60b";
+  }
+}
+
+%icon-font__upload {
+  &::before {
+    @extend %icon-font;
+    content: "\e60a";
+  }
+}
+
+%icon-font__share {
+  &::before {
+    @extend %icon-font;
+    content: "\e609";
+  }
+}
+
+%icon-font__download {
+  &::before {
+    @extend %icon-font;
+    content: "\e606";
+  }
+}
+
+%icon-font__discuss {
+  &::before {
+    @extend %icon-font;
+    content: "\e605";
+  }
+}
+
+%icon-font__chevron{
+  &::before {
+    @extend %icon-font;
+    content: "\e603";
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

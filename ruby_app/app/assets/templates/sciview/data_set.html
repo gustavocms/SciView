@@ -1,0 +1,114 @@
+<!-- <section class="discussion">
+  <section class="discussion__closed" ng-if="$state.current.name !== 'data-sets.single.discuss'">
+    <i class="discussion__cta-open" ui-sref="data-sets.single.discuss"></i>
+    <i class="discussion__tab--notification"></i>
+  </section>
+  <section class="discussion__open" ng-if="$state.current.name === 'data-sets.single.discuss'">
+    <i class="discussion__cta-close" ui-sref="data-sets.single"></i>
+  </section>
+</section>
+ -->
+<section class="data-set__current">
+  <ul class="batches">
+    <li class="batch" ng-repeat="chart in current_data_set.charts" ng-controller="UIChartController" ng-class="{'is-adding-series': is_adding }">
+      <!-- Sidebar / Data representation for gjkkraph -->
+      <section class="batch__sidebar">
+        <section class="batch__header">
+          <i class="batch__title-icon"></i>
+          <h4 class="batch__title" ng-click="chart.refresh()" ng-bind="chart.title"></h4>
+          <i class="batch__add-series-action" ng-click="addSeriesWindow()"></i>
+        </section>
+        <ul class="batch__data">
+          <!-- Each data item -->
+          <!-- Hack removing nested groups -->
+          <li class="channel" ng-repeat="series in chart.channels[0].series" ng-class="series.state" ng-click="setGlobalChannel(series)" ng-mouseenter="channel_hover = true" ng-mouseleave="channel_hover = false">
+            <i class="channel__active" ng-show="channel_hover" ng-init="active = true" ng-class="{'is-active': active}" ng-click="active = !active"></i>
+            <i class="channel__dropdown" ng-click="toggleGroup(series)"></i>
+            <!-- series title -->
+            <span class="channel__title" style="color: {{series.key.color}}"
+            ng-bind="series.title"> </span>
+            <span class="channel__key"
+            style="border-color: {{series.key.color}}; border-bottom-style: {{series.key.style}}"> </span>
+            <!-- series Category -->
+            <span class="channel__category" ng-bind="series.category"> </span>
+            <!-- series Metadata  -->
+            <ul class="channel__meta"
+            ng-include="'assets/sciview/metadata.html'"
+            ng-controller="MetadataController"></ul>
+        </li>
+      </ul>
+      <section class="batch__add-series" ng-keydown="keyThroughMatches($event, selectMatch($index))">
+        <span class="batch__add-series-title">Adding Series</span>
+       <input  type="text"
+               id="add_series_input"
+               class="batch__add-series-input"
+               ng-model="new_series_title"
+               ng-keypress="adding($event, chart, new_series_title.key)"
+               typeahead="series as series.key for series in querySeriesList($viewValue) | limitTo:8"
+               typeahead-loading="Loading"
+               typeahead-on-select="addSeriesRemoveWindow($item, $model, $label, chart)"
+               placeholder="Search a key, tag or attribute..."
+               autofocus>
+        <i class="batch__quit-add-action" ng-if="is_adding" ng-click="cancel()"></i>
+         <!-- Override typeahead template -->
+        <script id="template/typeahead/typeahead-popup.html" type="text/ng-template">
+          <ul class="batch__search-results" ng-style="{ display: isOpen()&&'block' }" >
+            <li ng-repeat="match in matches" class="batch__search-result" ng-mouseenter="selectActive($index)" ng-class="{'is-active': isActive($index) || hover }" ng-click="selectMatch($index)">
+                <span class="batch__search-result-text" bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+                <aside ng-if="match.model.hasTags" class="batch__search-result-tags"><span class="small-caps">Tags</span> <span class="batch__search-result-tag" ng-repeat="tag in match.model.tags" bind-html-unsafe="tag | typeaheadHighlight:query"></span>
+                </aside>                
+                <aside ng-if="match.model.hasAttributes" class="batch__search-result-tags"><span class="small-caps">Attrs</span> <span class="batch__search-result-tag" ng-repeat="(key, value) in match.model.attributes" bind-html-unsafe="key +': '+ value | typeaheadHighlight:query"></span>
+                </aside>
+            </li>
+          </ul>    
+        </script>
+
+        <!-- <a ng-click="addSeries(chart, new_series_title.key)">Add Series</a> -->
+      </section>
+    </section>
+    <!-- Visual chart representation for graph -->
+    <section class="batch__chart">
+      <div class="batch__chart-units-1">
+      </div>
+      <!-- Dummy Graph -->
+    </section>
+  </li>
+
+<!--   <li>
+    <section class="batch__header">
+      <a class="batch__title" ng-click="addChart()">+ Add New Graph</a>
+    </section>
+  </li>
+  <li>
+    <section class="batch__header">
+      <a class="batch__title" ng-click="saveDataset()">+ Save DataSet</a>
+    </section>
+  </li>
+  <li>
+    <section class="batch__header">
+      <a class="batch__title" ng-click="deleteDataset()">x Delete DataSet</a>
+    </section>
+  </li>
+  <li>
+      <section class="batch__header" ng-show="!states.is_renaming">
+          <a class="batch__title" ng-click="states.is_renaming = true">| Rename DataSet</a>
+      </section>
+      <section class="batch__header" ng-if="states.is_renaming">
+          <input type="text"
+                 ng-model="temporary_data_set.title"
+                 placeholder="Dataset name">
+
+          <button ng-click="cancelRenaming()">Cancel
+          </button>
+          <button ng-click="saveRenaming()">Save
+          </button>
+      </section>
+  </li> -->
+</ul>
+</section>
+
+<section class="discuss" ui-view ng-class="{ 'is-discussing': $state.current.name === 'data-sets.single.discuss'}">
+</section>
+
+<section class="tools" ng-controller="ToolController" ng-include="'assets/sciview/partials/tool.html'">
+</section>

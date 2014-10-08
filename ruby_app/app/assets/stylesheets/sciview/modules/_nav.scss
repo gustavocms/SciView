@@ -1,0 +1,27 @@
+// Modules
+// -- Nav
+
+.nav {
+  padding: $alpha;
+  position: fixed;
+}
+
+.nav__locations {
+  @extend %ul-reset;
+  display: inline-block;
+}
+
+// Location items
+.nav__data-sets {
+  @extend %nav-items;
+  &::before {
+    @extend %icon-font__data-sets;
+  }
+}
+
+.nav__navigator {
+  @extend %nav-items;
+  &::before {
+    @extend %icon-font__navigator;
+  }
+}

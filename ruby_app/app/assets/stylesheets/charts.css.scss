@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.chart {
+.chart, .batch__chart {
 
   .line {
     stroke: red;
@@ -10,13 +10,22 @@
   }
 
   .zoom {
-    stroke: green;
-    stroke-width: 2pt;
+    stroke-width: 1pt;
+  }
+
+  .axis {
+    opacity: 0.7;
   }
   
-  .axis line {
+  .axis line, path.domain, .legend text {
     fill: none;
-    stroke: #000;
+    stroke: white;
+  }
+
+  .axis text {
+    fill: white;
+    font-family: "Fira Mono", Courier, sans-serif;
+    font-size: 9pt;
   }
 
   .brush .extent {
@@ -26,5 +35,12 @@
 
   .legend {
     cursor: pointer;
+  }
+
+  .axis .tick line {
+    stroke-width: 1.5pt;
+  }
+  .minor .tick line {
+    stroke-width: 0.5pt;
   }
 }
