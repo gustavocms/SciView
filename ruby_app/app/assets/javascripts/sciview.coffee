@@ -536,10 +536,18 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('stroke', 'white')
       .attr('y1', 0).attr('y2', @height2)
 
+    # Tooltip data construction
     format = @xAxis.scale().tickFormat()
     data               =  {}
     data.time          = format(@x.invert(x))
-    data.intersections = @_focusPathIntersections(x)
+    data.intersections = []
+    for d in @_focusPathIntersections(x)
+      do (d) =>
+        data.intersections.push({
+          amplitude: @y.invert(d.position.y)
+          key: d.key
+          color: lineColor(d.key)
+        })
     @cursorCallback()(data)
 
     x2 = @x2(@x.invert(x))
