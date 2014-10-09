@@ -2,6 +2,7 @@ module = angular.module("sv.ui.controllers")
 
 module.controller('DataSetController', [
   '$scope'
+  '$state'
   '$stateParams'
   '$timeout'
   '$q'
@@ -10,7 +11,7 @@ module.controller('DataSetController', [
   'Observation'
   'DS'
   'mySocket'
-  ($scope, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
+  ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
 
     $scope.viewStateLoading = $q.defer()
     # waits for the parent loading to finish
@@ -33,6 +34,9 @@ module.controller('DataSetController', [
     )
 
     window.dss = $scope
+
+    $scope.openObservations = -> $state.go('data-sets.single.discuss')
+
 
     $scope.tooltip =
       time: "00:00:00:00"
@@ -80,10 +84,10 @@ module.controller('DataSetController', [
       $scope.viewState = viewState
       $scope.viewStateLoading.resolve()
       $scope.registerSocketWatchers()
-      viewState.cursorCallback((data) ->
+
+      viewState.registerCallback("_cursorCallback", (data) ->
         $scope.obsTime = data
         $scope.$digest()
-          #callback() for callback in ($scope.onCursor or [])
       )
 
     $scope.saveRenaming = ->

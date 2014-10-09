@@ -109,18 +109,20 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
       chart_uuid: @uuid
     )
 
+    window.chart = @chart
     @chart.observationCallback(@_observationFunction) if @_observationFunction
-    @chart.cursorCallback(@_cursorCallback) if @_cursorCallback
+    @chart.registerCallback(name, callback) for name, callback of @_d3_callbacks
 
   setObservationFunction: (func) ->
     @_observationFunction = func
     if @chart
       @chart.observationCallback(@_observationFunction)
 
-  setCursorCallback: (func) ->
-    @_cursorCallback = func
+  registerCallback: (name, callback) ->
+    @_d3_callbacks or= {}
+    @_d3_callbacks[name] = callback
     if @chart
-      @chart.cursorCallback(@_cursorCallback)
+      @chart.registerCallback(name, callback)
 
   addChannel: (channel) ->
     if channel
@@ -197,6 +199,11 @@ class SciView.Models.ViewState extends SciView.Models.UIBase
       do (chart) ->
         chart.chart.observations(filterObservations(observations, chart.uuid))
 
+  # Callbacks inserted here are propagated to the UICharts collection
+  # and then to the d3 chart objects.
+  registerCallback: (name, callback) ->
+    chart.registerCallback(name, callback) for chart in @charts
+
   observationCallback: (closure) ->
     for chart in @charts
       chart.setObservationFunction(
@@ -205,10 +212,8 @@ class SciView.Models.ViewState extends SciView.Models.UIBase
           closure(params)
       )
 
-  cursorCallback: (closure) ->
-    chart.setCursorCallback(closure) for chart in @charts
-
   @serialized_attributes: ['id', 'title']
   @serializable_collections:
     charts: SciView.Models.UIChart
 
+SciView.Models.UIDataset = SciView.Models.ViewState
