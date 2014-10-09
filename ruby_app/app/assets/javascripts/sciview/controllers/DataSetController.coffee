@@ -33,22 +33,17 @@ module.controller('DataSetController', [
     openObservationsPanel = -> $state.go('data-sets.single.discuss')
 
     setObservationsOnViewState = ->
-      console.log('set observations on view state')
       try
         $scope.viewState.observations($scope.observations)
-      catch e
-        console.info(e, 'Could not set observations on viewState')
 
     $scope.observationsLoading = $q.defer()
     obs_params = view_state_id: $stateParams.dataSetId
     Observation.findAll(obs_params)
     Observation.bindAll($scope, 'observations', obs_params, ->
-      console.log("Observation bindAll callback", obs_params)
       setObservationsOnViewState()
     )
 
     _newObservation = (params = {}) ->
-      console.info("_newObservation", params)
       $scope.obs_saving     = false
       $scope.newObservation =
         message: ''
@@ -91,12 +86,6 @@ module.controller('DataSetController', [
     $scope.logDataset = ->
       console.log(@viewState)
       console.log(angular.toJson(@viewState.serialize()))
-
-    $scope.dblClickEvent = (data) ->
-      @observationCallback(data)
-
-    $scope.observationCallback = (data) ->
-      console.info('observationCallback')
 
     $scope.saveDataset = ->
       ViewState.update(
