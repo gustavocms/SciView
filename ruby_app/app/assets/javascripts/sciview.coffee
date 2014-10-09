@@ -452,6 +452,7 @@ class SciView.FocusChart extends SciView.BasicChart
     legend = @svg.selectAll('g.legend').data(@_data)
     legend.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     @renderLegend()
+    @renderObservations()
     @zoomIt()
 
   renderLegend: ->
@@ -518,9 +519,19 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('font-weight', 'bold')
       .style('font-size', '8pt')
     groups.attr('transform', (d) => "translate(#{@x(new Date(d.observed_at))}, 0)")
-    #points = (@x(new Date(d.observed_at)) for d in groups.data())
-    #console.log(@_focusPathIntersections(x) for x in points)
-    #intersections = @focus.selectAll('circle.intersection').data(points)
+
+    circles = groups.selectAll('circle.intersects').data((d) => @_focusPathIntersections(@x(new Date(d.observed_at)))) # TODO: find a caching strategy for this
+    ci_center = circles.enter()
+    ci_center
+      .append('circle')
+      .attr('class', 'intersects')
+      .style('fill', (d) -> lineColor(d.key))
+      .style('stroke', 'none')
+    circles
+      .attr('cy', (d) -> d.position.y)
+      .attr('cx', 0)
+      .attr('r', 3)
+
     groups.exit().remove()
 
   observationCursor: (coords) ->
@@ -560,7 +571,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .append('circle')
       .attr('r', 4)
       .style('fill', (d) -> lineColor(d.key))
-      .style('stroke', 'none')
+      .style('stroke', 'white')
 
     circles.attr('cx', x)
     circles.attr('cy', (d) -> d.position.y)

@@ -13,19 +13,6 @@ module.controller "DiscussController", [
       func(obj)
       obj
 
-
-    # Observations now loaded by DataSetController
-    #Observation.findAll({ view_state_id: $stateParams.dataSetId })
-    #$scope.viewStateLoading.promise.then ->
-    #Observation.bindAll($scope, 'observations', { view_state_id: $stateParams.dataSetId }, (data) ->
-    #try
-    #$scope.$parent.viewState.observations($scope.observations)
-    #)
-    #
-
-
-    window.obs = $scope
-
     # sets the newObservation model and associated state variables
 
     $scope.chartUuids = ->
@@ -54,7 +41,7 @@ module.controller "DiscussController", [
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->
-        console.log('destroy', data)
+        console.info('destroy', data)
       emitUpdateObservations({ id: observation.id, action: 'eject' })
 
 ]

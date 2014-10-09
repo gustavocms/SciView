@@ -32,13 +32,19 @@ module.controller('DataSetController', [
     #
     openObservationsPanel = -> $state.go('data-sets.single.discuss')
 
+    setObservationsOnViewState = ->
+      console.log('set observations on view state')
+      try
+        $scope.viewState.observations($scope.observations)
+      catch e
+        console.info(e, 'Could not set observations on viewState')
+
     $scope.observationsLoading = $q.defer()
     obs_params = view_state_id: $stateParams.dataSetId
     Observation.findAll(obs_params)
     Observation.bindAll($scope, 'observations', obs_params, ->
-      console.log("Observation bindAll callback")
-      try
-        $scope.$parent.viewState.observations($scope.observations)
+      console.log("Observation bindAll callback", obs_params)
+      setObservationsOnViewState()
     )
 
     _newObservation = (params = {}) ->
@@ -52,6 +58,7 @@ module.controller('DataSetController', [
         $scope.$digest()
 
     $scope.viewStateLoading.promise.then ->
+      setObservationsOnViewState()
       $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
         (params = {}) ->
           openObservationsPanel()
