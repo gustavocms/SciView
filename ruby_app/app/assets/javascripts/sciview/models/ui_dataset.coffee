@@ -110,13 +110,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     )
 
     window.chart = @chart
-    @chart.observationCallback(@_observationFunction) if @_observationFunction
     @chart.registerCallback(name, callback) for name, callback of (@_d3_callbacks or {})
-
-  setObservationFunction: (func) ->
-    @_observationFunction = func
-    if @chart
-      @chart.observationCallback(@_observationFunction)
 
   registerCallback: (name, callback) ->
     @_d3_callbacks or= {}
@@ -217,14 +211,6 @@ class SciView.Models.ViewState extends SciView.Models.UIBase
   #
   registerCallback: (name, callback, wrapper = _defaultForward) ->
     chart.registerCallback(name, wrapper(chart, callback)) for chart in @charts
-
-  observationCallback: (closure) ->
-    for chart in @charts
-      chart.setObservationFunction(
-        (params = {}) ->
-          params.chart_uuid = chart.uuid
-          closure(params)
-      )
 
   @serialized_attributes: ['id', 'title']
   @serializable_collections:
