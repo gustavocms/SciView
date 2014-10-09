@@ -689,6 +689,5 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       @_cursorCallback
 
   registerCallback: (name, callback) ->
-    console.info("registerCallback", name, callback)
     @[name] = callback
     @

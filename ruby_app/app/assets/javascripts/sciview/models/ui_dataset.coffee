@@ -111,7 +111,7 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
 
     window.chart = @chart
     @chart.observationCallback(@_observationFunction) if @_observationFunction
-    @chart.registerCallback(name, callback) for name, callback of @_d3_callbacks
+    @chart.registerCallback(name, callback) for name, callback of (@_d3_callbacks or {})
 
   setObservationFunction: (func) ->
     @_observationFunction = func
@@ -201,8 +201,22 @@ class SciView.Models.ViewState extends SciView.Models.UIBase
 
   # Callbacks inserted here are propagated to the UICharts collection
   # and then to the d3 chart objects.
-  registerCallback: (name, callback) ->
-    chart.registerCallback(name, callback) for chart in @charts
+  #
+  # The wrapper function allows hooks into the UIChart model (makes attributes accessible).
+  # If no wrapper is given, arguments are forwarded directly to the callback.
+  #
+  # Example with wrapper:
+  #
+  # viewState.registerCallback('_observationCallback', myCallback, (ui_chart, cb) ->
+  #   (params = {}) ->
+  #     params.chart_uuid = ui_chart.uuid
+  #     cb(params)
+  # )
+  #
+  _defaultForward = (_, cb) -> (args...) -> cb(args...)
+  #
+  registerCallback: (name, callback, wrapper = _defaultForward) ->
+    chart.registerCallback(name, wrapper(chart, callback)) for chart in @charts
 
   observationCallback: (closure) ->
     for chart in @charts

@@ -47,10 +47,13 @@ module.controller "DiscussController", [
         $scope.$digest()
 
     $scope.viewStateLoading.promise.then ->
-      $scope.$parent.viewState.observationCallback(_newObservation)
+      $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
+        (params = {}) ->
+          params.chart_uuid = ui_chart.uuid
+          cb(params)
+      )
 
     _newObservation()
-
 
     $scope.observationLabel = (obs) ->
       if obs.chart_uuid
