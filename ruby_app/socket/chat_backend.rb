@@ -12,17 +12,7 @@ module ChatDemo
     def initialize(app)
       @app     = app
       @clients = []
-      # uri = URI.parse(ENV["REDISCLOUD_URL"])
-      # @redis = Redis.new(host: uri.host, port: uri.port, password: uri.password)
-      # Thread.new do
-      #   redis_sub = Redis.new(host: uri.host, port: uri.port, password: uri.password)
-      #   redis_sub.subscribe(CHANNEL) do |on|
-      #     on.message do |channel, msg|
-      #       p [:redis_broadcast, @clients.length, channel, msg]
-      #       @clients.each {|ws| ws.send(msg) }
-      #     end
-      #   end
-      # end
+      @rooms = []
     end
 
     def call(env)
@@ -34,9 +24,21 @@ module ChatDemo
         end
 
         ws.on :message do |event|
-          p [:message, @clients.length, event.data]
-          # @redis.publish(CHANNEL, sanitize(event.data))
-          @clients.each {|ws| ws.send(event.data) }
+          message = JSON.parse(event.data)['message']
+          case message['event']
+            when 'subscribe'
+              room = getRoom(message['resource'],message['id'])
+              room.clients << ws
+              p [:message, :subscribe, room.clients.length, message['id'], event.data]
+            when 'update'
+              room = getRoom(message['resource'],message['id'])
+              room.clients.each {|ws| ws.send(event.data) }
+              p [:message, :update, room.clients.length, message['id'], event.data]
+            else
+              p [:message, message, @clients.length, event.data]
+              @clients.each {|ws| ws.send(event.data) }
+          end
+
         end
 
         ws.on :close do |event|
@@ -54,10 +56,30 @@ module ChatDemo
     end
 
     private
-    def sanitize(message)
-      json = JSON.parse(message)
-      json.each {|key, value| json[key] = ERB::Util.html_escape(value) }
-      JSON.generate(json)
+    def getRoom(resource, id)
+      room = @rooms.find{|a| a.resource == resource && a.id == id}
+      if (room == nil)
+        room = Room.new(resource, id)
+        @rooms << room
+      end
+      return room
+    end
+  end
+
+  class Room
+    def resource
+      @resource
+    end
+    def id
+      @id
+    end
+    def clients
+      @clients
+    end
+    def initialize(resource, id)
+      @resource = resource
+      @id = id
+      @clients = []
     end
   end
 end
