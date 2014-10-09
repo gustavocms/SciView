@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :charts, dependent: :destroy
+  has_many :uploads, dependent: :destroy
 
   def as_json(*args)
     super(*args).merge({ avatar_url: gravatar_url, name: full_name_or_email })
