@@ -544,7 +544,7 @@ class SciView.FocusChart extends SciView.BasicChart
           key: d.key
           color: lineColor(d.key)
         })
-    @cursorCallback()(data)
+    @_cursorCallback(data)
 
     x2 = @x2(@x.invert(x))
     @focusCursor.attr('x1', x).attr('x2', x)
@@ -662,13 +662,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       @setSvgAttributes()
       @render()
 
-  observationCallback: (callback_function) ->
-    if callback_function
-      @_observationCallback = callback_function
-      return @
-    else
-      @_observationCallback
-
   observations: (observations) ->
     if observations
       @_observations = observations
@@ -676,13 +669,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       return @
     else
       @_observations
-
-  cursorCallback: (func) ->
-    if func
-      @_cursorCallback = func
-      return @
-    else
-      @_cursorCallback
 
   registerCallback: (name, callback) ->
     @[name] = callback
