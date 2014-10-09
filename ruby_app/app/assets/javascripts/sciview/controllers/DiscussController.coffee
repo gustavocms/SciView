@@ -37,24 +37,6 @@ module.controller "DiscussController", [
 
     $scope.observationFormPlaceholder = "New message..."
 
-    _newObservation = (params = {}) ->
-      $scope.saving = false
-      $scope.newObservation =
-        message: ''
-        view_state_id: $stateParams.dataSetId
-      $scope.newObservation[key] = value for key, value of params
-      try
-        $scope.$digest()
-
-    $scope.viewStateLoading.promise.then ->
-      $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
-        (params = {}) ->
-          params.chart_uuid = ui_chart.uuid
-          cb(params)
-      )
-
-    _newObservation()
-
     $scope.observationLabel = (obs) ->
       if obs.chart_uuid
         $scope.chartUuids()[obs.chart_uuid]
@@ -65,10 +47,10 @@ module.controller "DiscussController", [
       mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
 
     $scope.createObservation = (observation) ->
-      $scope.saving = true
+      $scope.$parent.obs_saving = true
       Observation.create(observation).then (data) ->
         emitUpdateObservations({ id: data.id, action: 'find' })
-        _newObservation()
+        $scope.$parent._newObservation()
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->

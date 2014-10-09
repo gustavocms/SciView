@@ -12,8 +12,8 @@
   <li class="observation observation__new">
     <!-- TODO: replace these css classes -->
     <form ng-submit="createObservation(newObservation)">
-      <span ng-if="saving" class="channel__meta-item-new-tag">Please wait...</span>
-      <input class="channel__meta-item-new-tag" type="text" ng-if="!saving" ng-model="newObservation.message" placeholder="{{observationFormPlaceholder}}">
+      <span ng-if="obs_saving" class="channel__meta-item-new-tag">Please wait...</span>
+      <input class="channel__meta-item-new-tag" type="text" ng-if="!obs_saving" ng-model="newObservation.message" placeholder="{{observationFormPlaceholder}}">
       <button class="channel__meta-item-save" ng-if="newObservation.message.length > 0">
         Save
       </button>

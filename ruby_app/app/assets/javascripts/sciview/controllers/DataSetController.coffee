@@ -24,6 +24,14 @@ module.controller('DataSetController', [
       $scope.tempViewState =
         title: $scope.viewState.title
 
+
+    window.dss = $scope
+
+    # OBSERVATION STUFF
+    # 
+    #
+    openObservationsPanel = -> $state.go('data-sets.single.discuss')
+
     $scope.observationsLoading = $q.defer()
     obs_params = view_state_id: $stateParams.dataSetId
     Observation.findAll(obs_params)
@@ -33,10 +41,29 @@ module.controller('DataSetController', [
         $scope.$parent.viewState.observations($scope.observations)
     )
 
-    window.dss = $scope
+    _newObservation = (params = {}) ->
+      console.info("_newObservation", params)
+      $scope.obs_saving     = false
+      $scope.newObservation =
+        message: ''
+        view_state_id: $stateParams.dataSetId
+      $scope.newObservation[key] = value for key, value of params
+      try
+        $scope.$digest()
 
-    $scope.openObservations = -> $state.go('data-sets.single.discuss')
+    $scope.viewStateLoading.promise.then ->
+      $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
+        (params = {}) ->
+          openObservationsPanel()
+          params.chart_uuid = ui_chart.uuid
+          cb(params)
+      )
 
+    _newObservation()
+    $scope._newObservation = _newObservation # must be made available to DiscussController
+    #
+    #
+    # END OF OBSERVATION STUFF
 
     $scope.tooltip =
       time: "00:00:00:00"
