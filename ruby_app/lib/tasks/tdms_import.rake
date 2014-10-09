@@ -36,9 +36,9 @@ namespace :data do
         puts "No time track"
       end
 
-      0.upto(channel.values.size - 1) do |i|
+      # 0...channel.values.size do |i|
         # indented_display "#{channel.values[i]}", 2
-      end
+      # end
 
 
 
