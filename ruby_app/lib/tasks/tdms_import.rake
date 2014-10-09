@@ -29,8 +29,15 @@ namespace :data do
         indented_display "#{name}\t#{value}", 2
       end
 
+
+      begin
+        puts channel.time_track
+      rescue KeyError => error
+        puts "No time track"
+      end
+
       0.upto(channel.values.size - 1) do |i|
-        indented_display "#{channel.values[i]}", 2
+        # indented_display "#{channel.values[i]}", 2
       end
 
 

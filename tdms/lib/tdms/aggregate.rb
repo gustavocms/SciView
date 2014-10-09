@@ -35,6 +35,14 @@ module Tdms
       @props
     end
 
+    def time_track
+      # Fetch data and throw an error if the keys don't exist
+      increment = properties.fetch('wf_increment')
+      lower_bound = properties.fetch('wf_start_offset')
+      upper_bound = (values.size - 1) * increment
+      (lower_bound..upper_bound).step(increment).to_a
+    end
+
   end
 
   class AggregateChannelEnumerator
