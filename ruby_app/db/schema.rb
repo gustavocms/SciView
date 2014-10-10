@@ -17,6 +17,14 @@ ActiveRecord::Schema.define(version: 20141004220246) do
   enable_extension "plpgsql"
   enable_extension "hstore"
 
+  create_table "annotations", force: true do |t|
+    t.string   "series_key"
+    t.datetime "timestamp"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "charts", force: true do |t|
     t.integer "user_id"
     t.string  "name"
