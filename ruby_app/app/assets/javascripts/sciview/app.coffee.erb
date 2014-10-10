@@ -87,7 +87,6 @@ app.factory('mySocket', (socketFactory) ->
 # bind sockets with and refresh DS collections
 app.run([
   '$rootScope'
-  'mySocket',
-  ($rootScope, mySocket) ->
+  ($rootScope) ->
     $rootScope.$on('socket:error', (_, data) -> console.log data)
 ])

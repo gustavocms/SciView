@@ -11,6 +11,14 @@ class Dataset
       new(series, { start: start, stop: stop, count: count }).to_hash
     end
 
+    def update_series(seriesNew)
+      with_series(seriesNew[:key]) do |series|
+        series.name = seriesNew[:name]
+        series.tags = seriesNew[:tags]
+        series.attributes = seriesNew[:attributes]
+      end
+    end
+
     def update_attribute(series_key, attribute, value)
       with_series(series_key) {|series| series.attributes[attribute] = value }
     end
