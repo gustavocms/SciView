@@ -34,7 +34,16 @@ require 'securerandom'
 class ViewState < ActiveRecord::Base
   has_many :observations
 
+  before_create :set_defaults
   before_save :ensure_chart_uuids
+
+  protected
+
+  def set_defaults
+    if charts.blank?
+      self.charts = default_charts
+    end
+  end
 
   private
 
@@ -43,5 +52,13 @@ class ViewState < ActiveRecord::Base
     Array(charts).each do |chart|
       chart["uuid"] ||= SecureRandom.uuid
     end
+  end
+
+  def default_charts
+    [{ "title" => "Default Chart", "channels" => [default_channel] }]
+  end
+
+  def default_channel
+    { "title" => "Default Channel", "series" => [] }
   end
 end
