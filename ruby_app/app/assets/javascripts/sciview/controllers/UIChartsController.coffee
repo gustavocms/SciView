@@ -10,7 +10,7 @@ module.controller("UIChartController", [
     
     $scope.is_adding = false
 
-    Alerts.pushMessage("Data loaded", "neutral")
+    Alerts.pushMessage("Save failed", "error")
 
     $scope.setGlobalChannel = (channel) ->
       # TODO: use service (or similar) and get rid of rootScope
