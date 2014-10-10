@@ -644,8 +644,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       .ticks((@y.ticks(10).length + 1) * 4)
       .tickSize(20, 10)
 
-    window.xaxis = @xAxis
-
   baseWidth: ->
     parseInt(@elementSelection().style('width'))
 

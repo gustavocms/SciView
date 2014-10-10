@@ -25,14 +25,12 @@ module.controller('DataSetController', [
         title: $scope.viewState.title
 
 
-    window.dss = $scope
-
     # OBSERVATION STUFF
     # 
     #
     openObservationsPanel = -> $state.go('data-sets.single.discuss')
 
-    setObservationsOnViewState = ->
+    $scope.setObservationsOnViewState = ->
       try
         $scope.viewState.observations($scope.observations)
 
@@ -40,7 +38,7 @@ module.controller('DataSetController', [
     obs_params = view_state_id: $stateParams.dataSetId
     Observation.findAll(obs_params)
     Observation.bindAll($scope, 'observations', obs_params, ->
-      setObservationsOnViewState()
+      $scope.setObservationsOnViewState()
     )
 
     _newObservation = (params = {}) ->
@@ -53,7 +51,7 @@ module.controller('DataSetController', [
         $scope.$digest()
 
     $scope.viewStateLoading.promise.then ->
-      setObservationsOnViewState()
+      $scope.setObservationsOnViewState()
       $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
         (params = {}) ->
           openObservationsPanel()

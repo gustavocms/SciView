@@ -109,7 +109,6 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
       chart_uuid: @uuid
     )
 
-    window.chart = @chart
     @chart.registerCallback(name, callback) for name, callback of (@_d3_callbacks or {})
 
   registerCallback: (name, callback) ->
