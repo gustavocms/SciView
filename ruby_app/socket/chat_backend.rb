@@ -27,12 +27,10 @@ module ChatDemo
           message = JSON.parse(event.data)['message']
           case message['event']
             when 'subscribe'
-              room = getRoom(message['resource'],message['id'])
-              room.clients << ws
+              room = subscribe(message['resource'],message['id'],ws)
               p [:message, :subscribe, room.clients.length, message['id'], event.data]
             when 'update'
-              room = getRoom(message['resource'],message['id'])
-              room.clients.each {|ws| ws.send(event.data) }
+              room = broadcast(message['resource'],message['id'],ws,event.data)
               p [:message, :update, room.clients.length, message['id'], event.data]
             else
               p [:message, message, @clients.length, event.data]
@@ -44,6 +42,7 @@ module ChatDemo
         ws.on :close do |event|
           p [:close, @clients.length, ws.object_id, event.code, event.reason]
           @clients.delete(ws)
+          @rooms.each {|room| room.clients.delete(ws) }
           ws = nil
         end
 
@@ -62,6 +61,18 @@ module ChatDemo
         room = Room.new(resource, id)
         @rooms << room
       end
+      return room
+    end
+
+    def subscribe(resource, id, socket)
+      room = getRoom(resource,id)
+      room.clients << socket if !room.clients.include?(socket)
+      return room
+    end
+
+    def broadcast(resource, id, originSocket, data)
+      room = getRoom(resource,id)
+      room.clients.each {|ws| ws.send(data) if ws != originSocket }
       return room
     end
   end
