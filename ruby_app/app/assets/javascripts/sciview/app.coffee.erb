@@ -10,6 +10,7 @@ app = angular.module('sciview', [
   'ngSocket'
   'sv.ui.controllers'
   'sv.ui.services'
+  'ngS3upload'
 ])
 
 # register additional modules
@@ -61,7 +62,6 @@ app.config(['$urlRouterProvider', '$stateProvider',
       .state('navigator.upload', {
           url: '/upload',
           templateUrl: '<%= asset_path('sciview/partials/upload.html') %>',
-          controller: 'UploadController'
       })      
       .state('signup', {
           url: '/signup',
