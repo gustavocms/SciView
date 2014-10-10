@@ -29,4 +29,24 @@
 # objects by SciView.Models.UIDataset.deserialize.
 #
 class ViewState < ActiveRecord::Base
+
+  before_create :set_defaults
+
+  protected
+
+  def set_defaults
+    if charts.blank?
+      self.charts = default_charts
+    end
+  end
+
+  private
+
+  def default_charts
+    [{ "title" => "Default Chart", "channels" => [default_channel] }]
+  end
+
+  def default_channel
+    { "title" => "Default Channel", "series" => [] }
+  end
 end
