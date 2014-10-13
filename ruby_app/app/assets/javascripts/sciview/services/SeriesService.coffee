@@ -7,9 +7,11 @@ module.factory "SeriesService", [ "DS", "mySocket", (DS, mySocket) ->
     baseUrl: '/api/v1'
     idAttribute: 'key'
     afterUpdate: (resourceName, attrs, cb) ->
-      mySocket.emit('updateSeries', attrs)
+      mySocket.updateEvent(resourceName, attrs.key, attrs)
       # proceed with the lifecycle
       cb(null, attrs)
+    afterInject: (resourceName, attrs) ->
+      mySocket.subscribe(resourceName, attrs.key)
   )
 ]
 
@@ -18,7 +20,7 @@ module.run([
   'mySocket'
   'SeriesService'
   (mySocket, SeriesService) ->
-    mySocket.onEvent('updateSeries', (series) ->
+    mySocket.onUpdateEvent('series', (series) ->
       SeriesService.inject(series)
     )
 ])

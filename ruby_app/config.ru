@@ -2,9 +2,9 @@
 
 require ::File.expand_path('../config/environment',  __FILE__)
 
-require './socket/chat_backend'
+require './socket/faye_server'
 
 # Initialize faye sockets
-use ChatDemo::ChatBackend
+use Sciview::FayeServer
 
 run Rails.application

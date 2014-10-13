@@ -9,9 +9,8 @@ module.controller('DataSetController', [
   'ViewState'
   'SeriesService'
   'Observation'
-  'DS'
   'mySocket'
-  ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
+  ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, mySocket) ->
 
     $scope.viewStateLoading = $q.defer()
     # waits for the parent loading to finish
@@ -147,10 +146,6 @@ module.controller('DataSetController', [
       true
     )
 
-    # full list of series
-    SeriesService.findAll()
-    SeriesService.bindAll($scope, 'seriesList', {})
-
     $scope.joinAttributes = (attributes) ->
       attributesList = ''
       angular.forEach(attributes, (value, key) ->
@@ -164,20 +159,24 @@ module.controller('DataSetController', [
       matcher = RegExp(typed, 'i')
       filteredSeries = []
 
-#     search seriesList for matching items
-      angular.forEach($scope.seriesList, (item, i) ->
-        seriesTerms = item.key + '|' + item.tags.join('|') + $scope.joinAttributes(item.attributes)
+    # full list of series
+      SeriesService.findAll().then (data) ->
+        $scope.seriesList = data
 
-        if matcher.test(seriesTerms)
-          # used to control exhibition at autocomplete
-          item.hasTags = item.tags.length > 0
-          item.hasAttributes = $scope.joinAttributes(item.attributes).length > 0
+        # search seriesList for matching items
+        angular.forEach($scope.seriesList, (item, i) ->
+          seriesTerms = item.key + '|' + item.tags.join('|') + $scope.joinAttributes(item.attributes)
 
-          # add item to autocomplete list
-          filteredSeries.push(item)
-      )
+          if matcher.test(seriesTerms)
+            # used to control exhibition at autocomplete
+            item.hasTags = item.tags.length > 0
+            item.hasAttributes = $scope.joinAttributes(item.attributes).length > 0
 
-      return filteredSeries
+            # add item to autocomplete list
+            filteredSeries.push(item)
+        )
+
+        return filteredSeries
 
     toggleExpandRetract = (obj) ->
       obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
