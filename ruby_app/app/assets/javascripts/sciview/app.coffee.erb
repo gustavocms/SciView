@@ -7,7 +7,7 @@ app = angular.module('sciview', [
   'ui.utils'
   'angular-data.DS'
   'angular-data.DSCacheFactory'
-  'btford.socket-io'
+  'ngSocket'
   'sv.ui.controllers'
   'sv.ui.services'
   'sv.ui.filters'
@@ -77,17 +77,24 @@ app.config(['$urlRouterProvider', '$stateProvider',
 ])
 
 #sockets configuration
-app.factory('mySocket', (socketFactory) ->
-  mySocket = socketFactory(
-    ioSocket: io.connect('http://localhost:5001')
-  )
-  mySocket.forward('error')
+app.factory('mySocket', (ngSocket) ->
+  mySocket = ngSocket('ws://localhost:3000')
+
+  mySocket.emit = (event, data) ->
+    mySocket.send(
+      event: event
+      data: data)
+
+  mySocket.onEvent = (event, callBack, autoApply = false) ->
+    mySocket.onMessage(
+      (message) ->
+        msg = JSON.parse(message.data).message
+        if msg.event == event
+          console.log(event + ' event -> ', msg.data)
+          callBack(msg.data)
+      autoApply: autoApply
+    )
+
   mySocket
 )
 
-# bind sockets with and refresh DS collections
-app.run([
-  '$rootScope'
-  ($rootScope) ->
-    $rootScope.$on('socket:error', (_, data) -> console.log data)
-])

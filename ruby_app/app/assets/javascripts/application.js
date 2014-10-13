@@ -15,7 +15,6 @@
 //= require jquery-ui
 //= require bootstrap-sprockets
 //= require d3.v3
-//= require socket.io
 //= require angular/angular
 //= require angular-mocks/angular-mocks
 //= require angular-route/angular-route
@@ -28,7 +27,7 @@
 //= require angular-ui-router
 //= require angular-data
 //= require angular-cache/angular-cache
-//= require angular-socket-io/socket
+//= require ngSocket/ngSocket
 //= require charts/multiple
 //= require charts/index
 //= require sciview
