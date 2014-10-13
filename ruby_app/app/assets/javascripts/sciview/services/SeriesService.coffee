@@ -14,7 +14,7 @@ module.factory "SeriesService", [ "DS", "mySocket", (DS, mySocket) ->
       mySocket.subscribe(resourceName, attrs.key)
   )
 ]
-
+###
 # sockets
 module.run([
   'mySocket'
@@ -24,3 +24,4 @@ module.run([
       SeriesService.inject(series)
     )
 ])
+###

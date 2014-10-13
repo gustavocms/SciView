@@ -28,8 +28,9 @@ module Sciview
     # Only allow these event names.
     # Anything else will be delegated to :_generic_message.
     SANITIZED_MESSAGE_NAMES = {
-      "subscribe" => :_subscribe,
-      "update"    => :_update
+      "subscribe"                     => :_subscribe,
+      "update"                        => :_update,
+      "clearObservationSubscriptions" => :_clear_observation_subscriptions
     }
 
     def socket_call(env)
@@ -63,6 +64,15 @@ module Sciview
       broadcast(message['resource'], message['id'], socket, event.data)
     end
 
+    # To be run on a new viewState subscription (socket will only look at one at a time)
+    # Could get slow with lots of rooms - should we also bind rooms to a socket attr?
+    def _clear_observation_subscriptions(_, socket, *)
+      rooms.select {|(resource, _), _| resource == "viewState" }.each_value do |room|
+        p [:unsubscribe, "viewStateObservations", socket.object_id]
+        room.delete(socket) 
+      end
+    end
+
     # NOTE: Is there any reason to do this? This leaves a hole for anyone
     # to spam all connected clients with whatever data they want.
     # Logged, but broadcast disabled for now.
@@ -72,16 +82,18 @@ module Sciview
     end
 
     def room_for(resource, id)
-      rooms[[resource, id]].tap do |room|
+      rooms[[resource.to_s, id.to_s]].tap do |room|
         yield room if block_given?
       end
     end
 
     def subscribe(resource, id, socket)
+      p [:subscribe, resource, id, socket.object_id]
       room_for(resource ,id) { |room| room << socket }
     end
 
     def broadcast(resource, id, origin_socket, data)
+      p [:broadcast, resource, id, data]
       room_for(resource,id) do |room|
         room.each {|ws| ws.send(data) unless ws == origin_socket }
       end
@@ -95,6 +107,10 @@ module Sciview
       @resource = resource
       @id       = id
       @clients  = Set.new
+    end
+
+    def inspect
+      "#<SciView::Room:#{object_id} [#{resource.inspect}, #{id.inspect}] clients=Set{ #{clients.count} clients }>"
     end
 
     def method_missing(name, *args, &block)
