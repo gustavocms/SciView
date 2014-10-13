@@ -10,7 +10,7 @@ module Sciview
     def initialize(app)
       @app     = app
       @clients = []
-      @rooms   = []
+      @rooms   = Hash.new {|hash, key| hash[key] = Room.new(*Array(key)) }
     end
 
     attr_reader :rooms, :clients, :app
@@ -26,23 +26,22 @@ module Sciview
         ws.on :message do |event|
           message = JSON.parse(event.data)['message']
           case message['event']
-            when 'subscribe'
-              room = subscribe(message['resource'],message['id'],ws)
-              p [:message, :subscribe, room.size, message['id'], event.data]
-            when 'update'
-              room = broadcast(message['resource'],message['id'],ws,event.data)
-              p [:message, :update, room.size, message['id'], event.data]
-            else
-              p [:message, message, clients.length, event.data]
-              clients.each {|ws| ws.send(event.data) }
+          when 'subscribe'
+            room = subscribe(message['resource'],message['id'],ws)
+            p [:message, :subscribe, room.size, message['id'], event.data]
+          when 'update'
+            room = broadcast(message['resource'],message['id'],ws,event.data)
+            p [:message, :update, room.size, message['id'], event.data]
+          else
+            p [:message, message, clients.length, event.data]
+            clients.each {|ws| ws.send(event.data) }
           end
-
         end
 
         ws.on :close do |event|
           p [:close, clients.length, ws.object_id, event.code, event.reason]
           clients.delete(ws)
-          rooms.each {|room| room.delete(ws) }
+          rooms.each {|_, room| room.delete(ws) }
           ws = nil
         end
 
@@ -55,24 +54,22 @@ module Sciview
     end
 
     private
-    def room(resource, id)
-      room = rooms.find{|a| a.resource == resource && a.id == id}
-      if (room == nil)
-        room = Room.new(resource, id)
-        rooms << room
+
+    def room_for(resource, id)
+      rooms[[resource, id]].tap do |room|
+        yield room if block_given?
       end
-      room.tap {|r| yield r }
     end
 
     def subscribe(resource, id, socket)
-      room(resource,id) do |r|
-        r << socket
+      room_for(resource ,id) do |room|
+        room << socket
       end
     end
 
     def broadcast(resource, id, originSocket, data)
-      room(resource,id) do |r|
-        r.each {|ws| ws.send(data) if ws != originSocket }
+      room_for(resource,id) do |room|
+        room.each {|ws| ws.send(data) if ws != originSocket }
       end
     end
   end
