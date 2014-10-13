@@ -1,6 +1,4 @@
 require 'faye/websocket'
-require 'thread'
-require 'redis'
 require 'json'
 require 'erb'
 
@@ -12,6 +10,7 @@ module ChatDemo
     def initialize(app)
       @app     = app
       @clients = []
+
       # uri = URI.parse(ENV["REDISCLOUD_URL"])
       # @redis = Redis.new(host: uri.host, port: uri.port, password: uri.password)
       # Thread.new do
@@ -27,20 +26,24 @@ module ChatDemo
 
     def call(env)
       if Faye::WebSocket.websocket?(env)
-        ws = Faye::WebSocket.new(env, nil, {ping: KEEPALIVE_TIME })
+        ws = Faye::WebSocket.new(env, nil, { ping: KEEPALIVE_TIME })
         ws.on :open do |event|
           @clients << ws
-          p [:open, @clients.length, ws.object_id]
+          log :open, @clients.length, ws.object_id
+        end
+
+        ws.on :subscribe do |event|
+          log :subscribe, ws.object_id, event.data
         end
 
         ws.on :message do |event|
-          p [:message, @clients.length, event.data]
+          log :message, @clients.length, event.data
           # @redis.publish(CHANNEL, sanitize(event.data))
           @clients.each {|ws| ws.send(event.data) }
         end
 
         ws.on :close do |event|
-          p [:close, @clients.length, ws.object_id, event.code, event.reason]
+          log :close, @clients.length, ws.object_id, event.code, event.reason
           @clients.delete(ws)
           ws = nil
         end
@@ -54,6 +57,12 @@ module ChatDemo
     end
 
     private
+
+    def log(*args)
+      puts "SOCKET :: "
+      args.each(&method(:puts))
+    end
+
     def sanitize(message)
       json = JSON.parse(message)
       json.each {|key, value| json[key] = ERB::Util.html_escape(value) }

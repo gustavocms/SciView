@@ -78,13 +78,15 @@ app.config(['$urlRouterProvider', '$stateProvider',
 
 #sockets configuration
 app.factory('mySocket', (ngSocket) ->
-  mySocket = ngSocket('ws://localhost:3000')
+  mySocket = ngSocket('ws://localhost:3000') # TODO: set configuration variable
 
   mySocket.emit = (event, data) ->
-    mySocket.send(
+    console.info("SOCKET :: emit #{event} #{data}")
+    mySocket.send
       event: event
-      data: data)
+      data: data
 
+  # receive messages
   mySocket.onEvent = (event, callBack, autoApply = false) ->
     mySocket.onMessage(
       (message) ->
