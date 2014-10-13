@@ -78,7 +78,7 @@ app.config(['$urlRouterProvider', '$stateProvider',
 
 #sockets configuration
 app.factory('mySocket', (ngSocket) ->
-  mySocket = ngSocket("ws://#{window.location.host}") # TODO: set configuration variable
+  mySocket = ngSocket("ws://#{window.location.host}") 
 
   mySocket.emit = (event, data) ->
     mySocket.send
