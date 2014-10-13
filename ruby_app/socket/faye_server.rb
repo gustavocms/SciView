@@ -26,7 +26,7 @@ module Sciview
     private
 
     # Only allow these event names.
-    # Anything else will be delegated to :_generic_message 
+    # Anything else will be delegated to :_generic_message.
     SANITIZED_MESSAGE_NAMES = {
       "subscribe" => :_subscribe,
       "update"    => :_update
@@ -55,12 +55,6 @@ module Sciview
       ws.rack_response
     end
 
-    def room_for(resource, id)
-      rooms[[resource, id]].tap do |room|
-        yield room if block_given?
-      end
-    end
-
     def _subscribe(message, socket, *)
       subscribe(message['resource'], message['id'], socket)
     end
@@ -77,6 +71,11 @@ module Sciview
       #clients.each {|ws| ws.send(event.data) }
     end
 
+    def room_for(resource, id)
+      rooms[[resource, id]].tap do |room|
+        yield room if block_given?
+      end
+    end
 
     def subscribe(resource, id, socket)
       room_for(resource ,id) { |room| room << socket }
