@@ -41,7 +41,7 @@ module Sciview
         end
 
         ws.on :close do |event|
-          log :close, @clients.length, ws.object_id, event.code, event.reason
+          log :close, "n clients #{@clients.length}", "ws.object_id: #{ws.object_id}", "event.code #{event.code}", "event.reason #{event.reason}"
           @clients.delete(ws)
           @rooms.each {|room| room.clients.delete(ws) }
           ws = nil
