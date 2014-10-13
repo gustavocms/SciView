@@ -13,7 +13,7 @@ module Sciview
       @rooms   = []
     end
 
-    attr_reader :rooms, :clients
+    attr_reader :rooms, :clients, :app
 
     def call(env)
       if Faye::WebSocket.websocket?(env)
@@ -28,10 +28,10 @@ module Sciview
           case message['event']
             when 'subscribe'
               room = subscribe(message['resource'],message['id'],ws)
-              p [:message, :subscribe, room.clients.length, message['id'], event.data]
+              p [:message, :subscribe, room.size, message['id'], event.data]
             when 'update'
               room = broadcast(message['resource'],message['id'],ws,event.data)
-              p [:message, :update, room.clients.length, message['id'], event.data]
+              p [:message, :update, room.size, message['id'], event.data]
             else
               p [:message, message, clients.length, event.data]
               clients.each {|ws| ws.send(event.data) }
@@ -42,7 +42,7 @@ module Sciview
         ws.on :close do |event|
           p [:close, clients.length, ws.object_id, event.code, event.reason]
           clients.delete(ws)
-          rooms.each {|room| room.clients.delete(ws) }
+          rooms.each {|room| room.delete(ws) }
           ws = nil
         end
 
@@ -50,7 +50,7 @@ module Sciview
         ws.rack_response
 
       else
-        @app.call(env)
+        app.call(env)
       end
     end
 
@@ -66,13 +66,13 @@ module Sciview
 
     def subscribe(resource, id, socket)
       room(resource,id) do |r|
-        r.clients << socket
+        r << socket
       end
     end
 
     def broadcast(resource, id, originSocket, data)
       room(resource,id) do |r|
-        r.clients.each {|ws| ws.send(data) if ws != originSocket }
+        r.each {|ws| ws.send(data) if ws != originSocket }
       end
     end
   end
@@ -84,6 +84,10 @@ module Sciview
       @resource = resource
       @id       = id
       @clients  = Set.new
+    end
+
+    def method_missing(name, *args, &block)
+      clients.send(name, *args, &block)
     end
   end
 end
