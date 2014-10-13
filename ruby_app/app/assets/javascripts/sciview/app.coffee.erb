@@ -28,8 +28,8 @@ app.run(['$rootScope', '$state', '$stateParams',
     $rootScope.$state = $state
     $rootScope.$stateParams = $stateParams
     $rootScope.$on('$stateChangeError',
-        (event, toState, toParams, fromState, fromParams, error) ->
-            console.log(error)
+      (event, toState, toParams, fromState, fromParams, error) ->
+        console.log(error)
     )
 ])
 
@@ -81,7 +81,6 @@ app.factory('mySocket', (ngSocket) ->
   mySocket = ngSocket('ws://localhost:3000') # TODO: set configuration variable
 
   mySocket.emit = (event, data) ->
-    console.info("SOCKET :: emit #{event} #{data}")
     mySocket.send
       event: event
       data: data
@@ -92,7 +91,7 @@ app.factory('mySocket', (ngSocket) ->
       (message) ->
         msg = JSON.parse(message.data).message
         if msg.event == event
-          console.log(event + ' event -> ', msg.data)
+          console.info(event + ' event -> ', msg.data)
           callBack(msg.data)
       autoApply: autoApply
     )
@@ -109,7 +108,7 @@ app.factory('mySocket', (ngSocket) ->
       (message) ->
         msg = JSON.parse(message.data).message
         if msg.event == "update" and msg.resource == resource
-          console.log(resource + ' updateEvent -> ', msg.data)
+          console.info(resource + ' updateEvent -> ', msg.data)
           callBack(msg.data)
       autoApply: autoApply
     )
