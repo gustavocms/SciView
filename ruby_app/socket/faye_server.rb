@@ -1,8 +1,5 @@
 require 'faye/websocket'
-require 'thread'
-require 'redis'
 require 'json'
-require 'erb'
 require 'set'
 
 module Sciview
@@ -16,34 +13,36 @@ module Sciview
       @rooms   = []
     end
 
+    attr_reader :rooms, :clients
+
     def call(env)
       if Faye::WebSocket.websocket?(env)
         ws = Faye::WebSocket.new(env, nil, {ping: KEEPALIVE_TIME })
         ws.on :open do |event|
-          @clients << ws
-          log :open, @clients.length, ws.object_id
+          clients << ws
+          p [:open, clients.length, ws.object_id]
         end
 
         ws.on :message do |event|
           message = JSON.parse(event.data)['message']
           case message['event']
-          when 'subscribe'
-            room = subscribe(message['resource'],message['id'],ws)
-            log  :message, :subscribe, room.clients.length, message['id'], event.data
-          when 'update'
-            room = broadcast(message['resource'],message['id'],ws,event.data)
-            log :message, :update, room.clients.length, message['id'], event.data
-          else
-            log :message, message, @clients.length, event.data
-            @clients.each {|ws| ws.send(event.data) }
+            when 'subscribe'
+              room = subscribe(message['resource'],message['id'],ws)
+              p [:message, :subscribe, room.clients.length, message['id'], event.data]
+            when 'update'
+              room = broadcast(message['resource'],message['id'],ws,event.data)
+              p [:message, :update, room.clients.length, message['id'], event.data]
+            else
+              p [:message, message, clients.length, event.data]
+              clients.each {|ws| ws.send(event.data) }
           end
 
         end
 
         ws.on :close do |event|
-          log :close, "n clients #{@clients.length}", "ws.object_id: #{ws.object_id}", "event.code #{event.code}", "event.reason #{event.reason}"
-          @clients.delete(ws)
-          @rooms.each {|room| room.clients.delete(ws) }
+          p [:close, clients.length, ws.object_id, event.code, event.reason]
+          clients.delete(ws)
+          rooms.each {|room| room.clients.delete(ws) }
           ws = nil
         end
 
@@ -56,47 +55,35 @@ module Sciview
     end
 
     private
-
-    def log(*args)
-      puts "SOCKET :: "
-      args.each(&method(:puts))
-    end
-
     def room(resource, id)
-      room = @rooms.find{|a| a.resource == resource && a.id == id}
+      room = rooms.find{|a| a.resource == resource && a.id == id}
       if (room == nil)
         room = Room.new(resource, id)
-        @rooms << room
+        rooms << room
       end
-      return room
+      room.tap {|r| yield r }
     end
 
     def subscribe(resource, id, socket)
-      room(resource,id).tap {|r| r << socket }
+      room(resource,id) do |r|
+        r.clients << socket
+      end
     end
 
-    def broadcast(resource, id, origin_socket, data)
-      room(resource, id).tap do |r|
-        room.each {|ws| ws.send(data) unless ws == origin_socket }
+    def broadcast(resource, id, originSocket, data)
+      room(resource,id) do |r|
+        r.clients.each {|ws| ws.send(data) if ws != originSocket }
       end
     end
   end
 
-  require 'set'
-
   class Room
-
     attr_reader :resource, :id, :clients
 
-    def initialize(resource, id, *clients)
+    def initialize(resource, id)
       @resource = resource
       @id       = id
-      @clients  = Set.new(Array(clients))
-    end
-
-    # delegate methods to set
-    def method_missing(name, *args, &block)
-      clients.send(name, *args, &block)
+      @clients  = Set.new
     end
   end
 end
