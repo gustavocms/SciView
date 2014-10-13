@@ -9,7 +9,7 @@ module.factory "SeriesService", [ "DS", "mySocket", (DS, mySocket) ->
     afterUpdate: (resourceName, attrs, cb) ->
       mySocket.emit('updateSeries', attrs)
       # proceed with the lifecycle
-      cb(null, attrs);
+      cb(null, attrs)
   )
 ]
 

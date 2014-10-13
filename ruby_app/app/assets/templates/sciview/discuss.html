@@ -1,41 +1,49 @@
 
-  <header class="discuss__header">
-    <h2 class="discuss__title">Activity</h2>
-    <div class="discuss__notifications">
-      <span class="discuss__notifications-value">3</span><span class="discuss__notifications-unread"> unread observations.</span><span class="discuss__notifications-clear">Mark as read</span>
-    </div>
-    </span>
-      
-    </div>
-  </header>
-  <ul class="discuss__feed">
-    <li class="observation"
-        ng-repeat="observation in observations">
-        <header class="observation__header">
-          <span class="observation__header-data-set"
-                ng-bind="observation.data_set">
-          </span>          
-          <span class="observation__header-data-point"
-                ng-bind="observation.data_point">
-          </span>
-        </header>
-        <section class="observation__main">
-          <section class="observation__sidebar">
-            <span  class="observation__author-photo"
-                  style="background-image: url('{{observation.img}}')">
-            </span>
-          </section>
-          <section class="observation__main-info">
-            <span class="observation__author"
-                  ng-bind="observation.author">
-            </span>
-            <span class="observation__created"
-                  ng-bind="observation.created | date:'shortTime'">
-            </span>
-            <p    class="observation__info"
-                  ng-bind="observation.observation">
-            </p>        
-          </section>
-        </section>
-    </li> 
-  </ul>
+<header class="discuss__header">
+  <h2 class="discuss__title">Activity</h2>
+  <div class="discuss__notifications">
+    <span class="discuss__notifications-value">3</span>
+    <span class="discuss__notifications-unread"> unread observations.</span>
+    <span class="discuss__notifications-clear">Mark as read</span>
+  </div>
+</header>
+
+<ul class="discuss__feed">
+  <li class="observation observation__new">
+    <!-- TODO: replace these css classes -->
+    <form ng-submit="createObservation(newObservation)">
+      <span ng-if="obs_saving" class="channel__meta-item-new-tag">Please wait...</span>
+      <input class="channel__meta-item-new-tag" type="text" ng-if="!obs_saving" ng-model="newObservation.message" placeholder="{{observationFormPlaceholder}}">
+      <button class="channel__meta-item-save" ng-if="newObservation.message.length > 0">
+        Save
+      </button>
+      <label>
+        Applies to:
+        <select ng-model="newObservation.chart_uuid">
+          <option value="">Entire Dataset</option>
+          <option ng-repeat="(uuid, title) in chartUuids()" value="{{uuid}}">{{title}}</option>
+        </select>
+      </label>
+      <span ng-if="newObservation.observed_at">{{newObservation.observed_at}}</span>
+    </form>
+  </li>
+
+  <li class="observation" ng-repeat="observation in observations | orderBy: '-created_at'">
+    <header class="observation__header">
+      <a class="observation__header-clear" ng-click="deleteObservation(observation)">x</a>
+      <span class="observation__header-data-set" ng-bind="observationLabel(observation)"></span>
+      <!--<span class="observation__header-data-point" ng-bind="observation.data_point || 'point'"></span>-->
+    </header>
+
+    <section class="observation__main">
+      <section class="observation__sidebar">
+        <span class="observation__author-photo" style="background-image: url('{{observation.user.avatar_url}}')"></span>
+      </section>
+      <section class="observation__main-info">
+        <span class="observation__author" ng-bind="observation.user.name"></span>
+        <span class="observation__created" ng-bind="observation.created_at | timeAgo"></span>
+        <p class="observation__info" ng-bind="observation.message"></p>
+      </section>
+    </section>
+  </li> 
+</ul>

@@ -28,9 +28,14 @@
 # This is fetched by angular's ViewState resource and built into the appropriate
 # objects by SciView.Models.UIDataset.deserialize.
 #
+
+require 'securerandom'
+
 class ViewState < ActiveRecord::Base
+  has_many :observations
 
   before_create :set_defaults
+  before_save :ensure_chart_uuids
 
   protected
 
@@ -41,6 +46,13 @@ class ViewState < ActiveRecord::Base
   end
 
   private
+
+  def ensure_chart_uuids
+    charts_will_change!
+    Array(charts).each do |chart|
+      chart["uuid"] ||= SecureRandom.uuid
+    end
+  end
 
   def default_charts
     [{ "title" => "Default Chart", "channels" => [default_channel] }]

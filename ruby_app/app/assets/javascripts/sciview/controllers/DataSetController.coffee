@@ -2,73 +2,128 @@ module = angular.module("sv.ui.controllers")
 
 module.controller('DataSetController', [
   '$scope'
+  '$state'
   '$stateParams'
   '$timeout'
+  '$q'
   'ViewState'
   'SeriesService'
+  'Observation'
+  'DS'
   'mySocket'
-  ($scope, $stateParams, $timeout, ViewState, SeriesService, mySocket) ->
+  ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, DS, mySocket) ->
 
-#  waits for the parent loading to finish
+    $scope.viewStateLoading = $q.defer()
+    # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
-
-  #   find the correct dataset in parent's scope
       filteredDS = $scope.$parent.data_sets.filter (ds) ->
         ds.id.toString() == $stateParams.dataSetId
+      $scope._setViewState(filteredDS[0])
 
-      $scope.setCurrentDataSet(filteredDS[0])
-      $scope.registerSocketWatchers()
+      # used to manage changes that may be reverted
+      $scope.tempViewState =
+        title: $scope.viewState.title
 
-  #   used to manage changes that may be reverted
-      $scope.temporary_data_set =
-        title: $scope.current_data_set.title
+
+    # OBSERVATION STUFF
+    # 
+    #
+    openObservationsPanel = -> $state.go('data-sets.single.discuss')
+
+    $scope.setObservationsOnViewState = ->
+      try
+        $scope.viewState.observations($scope.observations)
+
+    $scope.observationsLoading = $q.defer()
+    obs_params = view_state_id: $stateParams.dataSetId
+    Observation.findAll(obs_params)
+    Observation.bindAll($scope, 'observations', obs_params, ->
+      $scope.setObservationsOnViewState()
+    )
+
+    _newObservation = (params = {}) ->
+      $scope.obs_saving     = false
+      $scope.newObservation =
+        message: ''
+        view_state_id: $stateParams.dataSetId
+      $scope.newObservation[key] = value for key, value of params
+      try
+        $scope.$digest()
+
+    $scope.viewStateLoading.promise.then ->
+      $scope.setObservationsOnViewState()
+      $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
+        (params = {}) ->
+          openObservationsPanel()
+          params.chart_uuid = ui_chart.uuid
+          cb(params)
+      )
+
+    _newObservation()
+    $scope._newObservation = _newObservation # must be made available to DiscussController
+    #
+    #
+    # END OF OBSERVATION STUFF
+
+    $scope.tooltip =
+      time: "00:00:00:00"
+      unit: "seconds"
+
+    $scope.obsTime = "000"
 
     $scope.states =
       is_renaming: false
+      is_discussing: false
 
     # Expand and retract group channels
     $scope.toggleGroup = (channel) -> toggleExpandRetract(channel)
 
     $scope.addChart = ->
-      @current_data_set.addChart()
+      @viewState.addChart()
 
     $scope.logDataset = ->
-      console.log(@current_data_set)
-      console.log(angular.toJson(@current_data_set.serialize()))
+      console.log(@viewState)
+      console.log(angular.toJson(@viewState.serialize()))
 
     $scope.saveDataset = ->
       ViewState.update(
-        { id: $scope.current_data_set.id },
-        $scope.current_data_set.serialize()
+        { id: $scope.viewState.id },
+        $scope.viewState.serialize()
       )
       console.log('saving')
 
     $scope.deleteDataset = ->
-      dataset_id = $scope.current_data_set.id
-      ViewState.delete({ id: dataset_id })
+      viewStateId = $scope.viewState.id
+      ViewState.delete({ id: viewStateId })
         .$promise
         .then(->
-          window.s = $scope
-          $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt dataset_id)
+          $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt viewStateId)
           $scope.$state.go('data-sets')
         )
 
-    $scope.setCurrentDataSet = (dataset) ->
-      $scope.current_data_set = dataset
+    $scope._setViewState = (viewState) ->
+      $scope.viewState = viewState
+      $scope.viewStateLoading.resolve()
       $scope.registerSocketWatchers()
 
+      viewState.registerCallback("_cursorCallback", (data) ->
+        $scope.obsTime = data
+        $scope.$digest()
+      )
+
     $scope.saveRenaming = ->
-      $scope.current_data_set.title = $scope.temporary_data_set.title
+      $scope.viewState.title = $scope.tempViewState.title
       $scope.states.is_renaming = false
 
     $scope.cancelRenaming = ->
-      $scope.temporary_data_set.title = $scope.current_data_set.title
+      $scope.tempViewState.title = $scope.viewState.title
       $scope.states.is_renaming = false
 
     $scope.registerSocketWatchers = ->
       mySocket.emit('resetWatchers')
-      for seriesName in $scope.current_data_set.seriesKeys()
-        mySocket.emit('watchSeries', seriesName)
+      mySocket.emit('listenTo', "viewState_#{$scope.viewState.id}")
+      for seriesName in $scope.viewState.seriesKeys()
+        mySocket.emit('listenTo', seriesName)
 
 #   as seen here:
 #   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
@@ -80,7 +135,7 @@ module.controller('DataSetController', [
         callback()
 
     $scope.$watch(
-      'current_data_set.serialize()'
+      'viewState.serialize()'
       () -> afterInitialization($scope.saveDataset)
       true
     )
@@ -118,5 +173,5 @@ module.controller('DataSetController', [
       return filteredSeries
 
     toggleExpandRetract = (obj) ->
-      obj.state = (if obj.state is "is-retracted" then "is-expanded" else "is-retracted")
+      obj.state = (if obj.state is "retracted" then "expanded" else "retracted")
 ])

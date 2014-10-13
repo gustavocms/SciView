@@ -2,11 +2,11 @@ class Api::V1::ViewStatesController < ApplicationController
   respond_to :json
 
   def index
-    respond_with ViewState.all
+    render json: ViewState.all
   end
 
   def show
-    respond_with view_state
+    render json: view_state
   end
 
   def create

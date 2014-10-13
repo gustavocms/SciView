@@ -1,23 +1,15 @@
 <section class="tools__readout">
-  <span class="tools__readout-channel"
-        ng-bind="globalChannel.title">
-  </span>  
-  <span class="tools__readout-value"
-        ng-bind="globalChannel.value">
-  </span>  
-  <span class="tools__readout-category"
-        ng-bind="globalChannel.category">
-  </span>  
-  <span class="tools__readout-unit"
-        ng-bind="globalChannel.unit">
-  </span>
+  <span class="tools__readout-channel"  ng-bind="globalChannel.title"> </span>
+  <span class="tools__readout-value"    ng-bind="globalChannel.value"> </span>
+  <span class="tools__readout-category" ng-bind="globalChannel.category"> </span>
+  <span class="tools__readout-unit"     ng-bind="globalChannel.unit"> </span>
 </section>
 
 <section class="tools__time">
-  <span class="tools__time-value"
-        ng-bind="data_set.time">
-  </span>  
-  <span class="tools__time-unit"
-        ng-bind="data_set.unit">
-  </span>
+  <span class="tools__time-value" ng-bind="obsTime.time"> </span>
+  <span class="tools__time-unit"  ng-bind="tooltip.unit"> </span>
+</section>
+<section class="tools__time" ng-repeat="intersect in obsTime.intersections">
+  <span class="tools__time-value" ng-bind="intersect.amplitude" style="color: {{intersect.color}}"> </span>
+  <span class="tools__time-unit"  ng-bind="intersect.key"> </span>
 </section>

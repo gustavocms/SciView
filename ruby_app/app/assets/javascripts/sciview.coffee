@@ -66,10 +66,6 @@ class SciView.FocusChart extends SciView.BasicChart
       .on("brush", @brushed)
       .on("brushend", @brushEndDelayed)
 
-    # @lineFocus = d3.svg.line()
-    #   .x((d) => @x(d.x))
-    #  .y((d) => @y(d.y))
-    #  .interpolate('linear')
     @lineFocus = d3.svg.area()
       .x((d) => @x(d.x))
       .y0(@height)
@@ -129,7 +125,7 @@ class SciView.FocusChart extends SciView.BasicChart
         else
           @hidePleaseWait()
           msg = "Data could not be retrieved (tried #{retryCount} times). Please check the series names and try again."
-          alert(msg)
+          console.log(msg)
     })
   
   showPleaseWait: ->
@@ -195,6 +191,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineFocus(d.values))
     
     @focus.select(".x.axis").call(@xAxis)
+    @renderObservations()
 
   brushEnd: =>
     unless @brush.empty()
@@ -228,6 +225,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
   zoomEnd: ->
     d3.event.sourceEvent?.stopPropagation()
+    if d3.event.sourceEvent?.type is "dblclick"
+      return clearTimeout(@_brushEndTimer)
     @zoom.scale(1).translate([0, 0]) # keep movements relative
     @_dx_prev = 0
     @brushEndDelayed()
@@ -322,7 +321,7 @@ class SciView.FocusChart extends SciView.BasicChart
 
   render: ->
     if @isZoomed
-     @_renderZoomData()
+      @_renderZoomData()
     else
       @_renderInitialData()
 
@@ -367,11 +366,11 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('x', 0)
       .attr('y', 0)
       .style('fill', 'black')
-      .style('fill-opacity', 0)
+      .style('fill-opacity', 0.15)
       .call(@zoom)
     @focusTarget.attr('height', @height)
       .attr('width', @width)
-    #@focusTarget.call(@zoom)
+    @observationCursor()
 
     @focusPaths = @focus.selectAll('path.focus.init').data(@_data)
     @focusPaths.enter()
@@ -386,7 +385,7 @@ class SciView.FocusChart extends SciView.BasicChart
     @focusPaths.exit().remove()
     @xAxisGroup or= @focus.append("g")
       .attr("class", "x axis")
-    @xAxisGroup.attr("transform", "translate(0," + @height + ")")
+    @xAxisGroup.attr("transform", "translate(0,#{@height})")
       .call(@xAxis)
     @yAxisGroup or= @focus.append("g")
       .attr("class", "y axis")
@@ -424,7 +423,21 @@ class SciView.FocusChart extends SciView.BasicChart
       .selectAll("rect")
       .attr("y", -6)
       .attr("height", @height2 + 7)
+    thisChart = @
+    @focus.on('mousemove', -> thisChart.observationCursor(d3.mouse(this)))
+
+    x = @x
+    obsCallback = @_observationCallback
+    @focus.on('dblclick', -> # TODO: does this conflict with the other dblclick (in zoomEnd)?
+      observed_at = x.invert(d3.mouse(this)[0])
+      obsCallback({ observed_at: observed_at, message: "New message from D3..." })
+      d3.event.stopPropagation()
+    )
+
+    legend = @svg.selectAll('g.legend').data(@_data)
+    legend.enter().append("g").attr("class", "legend").attr('id', (d)-> "legend_#{d.key}")
     @renderLegend()
+    @renderObservations()
     @zoomIt()
 
   renderLegend: ->
@@ -445,6 +458,8 @@ class SciView.FocusChart extends SciView.BasicChart
 
     legend.on "click", (d) => @setSeriesOpacity(d.key)
 
+    @renderObservations()
+    @zoomIt()
 
   setSeriesOpacity: (key) =>
     # Determine if current line is visible
@@ -458,8 +473,124 @@ class SciView.FocusChart extends SciView.BasicChart
     # Update whether or not the elements are active
     legendElement.attr('active', active)
     d3.select("##{key}").style "opacity", newGraphOpacity
-    @getData()
+    #@getData()
     d3.select("#zoomed_#{key}").style "opacity", newGraphOpacity
+
+  renderObservations: ->
+    #color = (d) -> lineColor(d.series_key) # no longer based on series
+    color = 'white'
+    groups = @focus.selectAll('g.observation').data(@_observations or [], (d) -> d.id)
+    y_height = (_, i) -> (i % 6) * 20 + 20
+    gr_enter = groups.enter()
+      .append('g')
+      .attr('class', 'observation')
+    gr_enter
+      .append('circle')
+      .attr('cx', 0)
+      .attr('cy', y_height)
+      .attr('r', 3)
+      .style('stroke', 'none')
+      .style('fill', color)
+    gr_enter
+      .append('line').attr('x1', 0).attr('x2', 0).attr('y1', 10).attr('y2', @height)
+      .attr('class', 'observation-line')
+      .style('stroke', color)
+      .attr('stroke-dasharray', '1,3')
+    text = gr_enter
+      .append('text')
+      .text((d) -> d.message)
+      .attr('x', 5).attr('y', y_height)
+      .style('fill', color)
+      .style('font-weight', 'bold')
+      .style('font-size', '8pt')
+    groups.attr('transform', (d) => "translate(#{@x(new Date(d.observed_at))}, 0)")
+
+    circles = groups.selectAll('circle.intersects').data((d) => @_focusPathIntersections(@x(new Date(d.observed_at)))) # TODO: find a caching strategy for this
+    ci_center = circles.enter()
+    ci_center
+      .append('circle')
+      .attr('class', 'intersects')
+      .style('fill', (d) -> lineColor(d.key))
+      .style('stroke', 'none')
+    circles
+      .attr('cy', (d) -> d.position.y)
+      .attr('cx', 0)
+      .attr('r', 3)
+
+    groups.exit().remove()
+
+  observationCursor: (coords) ->
+    x = (coords or [0])[0]
+    @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
+      .style('opacity', 0.5)
+      .style('stroke', 'white')
+      .attr('y1', 0)
+      .attr('y2', @height)
+
+    @contextCursor or= @context.append('line').attr('id', 'contextCursor')
+      .style('opacity', 0.5)
+      .style('stroke', 'white')
+      .attr('y1', 0).attr('y2', @height2)
+
+    # Tooltip data construction
+    format = @xAxis.scale().tickFormat()
+    data               =  {}
+    data.time          = format(@x.invert(x))
+    data.intersections = []
+    for d in @_focusPathIntersections(x)
+      do (d) =>
+        data.intersections.push({
+          amplitude: @y.invert(d.position.y)
+          key: d.key
+          color: lineColor(d.key)
+        })
+    @_cursorCallback(data)
+
+    x2 = @x2(@x.invert(x))
+    @focusCursor.attr('x1', x).attr('x2', x)
+    @contextCursor.attr('x1', x2).attr('x2', x2)
+
+    @focusIntersects or= @focus.append('g').attr('class', 'focusIntercepts')
+    circles = @focusIntersects.selectAll('circle').data(@_focusPathIntersections(x))
+    circles.enter()
+      .append('circle')
+      .attr('r', 4)
+      .style('fill', (d) -> lineColor(d.key))
+      .style('stroke', 'white')
+
+    circles.attr('cx', x)
+    circles.attr('cy', (d) -> d.position.y)
+    circles.exit().remove()
+
+  _focusPathIntersection = (x_coord, path) ->
+    node       = path
+    target     = undefined
+    pos        = undefined
+    end        = node.getTotalLength()
+    x          = x_coord
+    beginning  = x
+
+    while (true)
+      target = Math.floor((beginning + end) / 2)
+      pos    = node.getPointAtLength(target)
+      break if ((target is end or target is beginning) and pos.x isnt x)
+      if (pos.x > x)
+        end = target
+      else if (pos.x < x)
+        beginning = target
+      else
+        break #position found
+    { position: pos, key: node.__data__.key }
+
+
+  _focusPathIntersections: (x_coord) =>
+    #try
+    selector = if @isZoomed then 'path.focus.zoom' else 'path.focus.init'
+    paths = @focus.selectAll(selector)[0]
+    _focusPathIntersection(x_coord, path) for path in paths
+    #catch
+    #[]
+
 
 # subclassing the chart for the Angular app (so the basic html app doesn't break)
 class SciView.D3.FocusChart extends SciView.FocusChart
@@ -470,6 +601,8 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   hidePleaseWait:       noOp
   renderLegend:         noOp
   replaceState:         noOp
+  _observationCallback: noOp
+  _cursorCallback:      noOp
 
   elementSelection: -> @_elementSelection or= d3.select(@element)
 
@@ -478,7 +611,8 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     super(options)
 
   initializeBaseVariables: (options) ->
-    @element = options.element or 'body'
+    @chart_uuid = options.chart_uuid
+    @element    = options.element or 'body'
     bh = @baseHeight()
     h1 = bh * 0.85
     h2 = bh - h1
@@ -526,12 +660,14 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       @setSvgAttributes()
       @render()
 
+  observations: (observations) ->
+    if observations
+      @_observations = observations
+      @renderObservations()
+      return @
+    else
+      @_observations
 
-
-
-
-
-
-
-
-
+  registerCallback: (name, callback) ->
+    @[name] = callback
+    @

@@ -139,6 +139,10 @@ class Dataset
     { rollup_function: function, rollup_period: interval }
   end
 
+  def annotations
+    @annotations ||= AnnotationSet.new(series_names).as_json
+  end
+
   def return_hash
     @return_hash ||= {}.tap do |hash|
       cursor['series'].each { |sn| hash["#{sn['key']}"] = series(sn) }
@@ -147,6 +151,11 @@ class Dataset
           hash[key][:values] << { value: value, ts: datapoint.ts }
         end
       end
+
+      annotations.each do |key, values|
+        hash[key][:annotations] = values
+      end
+
       # Sampling disabled (prefer tdb rollups)
       #hash.each do |_, series|
         #series[:values] = Sampling::RandomSample.sample(series[:values], 2000)

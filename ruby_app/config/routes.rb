@@ -24,6 +24,7 @@ SciView::Application.routes.draw do
 
     resources :tags, only: [:create, :destroy]
     resources :attributes, only: [:create, :destroy]
+    resources :annotations, only: [:create, :update, :destroy]
   end
 
   resources :coffee_charts, only: [:show]
@@ -45,7 +46,9 @@ SciView::Application.routes.draw do
   # (will eventually replace the datasets resource above)
   namespace :api do
     namespace :v1 do
-      
+
+      resources :observations, only: [:index, :show, :create, :destroy] 
+
       resource :s3_options
       resources :queue_uploads, only: [:create]
       resources :datasets, only: [:show] do 
@@ -54,7 +57,9 @@ SciView::Application.routes.draw do
         end
       end
 
-      resources :view_states
+      resources :view_states do
+        resources :observations
+      end
 
       resources :series
     end

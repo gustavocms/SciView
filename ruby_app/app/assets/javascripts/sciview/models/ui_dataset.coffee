@@ -50,14 +50,14 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
   _defaults:
     key: (obj) -> return { color: SciView.lineColor(obj.title), style: "solid" }
     title: -> "untitled series"
-    state: -> "is-retracted"
+    state: -> "retracted"
 
   _state: (state) ->
     @state = state
     @
 
-  expand: -> @_state('is-expanded')
-  retract: -> @_state('is-retracted')
+  expand: -> @_state('expanded')
+  retract: -> @_state('retracted')
 
   afterDeserialize: ->
     @key.color = SciView.lineColor(@title)
@@ -67,7 +67,7 @@ class SciView.Models.UISeries extends SciView.Models.UIBase
 
 class SciView.Models.UIChannel extends SciView.Models.UIBase
   constructor: (@title) ->
-    @default('is-retracted')
+    @default('state')
     @default('series')
     #@group = [new SciView.Models.UISeries('default', 'default category')]
 
@@ -87,8 +87,8 @@ class SciView.Models.UIChannel extends SciView.Models.UIBase
     @state = state
     @
 
-  expand: -> @_state('is-expanded')
-  retract: -> @_state('is-retracted')
+  expand: -> @_state('expanded')
+  retract: -> @_state('retracted')
 
 
 # UIChart provides an interface to the D3 chart and stores
@@ -106,7 +106,16 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     @chart = new SciView.D3.FocusChart(
       element: element
       url: @dataUrl
+      chart_uuid: @uuid
     )
+
+    @chart.registerCallback(name, callback) for name, callback of (@_d3_callbacks or {})
+
+  registerCallback: (name, callback) ->
+    @_d3_callbacks or= {}
+    @_d3_callbacks[name] = callback
+    if @chart
+      @chart.registerCallback(name, callback)
 
   addChannel: (channel) ->
     if channel
@@ -142,13 +151,13 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
       seriesKeys.push(key) for key in channel.seriesKeys()
     return seriesKeys
 
-  @serialized_attributes: ['title']
+  @serialized_attributes: ['title', 'uuid']
   @serializable_collections:
     channels: SciView.Models.UIChannel
 
   afterDeserialize: -> @_computeDataUrl()
 
-class SciView.Models.UIDataset extends SciView.Models.UIBase
+class SciView.Models.ViewState extends SciView.Models.UIBase
   constructor: (@id, @title) ->
     @charts = []
 
@@ -169,8 +178,41 @@ class SciView.Models.UIDataset extends SciView.Models.UIBase
       seriesKeys = seriesKeys.concat(chart._allSeriesKeys())
     seriesKeys
 
+  chartUuids: ->
+    _charts = {}
+    _charts[chart.uuid] = chart.title for chart in @charts
+    _charts
+
+  filterObservations = (observations, chart_uuid) ->
+    observations.filter((obs) -> (obs.chart_uuid == chart_uuid) and obs.observed_at)
+
+  # Expects an array of observation objects.
+  observations: (observations) ->
+    for chart in @charts
+      do (chart) ->
+        chart.chart.observations(filterObservations(observations, chart.uuid))
+
+  # Callbacks inserted here are propagated to the UICharts collection
+  # and then to the d3 chart objects.
+  #
+  # The wrapper function allows hooks into the UIChart model (makes attributes accessible).
+  # If no wrapper is given, arguments are forwarded directly to the callback.
+  #
+  # Example with wrapper:
+  #
+  # viewState.registerCallback('_observationCallback', myCallback, (ui_chart, cb) ->
+  #   (params = {}) ->
+  #     params.chart_uuid = ui_chart.uuid
+  #     cb(params)
+  # )
+  #
+  _defaultForward = (_, cb) -> (args...) -> cb(args...)
+  #
+  registerCallback: (name, callback, wrapper = _defaultForward) ->
+    chart.registerCallback(name, wrapper(chart, callback)) for chart in @charts
 
   @serialized_attributes: ['id', 'title']
   @serializable_collections:
     charts: SciView.Models.UIChart
 
+SciView.Models.UIDataset = SciView.Models.ViewState
