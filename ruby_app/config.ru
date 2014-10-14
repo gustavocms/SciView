@@ -5,6 +5,6 @@ require ::File.expand_path('../config/environment',  __FILE__)
 require './socket/faye_server'
 
 # Initialize faye sockets
-use Sciview::FayeServer
+use SciView::FayeServer
 
 run Rails.application

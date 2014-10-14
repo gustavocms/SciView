@@ -2,7 +2,7 @@ require 'faye/websocket'
 require 'json'
 require 'set'
 
-module Sciview
+module SciView
   class FayeServer
     KEEPALIVE_TIME = 15 # in seconds
     CHANNEL        = "chat-demo"
@@ -28,13 +28,13 @@ module Sciview
     # Only allow these event names.
     # Anything else will be delegated to :_generic_message.
     SANITIZED_MESSAGE_NAMES = {
-      "subscribe"                     => :_subscribe,
-      "update"                        => :_update,
-      "clearObservationSubscriptions" => :_clear_observation_subscriptions
+      "subscribe"           => :_subscribe,
+      "update"              => :_update,
+      "resetSubscriptions"  => :_reset_subscriptions
     }
 
     def socket_call(env)
-      ws = Faye::WebSocket.new(env, nil, {ping: KEEPALIVE_TIME })
+      ws = Faye::WebSocket.new(env, nil, { ping: KEEPALIVE_TIME })
       ws.on :open do 
         clients << ws
         p [:open, clients.length, ws.object_id]
@@ -66,9 +66,9 @@ module Sciview
 
     # To be run on a new viewState subscription (socket will only look at one at a time)
     # Could get slow with lots of rooms - should we also bind rooms to a socket attr?
-    def _clear_observation_subscriptions(_, socket, *)
-      rooms.select {|(resource, _), _| resource == "viewState" }.each_value do |room|
-        p [:unsubscribe, "viewStateObservations", socket.object_id]
+    def _reset_subscriptions(_, socket, *)
+      rooms.each_value do |room|
+        p [:unsubscribe, room.id, socket.object_id]
         room.delete(socket) 
       end
     end
