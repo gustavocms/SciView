@@ -11,11 +11,11 @@
 <li class="channel__meta-item"
     ng-mouseover="remove_hover = true"
     ng-mouseleave="remove_hover = false"
-    ng-repeat="(key, value) in seriesData.attributes">
-    <span class="channel__meta-item-key">{{key}}</span>
-    <span class="channel__meta-item-value">{{value}}</span>
+    ng-repeat="attribute in seriesData.attributes">
+    <span class="channel__meta-item-key">{{attribute.key}}</span>
+    <span class="channel__meta-item-value">{{attribute.value}}</span>
     <button class="channel__meta-item-remove" 
-            ng-click="removeAttrView(key, value)"
+            ng-click="removeAttrView(attribute)"
             ng-if="remove_hover">
     </button>
 </li>
@@ -38,12 +38,8 @@
                    ng-model="newMetadata.value">
         </fieldset>
 
-        <a class="channel__meta-item-close"
-                ng-click="newMetadata.showForm = false">Close
-        </a>
-        <button class="channel__meta-item-save"
-                ng-click="saveMetaChannel(channel, meta)">Save
-        </button>
+        <a class="channel__meta-item-close" ng-click="newMetadata.showForm = false">Close </a>
+        <button class="channel__meta-item-save">Save</button>
       </form>
     </section>
 </li>

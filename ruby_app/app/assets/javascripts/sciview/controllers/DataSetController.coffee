@@ -12,6 +12,8 @@ module.controller('DataSetController', [
   'mySocket'
   ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, mySocket) ->
 
+    window.s = SeriesService
+
     $scope.viewStateLoading = $q.defer()
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->
@@ -119,20 +121,11 @@ module.controller('DataSetController', [
       $scope.states.is_renaming = false
 
     $scope.registerSocketWatchers = -> # noOp pending fix
-      mySocket.emit('clearObservationSubscriptions')
+      #mySocket.emit('resetSubscriptions')
       mySocket.subscribe('viewStateObservations', $scope.viewState.id)
+      for seriesName in $scope.viewState.seriesKeys()
+        mySocket.subscribe('series', seriesName)
 
-# TODO: fixme
-#<<<<<<< HEAD
-#      mySocket.emit('resetWatchers')
-#      mySocket.emit('listenTo', "viewState_#{$scope.viewState.id}")
-#      for seriesName in $scope.viewState.seriesKeys()
-#        mySocket.emit('listenTo', seriesName)
-#=======
-##      mySocket.emit('resetWatchers')
-##      for seriesName in $scope.current_data_set.seriesKeys()
-##        mySocket.emit('watchSeries', seriesName)
-#>>>>>>> sciv-161
 
 #   as seen here:
 #   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs

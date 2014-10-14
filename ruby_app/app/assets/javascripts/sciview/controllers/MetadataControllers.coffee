@@ -25,13 +25,17 @@ module.controller "MetadataController", [
           tag: $scope.newMetadata.tag
         #change the object to be persisted through DS repository
         $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1
-
-      if $scope.newMetadata.attribute.length > 0
+      else if $scope.newMetadata.attribute.length > 0
         attrData =
-          attribute: $scope.newMetadata.attribute
+          key: $scope.newMetadata.attribute
           value: $scope.newMetadata.value
-        #change the object to be persisted through DS repository
-        $scope.seriesData.attributes[attrData.attribute] = attrData.value
+        # If the 'key' already belongs to another attribute, update it.
+        # Otherwise push a new one.
+        existing = $scope.seriesData.attributes.filter((e) -> e.key is attrData.key)
+        if existing.length > 0
+          existing[0].value = attrData.value
+        else
+          $scope.seriesData.attributes.push(attrData)
 
       #ajax call then closes the form and cleanup the model.
       SeriesService.save($scope.seriesData.key).then((data)->
@@ -51,43 +55,26 @@ module.controller "MetadataController", [
       remove_flash: false
 
     $scope.removeTagView = (tag) ->
-      # Clear selected tag
-      $scope.deleteMeta.selected_tag = {}
-      # Remove attr setting (for delete function)
-      $scope.deleteMeta.is_attr = false
-      # Show the remove screen
-      $scope.deleteMeta.remove_screen = true
-      # Set selected tag
-      $scope.deleteMeta.selected_tag = tag
-      return
+      $scope.deleteMeta.selected_tagh = {}    # Clear selected tag
+      $scope.deleteMeta.is_attr       = false # Remove attr setting (for delete function)
+      $scope.deleteMeta.remove_screen = true  # Show the remove screen
+      $scope.deleteMeta.selected_tag  = tag   # Set selected tag
 
-    $scope.removeAttrView = (key, value) ->
-      # Clear selected attr
-      $scope.deleteMeta.selected_attr = {}
-      # Set selected key
-      $scope.deleteMeta.selected_key = key
-      # Set attr setting to true (for delete selection)
-      $scope.deleteMeta.is_attr = true
-      # Show remove screen
-      $scope.deleteMeta.remove_screen = true
-      # Build attribute string
-      $scope.deleteMeta.selected_attr = key + ": " + value
-      return
+    $scope.removeAttrView = (attribute) ->
+      key = attribute.key
+      value = attribute.value
+      $scope.deleteMeta.selected_attr = {}                 # Clear selected attr
+      $scope.deleteMeta.selected_key  = key                # Set selected key
+      $scope.deleteMeta.is_attr       = true               # Set attr setting to true (for delete selection)
+      $scope.deleteMeta.remove_screen = true               # Show remove screen
+      $scope.deleteMeta.selected_attr = "#{key}: #{value}" # Build attribute string
 
     $scope.hideRemoveView = ->
-      # Hide remove screen
-      $scope.deleteMeta.remove_screen = false
-      return
+      $scope.deleteMeta.remove_screen = false # Hide remove screen
 
     $scope.removeFlash = ->
-      # Show alert
-      $scope.deleteMeta.remove_flash = true
-      # Remove alert
-      $timeout (->
-        $scope.deleteMeta.remove_flash = false
-        return
-      ), 1500
-      return
+      $scope.deleteMeta.remove_flash = true # Show alert
+      $timeout (-> $scope.deleteMeta.remove_flash = false), 1500 # Remove alert
 
     $scope.removeTag = (tag) ->
       #change the object to be persisted through DS repository
@@ -99,9 +86,9 @@ module.controller "MetadataController", [
         $scope.removeFlash()
       )
 
-    $scope.removeAttribute = (key) ->
+    $scope.removeAttribute = (attr) ->
       #change the object to be persisted through DS repository
-      delete $scope.seriesData.attributes[key]
+      $scope.seriesData.attributes = $scope.seriesData.attributes.filter((e) -> e isnt attr)
 
       #ajax call then closes the form and cleanup the model.
       SeriesService.save($scope.seriesData.key).then((data)->
