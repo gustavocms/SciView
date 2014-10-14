@@ -121,7 +121,7 @@ module.controller('DataSetController', [
       $scope.states.is_renaming = false
 
     $scope.registerSocketWatchers = -> # noOp pending fix
-      #mySocket.emit('resetSubscriptions')
+      mySocket.emit('resetSubscriptions')
       mySocket.subscribe('viewStateObservations', $scope.viewState.id)
       for seriesName in $scope.viewState.seriesKeys()
         mySocket.subscribe('series', seriesName)

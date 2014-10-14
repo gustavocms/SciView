@@ -9,6 +9,8 @@ module.controller "MetadataController", [
     series_key = ->
       $scope.$parent.series.title
 
+    SeriesService.refresh(series_key()) # This should only run if necessary (ie, already in the data store)
+
     SeriesService.find(series_key())
     SeriesService.bindOne($scope, 'seriesData', series_key())
 
@@ -88,10 +90,7 @@ module.controller "MetadataController", [
 
     $scope.removeAttribute = (key) ->
       #change the object to be persisted through DS repository
-      console.info("Deleting attr", key)
-      console.info($scope.seriesData.attributes)
       $scope.seriesData.attributes = $scope.seriesData.attributes.filter((e) -> e.key isnt key)
-      console.info($scope.seriesData.attributes)
 
       #ajax call then closes the form and cleanup the model.
       SeriesService.save($scope.seriesData.key).then((data)->
