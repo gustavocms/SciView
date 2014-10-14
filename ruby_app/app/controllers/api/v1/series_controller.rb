@@ -10,7 +10,7 @@ class Api::V1::SeriesController < ApplicationController
   end
 
   def update
-    render json: Dataset.update_series(series_params)
+    render json: update_series_metadata
   end
 
   private
@@ -19,19 +19,26 @@ class Api::V1::SeriesController < ApplicationController
   # but a peculiarity  in angular-data wants them to be an array
   # of key-value objects. 
   #
-  # This pair of methods handles the conversion to and from
+  # This quatrain of methods handles the conversion to and from
   # these disparate formats.
   def series_metadata
-    Dataset.series_metadata(params[:id]).as_json.tap do |json|
+    attributes_to_array(Dataset.series_metadata(params[:id]))
+  end
+
+  def update_series_metadata
+    attributes_to_array(Dataset.update_series(series_params))
+  end
+
+  def attributes_to_array(obj)
+    obj.as_json.tap do |json|
       json["attributes"] = json["attributes"].map {|k,v| { "key" => k, "value" => v }}
     end
   end
 
   def series_params
     params[:series].dup.tap do |hash|
-      puts hash["attributes"].inspect
-      hash["attributes"] = Hash[hash["attributes"].map(&:values)]
-      puts hash["attributes"].inspect
+      values = Array(hash["attributes"]).map(&:values).to_h
+      hash["attributes"] = values.to_h
     end
   end
 end

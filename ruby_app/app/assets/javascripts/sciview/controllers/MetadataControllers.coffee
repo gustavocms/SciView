@@ -42,7 +42,7 @@ module.controller "MetadataController", [
         $scope.newMetadata.showForm = false
         $scope.newMetadata.tag = ""
         $scope.newMetadata.attribute = ""
-        $scope.newMetadata.value = ""
+        $scope.newMetadata.value = "empty..."
       )
 
     #deleteMeta form model
@@ -55,13 +55,13 @@ module.controller "MetadataController", [
       remove_flash: false
 
     $scope.removeTagView = (tag) ->
-      $scope.deleteMeta.selected_tagh = {}    # Clear selected tag
+      $scope.deleteMeta.selected_tag  = {}    # Clear selected tag
       $scope.deleteMeta.is_attr       = false # Remove attr setting (for delete function)
       $scope.deleteMeta.remove_screen = true  # Show the remove screen
       $scope.deleteMeta.selected_tag  = tag   # Set selected tag
 
     $scope.removeAttrView = (attribute) ->
-      key = attribute.key
+      key   = attribute.key
       value = attribute.value
       $scope.deleteMeta.selected_attr = {}                 # Clear selected attr
       $scope.deleteMeta.selected_key  = key                # Set selected key
@@ -86,9 +86,12 @@ module.controller "MetadataController", [
         $scope.removeFlash()
       )
 
-    $scope.removeAttribute = (attr) ->
+    $scope.removeAttribute = (key) ->
       #change the object to be persisted through DS repository
-      $scope.seriesData.attributes = $scope.seriesData.attributes.filter((e) -> e isnt attr)
+      console.info("Deleting attr", key)
+      console.info($scope.seriesData.attributes)
+      $scope.seriesData.attributes = $scope.seriesData.attributes.filter((e) -> e.key isnt key)
+      console.info($scope.seriesData.attributes)
 
       #ajax call then closes the form and cleanup the model.
       SeriesService.save($scope.seriesData.key).then((data)->
