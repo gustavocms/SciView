@@ -12,8 +12,6 @@ module.controller('DataSetController', [
   'mySocket'
   ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, mySocket) ->
 
-    window.s = SeriesService
-
     $scope.viewStateLoading = $q.defer()
     # waits for the parent loading to finish
     $scope.deferredDatasetsLoading.promise.then ->

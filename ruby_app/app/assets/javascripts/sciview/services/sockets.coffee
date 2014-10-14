@@ -8,7 +8,7 @@ angular.module('sv.ui.services').run([
   (mySocket, SeriesService, Observation) ->
 
     mySocket.onUpdateEvent('series', (series) ->
-      SeriesService.inject(series)
+      SeriesService.refresh(series.key)
     )
 
     _acceptable_observation_actions =
