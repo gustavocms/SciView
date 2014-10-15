@@ -580,7 +580,9 @@ class SciView.FocusChart extends SciView.BasicChart
             return bestFit = value
           else if (nc = Math.abs(value.x - x)) < closeness
             closeness = nc
-            bestFit = value
+            bestFit   = value
+          else
+            return # stop when the `closeness` interval starts increasing again - nearest point has already been passed.
       )()
     return { position: bestFit, key: node.__data__.key }
 
