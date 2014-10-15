@@ -31,7 +31,8 @@ module.controller "DiscussController", [
         $scope.$parent.viewState.name
 
     emitUpdateObservations = (params = {}) ->
-      mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
+      mySocket.updateEvent('viewStateObservations', $stateParams.dataSetId, params)
+      #mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
 
     $scope.createObservation = (observation) ->
       $scope.$parent.obs_saving = true
@@ -41,7 +42,6 @@ module.controller "DiscussController", [
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->
-        console.info('destroy', data)
       emitUpdateObservations({ id: observation.id, action: 'eject' })
 
 ]
