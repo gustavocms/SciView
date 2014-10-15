@@ -26,7 +26,7 @@
 }
 
 .is-discussing {
-    @include vp(transition, all 1s ease);    
+    //@include vp(transition, all 1s ease);    
 
   &.discuss {
     width: 35%;
