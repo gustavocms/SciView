@@ -558,7 +558,7 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('fill', (d) -> lineColor(d.key))
       .style('stroke', 'white')
 
-    circles.attr('cx', x)
+    circles.attr('cx', (d) -> d.position.x)
     circles.attr('cy', (d) -> d.position.y)
     circles.exit().remove()
 
@@ -566,7 +566,7 @@ class SciView.FocusChart extends SciView.BasicChart
     window[node.__data__.key] = node
     pathSegList      = node.pathSegList
     numberOfSegments = pathSegList.length
-    bestFit          = { x: 0, y: 0 }
+    bestFit          = { x: undefined, y: undefined }
     closeness        = numberOfSegments
     maxIndex         = parseInt(pathSegList.length / 2)
 
