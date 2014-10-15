@@ -27,7 +27,7 @@ module.controller "MetadataController", [
           tag: $scope.newMetadata.tag
         #change the object to be persisted through DS repository
         $scope.seriesData.tags.push tagData.tag if $scope.seriesData.tags.indexOf(tagData.tag) is -1
-      else if $scope.newMetadata.attribute.length > 0
+      if $scope.newMetadata.attribute.length > 0
         attrData =
           key: $scope.newMetadata.attribute
           value: $scope.newMetadata.value
