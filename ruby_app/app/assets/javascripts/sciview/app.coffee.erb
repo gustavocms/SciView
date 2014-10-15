@@ -77,12 +77,12 @@ app.config(['$urlRouterProvider', '$stateProvider',
       .state('signup', {
           url: '/signup',
           templateUrl: '<%= asset_path('sciview/signup.html') %>',
-          controller: 'FormController'
+          controller: 'UserController'
       })      
       .state('login', {
           url: '/login',
           templateUrl: '<%= asset_path('sciview/login.html') %>',
-          controller: 'FormController'
+          controller: 'UserController'
       })
 ])
 
