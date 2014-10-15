@@ -13,8 +13,7 @@ module.controller "UserController", [
         else
           $scope.authError = "Success!"
       ), (response) ->
-        $scope.authError = "Server offline, please try later"
-
+        $scope.authError = response.data.error
 
     $scope.logout = (user) ->
 

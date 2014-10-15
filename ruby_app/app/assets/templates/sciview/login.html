@@ -2,14 +2,20 @@
   <i class="form-exit"></i>
   <section class="form-container">
     <h2 class="form-heading">Log In</h2>
+      <div class="alert alert-warning" ng-show="authReason">
+          {{authReason}}
+      </div>
+      <div class="alert alert-error" ng-show="authError">
+          {{authError}}
+      </div>
     <aside class="form-alternate">If you don't have an account you can <a class="form-option--link" ui-sref="signup">Sign Up</a></aside>
     <form class="form-element">
       <label for="email" class="form-label">Email</label>
-      <input id="email"  type="email" class="form-input">
+      <input id="email"  type="email" class="form-input" ng-model="user.email" required autofocus>
       <label for="password" class="form-label">Password</label>
-      <input id="password" type="password" class="form-input is-error">
+      <input id="password" type="password" class="form-input is-error" ng-model="user.password" required>
       <span class="form-message--error">Password is not valid</span>
-      <input type="submit" class="form-input--submit" value="Submit">
+      <input type="submit" class="form-input--submit" value="Submit" ng-click="login(user)" ng-disabled="loginForm.$invalid">
     </form>
   </section>
 </section>
