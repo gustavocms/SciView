@@ -191,6 +191,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineFocus(d.values))
     
     @focus.select(".x.axis").call(@xAxis)
+    @isZoomed = false
+    @observationCursor()
     @renderObservations()
 
   brushEnd: =>
