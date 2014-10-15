@@ -31,6 +31,16 @@ app.run(['$rootScope', '$state', '$stateParams',
       (event, toState, toParams, fromState, fromParams, error) ->
         console.log(error)
     )
+    $rootScope.$on('event:unauthorized', ->
+      $state.go('login')
+    )
+])
+
+#DeviseInterceptor injection
+app.config ([
+  "$httpProvider"
+  ($httpProvider) ->
+    $httpProvider.interceptors.push "DeviseInterceptor"
 ])
 
 #routing configuration
