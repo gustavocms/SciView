@@ -88,7 +88,7 @@ class Dataset
   #          count
   def initialize(series, opts = {})
     @series_names = series.values
-    @query_start        = opts[:start] || Time.utc(1999)
+    @query_start        = opts[:start] || Time.utc(1899)
     @query_stop         = opts[:stop]  || Time.utc(2020)
     @count        = Integer(opts[:count] || 2000)
     @options      = { keys: series_names }.select {|_,v| v }
