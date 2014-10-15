@@ -43,7 +43,7 @@ class Dataset
 
 
     def series_metadata(key)
-      tempodb_client.get_series(key)
+      tempodb_client.get_series(key)#.tap(&method(:p))
     end
 
     def multiple_series_metadata(series)

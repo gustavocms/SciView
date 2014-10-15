@@ -7,7 +7,7 @@ app = angular.module('sciview', [
   'ui.utils'
   'angular-data.DS'
   'angular-data.DSCacheFactory'
-  'btford.socket-io'
+  'ngSocket'
   'sv.ui.controllers'
   'sv.ui.services'
   'sv.ui.filters'
@@ -28,8 +28,8 @@ app.run(['$rootScope', '$state', '$stateParams',
     $rootScope.$state = $state
     $rootScope.$stateParams = $stateParams
     $rootScope.$on('$stateChangeError',
-        (event, toState, toParams, fromState, fromParams, error) ->
-            console.log(error)
+      (event, toState, toParams, fromState, fromParams, error) ->
+        console.log(error)
     )
 ])
 
@@ -77,17 +77,54 @@ app.config(['$urlRouterProvider', '$stateProvider',
 ])
 
 #sockets configuration
-app.factory('mySocket', (socketFactory) ->
-  mySocket = socketFactory(
-    ioSocket: io.connect('http://localhost:5001')
-  )
-  mySocket.forward('error')
+app.factory('mySocket', (ngSocket) ->
+  mySocket = ngSocket("ws://#{window.location.host}") 
+
+  mySocket.emit = (event, data) ->
+    mySocket.send
+      event: event
+      data: data
+
+  # receive messages
+  mySocket.onEvent = (event, callBack, autoApply = false) ->
+    mySocket.onMessage(
+      (message) ->
+        msg = JSON.parse(message.data).message
+        if msg.event == event
+          console.info(event + ' event -> ', msg.data)
+          callBack(msg.data)
+      autoApply: autoApply
+    )
+
+  mySocket.updateEvent = (resource, id, data) ->
+    mySocket.send(
+      event: "update"
+      resource: resource
+      id: id
+      data: data)
+
+  mySocket.onUpdateEvent = (resource, callBack, autoApply = false) ->
+    mySocket.onMessage(
+      (message) ->
+        msg = JSON.parse(message.data).message
+        if msg.event == "update" and msg.resource == resource
+          console.info(resource + ' updateEvent -> ', msg.data)
+          callBack(msg.data)
+      autoApply: autoApply
+    )
+
+  mySocket.subscribe = (resource, id) ->
+    mySocket.send(
+      event: "subscribe"
+      resource: resource
+      id: id)
+
+  mySocket.unsubscribe = (resource, id) ->
+    mySocket.send(
+      event: "unsubscribe"
+      resource: resource
+      id: id)
+
   mySocket
 )
 
-# bind sockets with and refresh DS collections
-app.run([
-  '$rootScope'
-  ($rootScope) ->
-    $rootScope.$on('socket:error', (_, data) -> console.log data)
-])
