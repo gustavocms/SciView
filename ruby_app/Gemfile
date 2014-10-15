@@ -90,9 +90,9 @@ gem 'rails-assets-angular-ui-utils'
 #
 # gem 'rails-assets-angular-data'
 gem 'rails-assets-angular-cache'
-gem 'rails-assets-angular-socket-io'
+gem 'rails-assets-ngSocket'
 
-gem 'socket.io-rails'
+gem 'faye-websocket'
 
 group :development, :test do
   gem "jasmine", github: "pivotal/jasmine-gem"
