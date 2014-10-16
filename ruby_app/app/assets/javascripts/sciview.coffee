@@ -637,7 +637,6 @@ class SciView.FocusChart extends SciView.BasicChart
     circles.exit().remove()
 
   _focusPathIntersection = (x, node) ->
-    window[node.__data__.key] = node
     pathSegList      = node.pathSegList
     numberOfSegments = pathSegList.length
     bestFit          = { x: undefined, y: undefined }
@@ -686,7 +685,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     super(options)
 
   initializeBaseVariables: (options) ->
-    window.chart = @
     @chart_uuid = options.chart_uuid
     @element    = options.element or 'body'
     bh = @baseHeight()
@@ -747,16 +745,4 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   registerCallback: (name, callback) ->
     @[name] = callback
     @
-
-  reportTimeStuff: ->
-    xd         = @x.domain()
-    x_distance = xd[1] - xd[0]
-    x_start = xd[0]
-
-    log('x distance', x_distance, '(milliseconds)')
-    customTimeFormatter = (date) =>
-      "#{date - @x.domain()[0]}"
-
-    window.cf = customTimeFormatter
-    @xAxis.scale().tickFormat(customTimeFormatter)
 
