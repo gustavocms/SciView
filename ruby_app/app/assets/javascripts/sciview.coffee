@@ -191,6 +191,8 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr("d", (d) => @lineFocus(d.values))
     
     @focus.select(".x.axis").call(@xAxis)
+    @isZoomed = false
+    @observationCursor()
     @renderObservations()
 
   brushEnd: =>
@@ -558,30 +560,31 @@ class SciView.FocusChart extends SciView.BasicChart
       .style('fill', (d) -> lineColor(d.key))
       .style('stroke', 'white')
 
-    circles.attr('cx', x)
+    circles.attr('cx', (d) -> d.position.x)
     circles.attr('cy', (d) -> d.position.y)
     circles.exit().remove()
 
-  _focusPathIntersection = (x_coord, path) ->
-    node       = path
-    target     = undefined
-    pos        = undefined
-    end        = node.getTotalLength()
-    x          = x_coord
-    beginning  = x
+  _focusPathIntersection = (x, node) ->
+    window[node.__data__.key] = node
+    pathSegList      = node.pathSegList
+    numberOfSegments = pathSegList.length
+    bestFit          = { x: undefined, y: undefined }
+    closeness        = numberOfSegments
+    maxIndex         = parseInt(pathSegList.length / 2)
 
-    while (true)
-      target = Math.floor((beginning + end) / 2)
-      pos    = node.getPointAtLength(target)
-      break if ((target is end or target is beginning) and pos.x isnt x)
-      if (pos.x > x)
-        end = target
-      else if (pos.x < x)
-        beginning = target
-      else
-        break #position found
-    { position: pos, key: node.__data__.key }
-
+    unless (x < pathSegList[0].x) or (x > pathSegList[maxIndex].x) # out of bounds
+      (->
+        for index, value of pathSegList
+          return if index > maxIndex
+          if value.x is x
+            return bestFit = value
+          else if (nc = Math.abs(value.x - x)) < closeness
+            closeness = nc
+            bestFit   = value
+          else
+            return # stop when the `closeness` interval starts increasing again - nearest point has already been passed.
+      )()
+    return { position: bestFit, key: node.__data__.key }
 
   _focusPathIntersections: (x_coord) =>
     #try
