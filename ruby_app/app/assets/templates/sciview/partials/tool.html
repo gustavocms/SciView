@@ -10,6 +10,6 @@
   <span class="tools__time-unit"  ng-bind="tooltip.unit"> </span>
 </section>
 <section class="tools__time" ng-repeat="intersect in obsTime.intersections">
-  <span class="tools__time-value" ng-bind="intersect.amplitude" style="color: {{intersect.color}}"> </span>
-  <span class="tools__time-unit"  ng-bind="intersect.key"> </span>
+  <span class="tools__time-value" ng-bind="intersect.amplitude || '&emsp;'"></span>
+  <span class="tools__time-unit"  ng-bind="intersect.key" style="color: {{intersect.color}}"> </span>
 </section>
