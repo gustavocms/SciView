@@ -28,6 +28,11 @@ class TimeOffsetDisplay
   toString: ->
     "#{@_intervalString()}.#{@_milliseconds()}"
 
+  toLegend: ->
+    "#{(_teeny_names[unit] for unit in @_intervalsToInclude()).join(":")}.ms"
+
+  toObject: -> { value: @toString(), key: @toLegend() }
+
   pad = (input, len = 2) ->
     str = "#{input}"
     (str = "0#{str}") while str.length < len
@@ -45,6 +50,13 @@ class TimeOffsetDisplay
     minutes: 60000
     seconds: 1000
 
+  _teeny_names =
+    days: 'd'
+    hours: 'h'
+    minutes: 'm'
+    seconds: 's'
+    milliseconds: 'ms'
+
 
   # NOTE: >> is a bitwise shift operator. Equivalent to Math.floor(), but 
   # more efficient.
@@ -52,9 +64,11 @@ class TimeOffsetDisplay
     @["__#{unit}"] or= pad((@milliseconds / _thresholds[unit] >> 0) % _mods[unit])
 
   _intervalsToInclude: ->
-    ary = (unit for unit, value of _thresholds when @milliseconds >= value)
-    ary = ['seconds'] if ary.length is 0
-    ary
+    @__intervalsToInclude or= (
+      ary = (unit for unit, value of _thresholds when @milliseconds >= value)
+      ary = ['seconds'] if ary.length is 0
+      ary
+    )
 
   _intervalString: ->
     (@_time_interval(unit) for unit in @_intervalsToInclude()).join(":")
@@ -568,10 +582,13 @@ class SciView.FocusChart extends SciView.BasicChart
 
     groups.exit().remove()
 
+  # This formatter is used to inject the cursor time back into the angular
+  # callback. This function wraps a closure around the start domain so
+  # it doesn't need to be looked up every time.
   forceXAxisFormatter: ->
     xd0 = @x.domain()[0]
     @_xAxisFormatter = (date) ->
-      (new TimeOffsetDisplay(date - xd0)).toString()
+      (new TimeOffsetDisplay(date - xd0))
 
   xAxisFormatter: ->
     @_xAxisFormatter or @forceXAxisFormatter()
@@ -592,7 +609,7 @@ class SciView.FocusChart extends SciView.BasicChart
     # Tooltip data construction
     format             = @xAxisFormatter()
     data               =  {}
-    data.time          = format(@x.invert(x))
+    data.time          = format(@x.invert(x)).toObject()
     data.intersections = []
     for d in @_focusPathIntersections(x)
       do (d) =>
@@ -730,9 +747,6 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   registerCallback: (name, callback) ->
     @[name] = callback
     @
-
-  log = (args...) ->
-    console.log(args...)
 
   reportTimeStuff: ->
     xd         = @x.domain()
