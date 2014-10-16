@@ -611,6 +611,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     super(options)
 
   initializeBaseVariables: (options) ->
+    window.chart = @
     @chart_uuid = options.chart_uuid
     @element    = options.element or 'body'
     bh = @baseHeight()
@@ -671,3 +672,19 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   registerCallback: (name, callback) ->
     @[name] = callback
     @
+
+  log = (args...) ->
+    console.log(args...)
+
+  reportTimeStuff: ->
+    _xd         = @x.domain()
+    _x_distance = _xd[1] - _xd[0]
+
+    log('x distance', _x_distance, '(milliseconds)')
+    customTimeFormatter = d3.time.format.multi([
+      ['hello', () -> true]
+    ])
+
+    @xAxis.scale().tickFormat(customTimeFormatter)
+
+
