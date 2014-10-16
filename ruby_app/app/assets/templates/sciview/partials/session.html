@@ -1,43 +1,11 @@
-
-<div class="collapse navbar-collapse navbar-ex1-collapse">
-  <ul class="nav navbar-nav navbar-right navbar-user">
-    <% if user_signed_in? %>
+<div>
+  <ul>
     <li>
-      <%= link_to edit_user_registration_path do %>
-      <i class='fa fa-user'></i> <%= current_user.email %>
-      <% end %>
+      <i class='fa fa-user'></i>Welcome, {{user.email}}
     </li>
-    <li class="divider-vertical"></li>
-    <li>
-      <%= link_to [:charts] do %>
-      <i class='fa fa-bar-chart-o '></i> My Charts
-      <% end %>
-    </li>
-    <li class="divider-vertical"></li>
-    <li>
-      <%= link_to destroy_user_session_path, method: :delete do %>
+    <!--<li class="divider-vertical"></li>-->
+    <li ng-click="logout">
       <i class='fa fa-sign-out'></i> Sign Out
-      <% end %>
     </li>
-
-    <% else %>
-    <li>
-      <%= link_to [:charts] do %>
-      <i class='fa fa-bar-chart-o '></i> Charts
-      <% end %>
-    </li>
-    <li class="divider-vertical"></li>
-    <li>
-      <%= link_to new_user_registration_path do %>
-      <i class='fa fa-user '></i> Sign Up
-      <% end %>
-    </li>
-    <li class="divider-vertical"></li>
-    <li>
-      <%= link_to new_user_session_path do %>
-      <i class='fa fa-sign-in '></i> Sign In
-      <% end %>
-    </li>
-    <% end %>
   </ul>
 </div>

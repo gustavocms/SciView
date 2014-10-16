@@ -21,9 +21,6 @@ module.controller "UserController", [
       ), (response) ->
         $scope.authError = response.data.error
 
-    $scope.logout = ->
-      Session.logout()
-
     $scope.register = (user) ->
       $scope.authError = null
       Session.register(user.email, user.password, user.confirm_password).then ((response) ->
