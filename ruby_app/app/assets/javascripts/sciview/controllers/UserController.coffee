@@ -15,7 +15,8 @@ module.controller "UserController", [
       ), (response) ->
         $scope.authError = response.data.error
 
-    $scope.logout = (user) ->
+    $scope.logout = ->
+      Session.logout()
 
     $scope.register = (user) ->
       $scope.authError = null

@@ -10,9 +10,9 @@ class Api::V1::UsersController < ApplicationController
     @user = User.create(user_params)
     if @user.valid?
       sign_in(@user)
-      respond_with @user, :location => api_users_path
+      respond_with @user, :location => api_v1_users_path
     else
-      respond_with @user.errors, :location => api_users_path
+      respond_with @user.errors, :location => api_v1_users_path
     end
   end
 
