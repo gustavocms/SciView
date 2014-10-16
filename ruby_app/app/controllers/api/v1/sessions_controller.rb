@@ -14,8 +14,7 @@ class Api::V1::SessionsController < Devise::SessionsController
   end
 
   def failure
-    # using distinct code from 401 to avoid conflict with angular interceptor
-    render :status => 400, :json => { :success => false, :info => "Login Credentials Failed" }
+    render :status => 401, :json => { :success => false, :info => "Login Credentials Failed" }
   end
 
   def show_current_user

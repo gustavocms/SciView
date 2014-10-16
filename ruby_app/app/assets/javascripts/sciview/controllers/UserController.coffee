@@ -5,6 +5,12 @@ module.controller "UserController", [
   "Session"
   ($scope, Session) ->
     "use strict"
+
+    $scope.user =
+      email: ""
+      password: ""
+      confirm_password: ""
+
     $scope.login = (user) ->
       $scope.authError = null
       Session.login(user.email, user.password).then ((response) ->
@@ -23,9 +29,9 @@ module.controller "UserController", [
       Session.register(user.email, user.password, user.confirm_password).then ((response) ->
         console.log response
       ), (response) ->
-        errors = ""
-        $.each response.data.errors, (index, value) ->
-          errors += index.substr(0, 1).toUpperCase() + index.substr(1) + " " + value + ""
+        errors = []
+        $.each response.data, (index, value) ->
+          errors.push index.substr(0, 1).toUpperCase() + index.substr(1) + " " + value + ""
 
         $scope.authError = errors
 ]

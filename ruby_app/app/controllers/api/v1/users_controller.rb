@@ -3,16 +3,16 @@ class Api::V1::UsersController < ApplicationController
   before_filter :authenticate_user!, :except => [:create, :show]
 
   def show
-    render :json => {:info => "Current User", :user => current_user}, :status => 200
+    render status: 200, json: {:info => "Current User", :user => current_user}
   end
 
   def create
     @user = User.create(user_params)
     if @user.valid?
       sign_in(@user)
-      respond_with @user, :location => api_v1_users_path
+      render status: 200, json: @user, location: api_v1_users_path
     else
-      respond_with @user.errors, :location => api_v1_users_path
+      render status: 401, json: @user.errors, location: api_v1_users_path
     end
   end
 

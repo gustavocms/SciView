@@ -6,8 +6,7 @@ module.factory "DeviseInterceptor", [
 
     responseError: (rejection) ->
       if rejection.status is 401
-        $rootScope.$broadcast "event:unauthorized"
-        console.log rejection
+        $rootScope.$broadcast "event:unauthorized", rejection
 
       return $q.reject rejection
 ]

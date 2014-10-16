@@ -31,8 +31,10 @@ app.run(['$rootScope', '$state', '$stateParams',
       (event, toState, toParams, fromState, fromParams, error) ->
         console.log(error)
     )
-    $rootScope.$on('event:unauthorized', ->
-      $state.go('login')
+    $rootScope.$on('event:unauthorized', (event, rejection) ->
+      if rejection.config.url not in ["/api/v1/sessions","/api/v1/users"]
+        console.log 'unauthorized'
+        $state.go('login')
     )
 ])
 

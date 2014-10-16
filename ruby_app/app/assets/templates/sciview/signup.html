@@ -3,13 +3,10 @@
   <section class="form-container">
     <h2 class="form-heading">Sign Up</h2>
     <aside class="form-alternate">If you have an account you can <a class="form-option--link" ui-sref="login">Log In here</a></aside>
-      <div class="alert alert-warning" ng-show="authReason">
-          {{authReason}}
+      <div class="alert alert-error" ng-show="authError" ng-repeat="error in authError">
+          {{error}}
       </div>
-      <div class="alert alert-error" ng-show="authError">
-          {{authError}}
-      </div>
-    <form class="form-element">
+    <form name="registrationForm" class="form-element">
       <label for="email" class="form-label">Email</label>
       <input id="email"  type="email" class="form-input" ng-model="user.email" required autofocus>
       <label for="password" class="form-label">Password</label>
