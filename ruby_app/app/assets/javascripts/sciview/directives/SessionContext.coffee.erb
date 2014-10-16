@@ -1,0 +1,10 @@
+module = angular.module("sv.ui.directives")
+
+module.directive "svSessionContext", [ alertListDirective = ->
+  restrict: "E"
+  controller: "UserController"
+#  controllerAs: "ctrl"
+  bindToController: true
+  templateUrl: '<%= asset_path('sciview/partials/session.html') %>'
+  scope: {}
+]

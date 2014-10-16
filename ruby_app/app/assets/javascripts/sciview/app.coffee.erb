@@ -11,12 +11,14 @@ app = angular.module('sciview', [
   'sv.ui.controllers'
   'sv.ui.services'
   'sv.ui.filters'
+  'sv.ui.directives'
   'ngS3upload'
 ])
 
 # register additional modules
 angular.module("sv.ui.controllers", [])
 angular.module('sv.ui.services', ['ngResource'])
+angular.module("sv.ui.directives", [])
 
 # first thing to run after loading
 app.run(['$rootScope', '$state', '$stateParams',
