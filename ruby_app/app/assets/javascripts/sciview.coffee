@@ -637,7 +637,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     @yAxis        = d3.svg.axis()
       .scale(@y)
       .orient("right")
-      .tickFormat(d3.format(".0f"))
+      .tickFormat(@yAxisTickFormat())# d3.format(".2f"))
       .ticks(10)
       .tickSize(20, 10)
     @yAxisMinor = d3.svg.axis()
@@ -646,6 +646,19 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       .tickFormat("")
       .ticks((@y.ticks(10).length + 1) * 4)
       .tickSize(20, 10)
+
+  yAxisTickFormat: ->
+    d     = @y.domain()
+    delta = d[1] - d[0]
+    sig   = (->
+      for pair in [[0.1, 3], [1, 2], [10, 1]]
+        return pair[1] if delta <= pair[0]
+      return 0
+    )()
+    d3.format("#{sig}r")
+
+
+
 
   baseWidth: ->
     parseInt(@elementSelection().style('width'))
