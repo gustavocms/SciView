@@ -648,14 +648,16 @@ class SciView.D3.FocusChart extends SciView.FocusChart
       .tickSize(20, 10)
 
   yAxisTickFormat: ->
-    d     = @y.domain()
-    delta = d[1] - d[0]
-    sig   = (->
-      for pair in [[0.1, 3], [1, 2], [10, 1]]
-        return pair[1] if delta <= pair[0]
-      return 0
-    )()
-    d3.format("#{sig}r")
+    d3.format(".2s")
+    # alternate, non-SI implementation:
+    #d     = @y.domain()
+    #delta = d[1] - d[0]
+    #sig   = (->
+    #for pair in [[0.1, 3], [1, 2], [10, 1]]
+    #return pair[1] if delta <= pair[0]
+    #return 0
+    #)()
+    #d3.format(".#{sig}r")
 
 
 
