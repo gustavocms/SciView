@@ -39,7 +39,7 @@ class TimeOffsetDisplay
     str
 
   _mods =
-    days: 1
+    days: 365
     hours: 24
     minutes: 60
     seconds: 60
@@ -51,10 +51,10 @@ class TimeOffsetDisplay
     seconds: 1000
 
   _teeny_names =
-    days: 'd'
-    hours: 'h'
-    minutes: 'm'
-    seconds: 's'
+    days: 'd '
+    hours: 'h '
+    minutes: 'm '
+    seconds: 's '
     milliseconds: 'ms'
 
 
