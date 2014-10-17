@@ -60,6 +60,9 @@ class TimeOffsetDisplay
 
   # NOTE: >> is a bitwise shift operator. Equivalent to Math.floor(), but 
   # more efficient.
+  # ALSO NOTE: It will fail for integers larger than 32 bits (2147483647 max),
+  # but that allows us a time interval of over 1633 years. Good luck
+  # to whoever is responsible for that dataset!
   _time_interval: (unit) ->
     @["__#{unit}"] or= pad((@milliseconds / _thresholds[unit] >> 0) % _mods[unit])
 
