@@ -16,6 +16,70 @@ SciView.lineColor = d3.scale.ordinal().range(value for name, value of {
   'CLOUDS': '#ECF0F1'
 })
 
+# Takes in an Integer constructor argument (representing milliseconds)
+# toString returns a string of the form "days:hours:minutes:seconds.milliseconds"
+# e.g. "01:18:12:59.001"
+# Places are hidden if the value is 0, but seconds and milliseconds are always displayed
+# e.g. "00.023"
+#
+class TimeOffsetDisplay
+  constructor: (@milliseconds) ->
+
+  toString: ->
+    "#{@_intervalString()}.#{@_milliseconds()}"
+
+  toLegend: ->
+    "#{(_teeny_names[unit] for unit in @_intervalsToInclude()).join(":")}.ms"
+
+  toObject: -> { value: @toString(), key: @toLegend() }
+
+  pad = (input, len = 2) ->
+    str = "#{input}"
+    (str = "0#{str}") while str.length < len
+    str
+
+  _mods =
+    days: 365
+    hours: 24
+    minutes: 60
+    seconds: 60
+
+  _thresholds =
+    days:    8640000
+    hours:   360000
+    minutes: 60000
+    seconds: 1000
+
+  _teeny_names =
+    days: 'd '
+    hours: 'h '
+    minutes: 'm '
+    seconds: 's '
+    milliseconds: 'ms'
+
+
+  # NOTE: >> is a bitwise shift operator. Equivalent to Math.floor(), but 
+  # more efficient.
+  # ALSO NOTE: It will fail for integers larger than 32 bits (2147483647 max),
+  # but that allows us a time interval of over 1633 years. Good luck
+  # to whoever is responsible for that dataset!
+  _time_interval: (unit) ->
+    @["__#{unit}"] or= pad((@milliseconds / _thresholds[unit] >> 0) % _mods[unit])
+
+  _intervalsToInclude: ->
+    @__intervalsToInclude or= (
+      ary = (unit for unit, value of _thresholds when @milliseconds >= value)
+      ary = ['seconds'] if ary.length is 0
+      ary
+    )
+
+  _intervalString: ->
+    (@_time_interval(unit) for unit in @_intervalsToInclude()).join(":")
+
+  _milliseconds: -> @__milliseconds or= pad(@milliseconds % _thresholds['seconds'], 3)
+
+
+
 class SciView.BasicChart
   constructor: (options = {}) ->
     @initializeBaseVariables(options)
@@ -521,6 +585,17 @@ class SciView.FocusChart extends SciView.BasicChart
 
     groups.exit().remove()
 
+  # This formatter is used to inject the cursor time back into the angular
+  # callback. This function wraps a closure around the start domain so
+  # it doesn't need to be looked up every time.
+  forceXAxisFormatter: ->
+    xd0 = @x.domain()[0]
+    @_xAxisFormatter = (date) ->
+      (new TimeOffsetDisplay(date - xd0))
+
+  xAxisFormatter: ->
+    @_xAxisFormatter or @forceXAxisFormatter()
+
   observationCursor: (coords) ->
     x = (coords or [0])[0]
     @focusCursor or= @focus.append('line').attr('id', 'focusCursor')
@@ -535,9 +610,9 @@ class SciView.FocusChart extends SciView.BasicChart
       .attr('y1', 0).attr('y2', @height2)
 
     # Tooltip data construction
-    format = @xAxis.scale().tickFormat()
+    format             = @xAxisFormatter()
     data               =  {}
-    data.time          = format(@x.invert(x))
+    data.time          = format(@x.invert(x)).toObject()
     data.intersections = []
     for d in @_focusPathIntersections(x)
       do (d) =>
@@ -565,7 +640,6 @@ class SciView.FocusChart extends SciView.BasicChart
     circles.exit().remove()
 
   _focusPathIntersection = (x, node) ->
-    window[node.__data__.key] = node
     pathSegList      = node.pathSegList
     numberOfSegments = pathSegList.length
     bestFit          = { x: undefined, y: undefined }
@@ -632,7 +706,7 @@ class SciView.D3.FocusChart extends SciView.FocusChart
     @x2           = d3.time.scale().range([0, @width])
     @y            = d3.scale.linear().range([@height, 0])
     @y2           = d3.scale.linear().range([@height2, 0])
-    @xAxis        = d3.svg.axis().scale(@x).orient("bottom")
+    @xAxis        = d3.svg.axis().scale(@x).orient("bottom")#.tickFormat(@xAxisFormatter())
     @xAxis2       = d3.svg.axis().scale(@x2).orient("bottom")
     @yAxis        = d3.svg.axis()
       .scale(@y)
@@ -689,3 +763,4 @@ class SciView.D3.FocusChart extends SciView.FocusChart
   registerCallback: (name, callback) ->
     @[name] = callback
     @
+
