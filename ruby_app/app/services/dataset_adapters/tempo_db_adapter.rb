@@ -14,11 +14,12 @@ module DatasetAdapters
         new(series, { start: start, stop: stop, count: count }).to_hash
       end
 
-      def update_series(seriesNew)
-        with_series(seriesNew[:key]) do |series|
-          series.name = seriesNew[:name]
-          series.tags = seriesNew[:tags]
-          series.attributes = seriesNew[:attributes]
+      def update_series(series_hash)
+        puts "UPDATE SERIES #{series_hash.inspect}"
+        with_series(series_hash[:key]) do |series|
+          series.name       = series_hash[:name]
+          series.tags       = series_hash[:tags]
+          series.attributes = series_hash[:attributes]
         end
       end
 
