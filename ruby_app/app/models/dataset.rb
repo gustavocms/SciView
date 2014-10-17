@@ -1,6 +1,8 @@
 require 'forwardable'
 
 class Dataset
+  # CLASS METHODS
+  #
   class << self
     extend Forwardable
 
@@ -27,7 +29,7 @@ class Dataset
       @config ||= {}
     end
 
-    private
+    protected
 
     DEFAULT_ADAPTER = DatasetAdapters::TempoDBAdapter
 
@@ -39,4 +41,33 @@ class Dataset
       @adapter ||= DEFAULT_ADAPTER
     end
   end
+
+  # INSTANCE METHODS
+
+  extend Forwardable
+
+  # Adapters should implement these instance methods (arity in comments)
+  def_delegators :adapter_instance,
+    :summary,  # 0
+    :to_hash,  # 0
+    :as_json,  # aliases to_hash
+    :interval, # 0
+    :series_names, # attr_reader
+    :client, # attr_reader (is this necessary?)
+    :options, # attr_reader
+    :count, #attr_reader
+    :function, # attr_reader
+    :query_start, # attr_Reader,
+    :query_stop # attr_Reader 
+
+
+
+  def initialize(*args, &block)
+    @adapter_instance = Dataset.adapter.new(*args, &block)
+  end
+
+  private
+
+  attr_reader :adapter_instance
+
 end
