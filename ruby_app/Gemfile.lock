@@ -20,7 +20,7 @@ GIT
 PATH
   remote: ../tdms
   specs:
-    tdms (0.0.4.alpha)
+    tdms (0.0.5.alpha)
 
 GEM
   remote: https://rubygems.org/

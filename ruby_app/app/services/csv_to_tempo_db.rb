@@ -34,7 +34,7 @@ class CsvToTempoDb
   def wait_for_tempo_db(proportion = 0.1) # note: 100% will probably not work
     20.times do
       sleep(0.5)
-      tempodb_client.get_summary(series_name, Time.utc(1999), Time.utc(2020)).tap do |s|
+      tempodb_client.get_summary(series_name, Time.utc(1899), Time.utc(2020)).tap do |s|
         puts "#{series_name}: #{s.summary['count']} out of #{raw_data.length}"
         return true if (s.summary['count'] || 0) >= raw_data.length * proportion
       end

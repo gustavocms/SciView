@@ -31,7 +31,6 @@
 //= require charts/multiple
 //= require charts/index
 //= require sciview
-//= require stream_layers
 //= require jquery.fileupload
 //= require uploads
 //= require_tree ./sciview

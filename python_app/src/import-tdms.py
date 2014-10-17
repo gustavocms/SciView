@@ -1,12 +1,12 @@
 __author__ = 'paulmestemaker'
-from nptdms import TdmsFile, tdms
+
+from nptdms import TdmsFile
 from tempodb.client import Client
 from tempodb.protocol import DataPoint
 from secrets import API_KEY, API_SECRET, DATABASE_ID
 from datetime import datetime, timedelta
 import itertools
-import os
-import logging
+# import os
 
 import argparse
 
@@ -23,13 +23,27 @@ def write_channel_attributes(channel, key, client):
     :return:
     """
 
-    response = client.get_series(key=key)
+    # 409 -- series already exists
+    # 404 -- series not found
+
+    try:
+        response = client.create_series(key=key, attrs={"creation_method": "python-import"})
+    except Exception as e:
+        # TODO: make better exception
+        print "Probably already exists"
+        print e.message
+    finally:
+        response = client.get_series(key=key)
+    # except ResponseException as e:
+    #     print e
+    # finally:
+    #     response = client.create_series(key=key)
+
     series = response.data
     for prop, val in channel.properties.items():
         sval = "%s" % val
         if len(sval) > 0:
             # TODO: see if it makes a difference to store in non-string format for floats/ints
-
             series.attributes[("%s" % prop)] = sval
         else:
             # TODO: consider attributes with no values to be tags?
@@ -64,8 +78,7 @@ def import_channel_to_tempodb(tdms_channel, series_key=None, chunk_size=2000):
     if series_key is None:
         series_key = tdms_channel.path
 
-    print
-    print series_key
+    print "\n", series_key
 
     tc_data = tdms_channel.data
     tc_time = tdms_channel.time_track()
@@ -74,9 +87,11 @@ def import_channel_to_tempodb(tdms_channel, series_key=None, chunk_size=2000):
     time_size = len(tc_time)
 
     if data_size != time_size:
-        print "Length of channel data and time are not equal"
+        raise "Length of channel data and time are not equal (%i != %i)" % data_size, time_size
 
     client = Client(DATABASE_ID, API_KEY, API_SECRET)
+
+    write_channel_attributes(tdms_channel, series_key, client)
 
     tempo_data = []
     start_time = datetime.now()
@@ -98,8 +113,6 @@ def import_channel_to_tempodb(tdms_channel, series_key=None, chunk_size=2000):
         write_to_tempo_db(client, i, series_key, tempo_data)
         del tempo_data
 
-    write_channel_attributes(tdms_channel, series_key, client)
-
     end_time = datetime.now()
     duration = end_time - start_time
     print start_time, end_time, duration
@@ -115,77 +128,79 @@ def display_properties(tdms_object, level):
             display("%s: %s" % (prop, val), level)
 
 
-def display(s, level):
-    print("%s%s" % (" " * 2 * level, s))
+def display(s, indentation_level):
+    print("%s%s" % (" " * 2 * indentation_level, s))
 
 
-logging.getLogger(tdms.__name__).setLevel(logging.DEBUG)
+def import_tdmsfile_to_tempodb(file_path, series_key_base=None):
+    # Parse the TDMS file and get a handle to the object
+    tdmsfile = TdmsFile(file_path)
 
-parser = argparse.ArgumentParser(description="Imports TDMS file into TempoDB")
-parser.add_argument("files", type=str, nargs='+', help="One or more TDMS files")
-args = parser.parse_args()
+    # Logging options
+    show_properties = True
+    show_data = False
+    show_time = False
+    import_data = True
 
-# TODO: cycle through each file
-# TODO: validate file(s) exist
-# TODO: verify file is of the right format
-print args.files
-file_path = args.files[0]
-print file_path
-
-# Determine the absolute path of the /data/ directory
-# data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'data'))
-
-# Calculate full path for file
-# file_path = os.path.join(data_dir, data_file)
-
-tdmsfile = TdmsFile(file_path)
-
-show_properties = False
-show_data = False
-show_time = False
-
-count = 0
-
-level = 0
-
-# chunk_size = 1000
-
-root = tdmsfile.object()
-display('/', level)
-if show_properties:
-    display_properties(root, level)
-for group in tdmsfile.groups():
-    level = 1
-    group_obj = tdmsfile.object(group)
-    display("%s" % group_obj.path, level)
-
+    count = 0
+    level = 0
+    root = tdmsfile.object()
+    display('/', level)
     if show_properties:
-        display_properties(group_obj, level)
-
-    for channel in tdmsfile.group_channels(group):
-        level = 2
-        display("%s" % channel.path, level)
-        display("%s" % len(channel.properties), level)
+        display_properties(root, level)
+    for group in tdmsfile.groups():
+        level = 1
+        group_obj = tdmsfile.object(group)
+        display("%s" % group_obj.path, level)
         if show_properties:
-            level = 3
-            display("data type: %s" % channel.data_type.name, level)
-            display_properties(channel, level)
+            display_properties(group_obj, level)
+        for channel in tdmsfile.group_channels(group):
+            level = 2
+            display("%s" % channel.path, level)
+            if show_properties:
+                level = 3
+                display("data type: %s" % channel.data_type.name, level)
+                display_properties(channel, level)
 
-        if show_data:
-            level = 3
-            data = channel.data
-            display("data: %s" % data, level)
+            if show_data:
+                level = 3
+                data = channel.data
+                display("data: %s" % data, level)
 
-        if show_time:
-            level = 3
-            try:
+            if show_time:
+                level = 3
                 time = channel.time_track()
                 display("time: %s" % time, level)
-                import_channel_to_tempodb(channel, "Paul-Python-TDMS-%i" % count)
-                # import_channel_to_tempodb(channel)
-                count += 1
-            except KeyError as ke:
-                display("This time is being difficult", level)
-                print ke
+
+            if import_data:
+                level = 3
+                try:
+                    if series_key_base:
+                        series_key = "%s-%i" % (series_key_base, count)
+                        count += 1
+                        # "Paul-Python-TDMS-1"
+                    else:
+                        # series_key_base = "%s-%s-%s" % os.path.basename(os.path.splitext(file_path))[0], group_obj.
+                        series_key = channel.path
+
+                    import_channel_to_tempodb(channel, series_key)
+
+                except KeyError as ke:
+                    display("There is no embedded time data in this channel.", level)
+                    print ke
+            print
+        print
 
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Imports TDMS file into TempoDB")
+    parser.add_argument("files", type=str, nargs='+', help="One or more TDMS files")
+    args = parser.parse_args()
+
+    # TODO: cycle through each file
+    # TODO: validate file(s) exist
+    # TODO: verify file is of the right format
+    print args.files
+    for file_path in args.files:
+        print "importing... ", file_path
+        import_tdmsfile_to_tempodb(file_path, "paul-python-20140728")

@@ -4,7 +4,7 @@ namespace :data do
   desc 'TDMS import'
   task :tdms_import do
     filename = File.expand_path("fixtures/EXAMPLE.tdms")
-    doc = Tdms::File.parse(filename)
+    tdms_dataset = Tdms::File.parse(filename)
 
     # doc.segments.each_with_index do |segment, index|
     #   puts segment.path
@@ -19,7 +19,7 @@ namespace :data do
     # puts
     # puts
 
-    doc.channels.each_with_index do |channel, index|
+    tdms_dataset.channels.each_with_index do |channel, index|
 
       indented_display channel.path, 0
 
@@ -28,6 +28,18 @@ namespace :data do
       channel.properties.each do |name, value|
         indented_display "#{name}\t#{value}", 2
       end
+
+
+      begin
+        puts channel.time_track
+      rescue KeyError => error
+        puts "No time track"
+      end
+
+      # 0...channel.values.size do |i|
+        # indented_display "#{channel.values[i]}", 2
+      # end
+
 
 
       # channel.properties.each do |prop, value|
