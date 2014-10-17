@@ -16,7 +16,7 @@
 //= require angular-animate/angular-animate
 //= require angular-cookies/angular-cookies
 //= require angular-sanitize/angular-sanitize
-// require angular-ui-bootstrap-bower/ui-bootstrap-tpls
+//= require angular-ui-bootstrap-bower/ui-bootstrap-tpls
 //= require angular-ui-utils/ui-utils
 //= require angular-ui-router
 //= require angular-data
