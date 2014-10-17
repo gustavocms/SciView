@@ -143,3 +143,40 @@ ViewState.create(
 ```
 
 This will be available in the angular app at `/ng#/data-sets/:id`.
+
+## InfluxDB
+
+### Overview Webcast
+Just watch the first 30 minutes of this: https://www.youtube.com/watch?v=sRi64imN7xg
+
+### Mac OS X Setup Guide
+
+#### Install InfluxDB
+    $ brew install influxdb
+    
+#### Update influxdb.conf
+Update `/usr/local/etc/influxdb.conf`
+
+from: `default-engine = "rocksdb"`
+
+to: `default-engine = "leveldb"`
+
+### Using InfluxDB
+
+#### Start the server
+    $ influxdb -config=/usr/local/etc/influxdb.conf
+    
+#### Web app walk through
+
+1. Go to [http://localhost:8083](http://localhost:8083)
+1. user: root, password: root, hostname: localhost, port 8086
+1. Create a database "sciview1"
+1. Click "explore data"
+1. Write point: Time Series Name: tsname1, Values: {"my_value" : 1}
+1. Write point: Time Series Name: tsname1, Values: {"my_value" : 2}
+1. Write point: Time Series Name: tsname1, Values: {"my_value" : 4}
+1. Write point: Time Series Name: tsname1, Values: {"my_value" : 8}
+1. Query: select my_value from tsname1;
+
+#### More getting started goodness
+http://influxdb.com/docs/v0.8/introduction/getting_started.html
