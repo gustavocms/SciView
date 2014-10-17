@@ -83,14 +83,23 @@ class Dataset
       #
       # Returns the updated series object.
       :remove_tag,
+
+      # deprecated
       :for_series,
+
+      # Args: key (string)
+      # Returns the series object.
       :series_metadata,
+
+      # Args: series - hash of the form: 
+      # { series_1: 'test' }
+      # Returns an array of series objects.
       :multiple_series_metadata
 
 
     def use_adapter(klass)
       @adapter = klass
-    end
+    enlac
 
     def config
       @config ||= {}
