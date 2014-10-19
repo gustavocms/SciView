@@ -3,7 +3,7 @@
 // -- Data Sets
 
 .data-sets {
-  @include span-columns(12);
+  @include span-columns(6);
   position: fixed;
 }
 
@@ -23,6 +23,13 @@
     background-color: rgba($interface_color, 0.05);
     color: rgba($font_color, 0.7);
     cursor: pointer;
+  }
+}
+
+.data-sets__item-title.new {
+  @extend %icon-font__add-data-set;
+  &::before {
+    margin-right: 1em;
   }
 }
 
@@ -48,3 +55,14 @@
   overflow-y: scroll;
 }
 
+.data-sets__item-title-edit {
+  margin: 0;
+  margin-top: -.5em;
+  padding: .2em 1em;
+  background-color: transparent;
+  border: 1px solid $highlight_color;
+  font-family: $mono_font_family;
+  outline: 0;
+  @include rem(font-size, $normal);
+  color: $white;
+}

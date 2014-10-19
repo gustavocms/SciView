@@ -21,12 +21,12 @@
         <ul class="batch__data">
           <!-- Each data item -->
           <!-- Hack removing nested groups -->
-          <li class="channel" ng-repeat="series in chart.channels[0].series" ng-class="series.state" ng-click="setGlobalChannel(series)" ng-mouseenter="channel_hover = true" ng-mouseleave="channel_hover = false">
-            <i class="channel__active" ng-show="channel_hover" ng-init="active = true" ng-class="{'is-active': active}" ng-click="active = !active"></i>
+          <li class="channel" ng-repeat="series in chart.channels[0].series" ng-class="series.state" ng-mouseenter="channel_hover = true" ng-mouseleave="channel_hover = false">
             <i class="channel__dropdown" ng-click="toggleGroup(series)"></i>
             <!-- series title -->
-            <span class="channel__title" style="color: {{series.key.color}}"
+            <span class="channel__title" ng-click="setGlobalChannel(series)" style="color: {{series.key.color}}"
             ng-bind="series.title"> </span>
+            <i class="channel__active" ng-show="channel_hover || !active" ng-init="active = true" ng-class="{'is-active': active}" ng-click="active = !active"></i>
             <span class="channel__key"
             style="border-color: {{series.key.color}}; border-bottom-style: {{series.key.style}}"> </span>
             <!-- series Category -->

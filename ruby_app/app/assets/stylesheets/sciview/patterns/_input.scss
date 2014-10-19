@@ -37,19 +37,17 @@
 
 %button-delete {
   @extend %button-reset;
-  @include pad($baby $baby/2);
-  position: absolute;
+  outline: 0;
+  margin: 0;
+  padding: 0;
+  margin-left: 1em;
+  display: inline-block;
   background: transparent;
   border: none;
+  @extend %icon-font__x;
   &::before {
-    content: '';
-    width: $normal;
-    height: $normal;
-    background: asset-url('x.svg') no-repeat center;
-    background-size: $baby;
-    position: absolute;
-    left: 0;
     opacity: 0.5;
+    margin-right: 1em;
   }
   &:hover {
     border: none;
@@ -58,3 +56,38 @@
     }
   }
 }
+
+.button-delete {
+  @extend %button-delete;
+  &::before {
+    opacity: 0.2;
+  }
+  // &::after {
+  //   content: "";
+  //   position: absolute;
+  // }
+  &:hover {
+    // &::after {
+    //   content: "Cancel";
+    // }
+  }
+}
+
+.button-save {
+  @extend %button-delete;
+  @extend %icon-font__check;
+  // &::after {
+  //   content: "";
+  //   position: absolute;
+  // }
+  &:hover {
+    // &::after {
+    //   content: "Save";
+    // }
+  }
+}
+
+
+
+
+

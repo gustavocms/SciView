@@ -9,6 +9,7 @@ app = angular.module('sciview', [
   'angular-data.DSCacheFactory'
   'ngSocket'
   'sv.ui.controllers'
+  'sv.ui.directives'
   'sv.ui.services'
   'sv.ui.filters'
   'ngS3upload'
@@ -16,6 +17,7 @@ app = angular.module('sciview', [
 
 # register additional modules
 angular.module("sv.ui.controllers", [])
+angular.module("sv.ui.directives", [])
 angular.module('sv.ui.services', ['ngResource'])
 
 # first thing to run after loading

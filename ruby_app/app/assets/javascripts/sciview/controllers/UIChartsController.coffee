@@ -5,9 +5,12 @@ module.controller("UIChartController", [
   '$rootScope'
   '$element'
   '$window'
-  ($scope, $rootScope, $element, $window) ->
+  'Alerts'
+  ($scope, $rootScope, $element, $window, Alerts) ->
     
     $scope.is_adding = false
+
+    Alerts.pushMessage("Data loaded", "neutral")
 
     $scope.setGlobalChannel = (channel) ->
       # TODO: use service (or similar) and get rid of rootScope
@@ -28,6 +31,7 @@ module.controller("UIChartController", [
 
     $scope.addSeries = (ui_chart, series_title, group = null) ->
       console.log(ui_chart, $scope.chart, series_title)
+      Alerts.pushMessage("Added series", "success")
       if group
         # TODO: do something with the group
       else
