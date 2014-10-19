@@ -4,7 +4,8 @@ module.controller('DataSetsController', [
   '$scope'
   '$q'
   'ViewState'
-  ($scope, $q, ViewState) ->
+  'Alerts'
+  ($scope, $q, ViewState, Alerts) ->
 
 #   deferred promise needed for the child state to wait for
     $scope.deferredDatasetsLoading = $q.defer()
@@ -26,4 +27,8 @@ module.controller('DataSetsController', [
         $scope.data_sets.push(dataset)
         $scope.$state.go('data-sets.single', { dataSetId: dataset.id })
       )
+
+    $scope.editDataSet = (data_set) ->
+      data_set.editing = true
+      Alerts.pushMessage("Rename Data Set", "neutral")
 ])

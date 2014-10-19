@@ -42,27 +42,33 @@
 
 .channel__active {
   position: absolute;
-  left: 1.025rem;
-  top: 2.3rem;  
-  width: .3rem;
-  height: .3rem;
-  border-radius: 50%;
-  background-color: rgba($white, 0.1);
+  right: 3rem;
+  top: 1rem;  
+  background-color: transparent;
+  // width: .3rem;
+  // height: .3rem;
+  // border-radius: 50%;
+  // background-color: rgba($white, 0.1);
+
+  @extend %icon-font__power;
+
+  color: rgba($white, 0.2);
 
   &:hover {
+    color: rgba($white, 0.7);
     cursor: pointer;
-    background-color: rgba($white, 0.7);
+    // background-color: rgba($white, 0.7);
   }
 }
 
 .channel__active.is-active {
-  background-color: rgba($white, 1);
+  color: $white;
 }
 
 .channel__title {
   @extend %monospaced-style;
   @include shift(1.5);
-  @include span-columns(9);
+  @include span-columns(8);
   height: 100%;
   vertical-align: middle;
   display: block;

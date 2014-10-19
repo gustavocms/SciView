@@ -115,6 +115,20 @@
   }
 }
 
+%icon-font__power {
+  &::before {
+    @extend %icon-font;
+    content: "\e60c";
+  }
+}
+
+%icon-font__check {
+  &::before {
+    @extend %icon-font;
+    content: "\e60d";
+  }
+}
+
 
 
 

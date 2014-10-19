@@ -1,0 +1,57 @@
+.notifications {
+  position: absolute;
+  right: 4em;
+  padding: 0.6rem 1.6rem;
+  width: auto;
+  text-align: right;
+}
+
+.notifications__text {
+  @include rem(font-size, $normal);
+  @include vp(transition, all .2s ease);
+
+  &::before {
+    position: absolute;
+    top: .5em;
+    left: -1.5em;
+    opacity: 0.3;
+  }
+
+  &.success {
+    @extend %icon-font__check;
+    &::before {
+      top: .1em;
+    }
+  }  
+  &.neutral {
+    opacity: 0.3;
+    &::before {
+      content: "";
+      display: block;
+      width: .5em;
+      height: .5em;
+      border-radius: .5em;
+      background-color: $white;
+    }
+  }  
+  &.error {
+    @extend %icon-font__x;
+    &::before {
+      top: .3em;
+    }
+  }
+}
+
+.ng-hide {
+/* this is just another form of hiding an element */
+display:block!important;
+position:absolute;
+top:-9999px;
+left:-9999px;
+}
+
+
+.notifications__text.ng-hide {
+  @include vp(transition, all .2s ease);
+  opacity: 0;
+}
