@@ -1,7 +1,7 @@
 <section class="data-sets">
   <!-- Current Data Set -->
   <!-- Current Data Set Title -->
-  <ul class="data-sets__list">
+  <ul class="data-sets__list" tabs>
     <li class="data-sets__item" ng-repeat="data_set in data_sets" ui-sref="data-sets.single({ dataSetId: data_set.id })" ng-dblclick="editDataSet(data_set)" ui-sref-active="is-current">
       <h3 class="data-sets__item-title" ng-if="!data_set.editing" ng-bind="data_set.title"></h3>
       <section class="edit-title" ng-if="data_set.editing">
@@ -11,7 +11,7 @@
       </section>
     </li>    
     <li class="data-sets__item">
-      <h3 class="data-sets__item-title new" ng-click="newDataSet()">New Data Set</h3>
+      <h3 class="data-sets__item-title new" ng-click="newDataSet()">New</h3>
     </li>
   </ul>
 </section>

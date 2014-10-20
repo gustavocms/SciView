@@ -1,10 +1,10 @@
-.discussion {
-  @include span-columns(1);
-  @include shift(11);
-  height: 100%;
-  position: absolute;
-  z-index: $z-index-kilo;
-}
+// .discussion {
+//   @include span-columns(1);
+//   @include shift(11);
+//   height: 100%;
+//   position: absolute;
+//   z-index: $z-index-kilo;
+// }
 
 .discussion__bubble {
   @extend %icon-font__discuss;

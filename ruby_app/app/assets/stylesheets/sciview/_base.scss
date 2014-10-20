@@ -22,10 +22,10 @@ body {
     font-weight: 300;
     text-align: left;
 
-    @if $interface_style == dark {
-        background-repeat: no-repeat;
-        @extend %gradient-1;
-    }
+    // @if $interface_style == dark {
+    //     background-repeat: no-repeat;
+    //     @extend %gradient-1;
+    // }
 
     -webkit-backface-visibility: hidden;
 }
