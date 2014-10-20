@@ -3,7 +3,15 @@ module DatasetAdapters
     class << self
 
       def all(options = {})
-        db.query('list series')
+        (db.query('list series')).map do |name, value|
+          {
+            "id"         => digest(name),
+            "key"        => name,
+            "name"       => "",
+            "attributes" => {},
+            "tags"       => []
+          }
+        end
       end
 
       def multiple_series
@@ -46,6 +54,12 @@ module DatasetAdapters
 
       def db
         @db ||= InfluxDB::Client.new(INFLUX_DB_NAME)
+      end
+
+      private
+
+      def digest(str)
+        Digest::SHA1.hexdigest(str)
       end
     end
 
