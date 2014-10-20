@@ -19,3 +19,16 @@ module.directive('hoverIntent', [
                 $timeout.cancel(hoverIntentPromise)
             )
 ])
+
+module.directive('tabs', [
+    '$timeout'
+    '$window'
+    ($timeout, $window) ->
+        restrict: 'A'
+        link: (scope, element, attributes) ->
+            $timeout ->
+                console.log(element[0].offsetWidth)
+            , 1
+            # console.log(element[0].offsetWidth)
+            console.log("Window", $window.innerWidth)
+])

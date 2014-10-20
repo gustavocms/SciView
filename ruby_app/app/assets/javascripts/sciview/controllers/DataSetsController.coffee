@@ -31,4 +31,5 @@ module.controller('DataSetsController', [
     $scope.editDataSet = (data_set) ->
       data_set.editing = true
       Alerts.pushMessage("Rename Data Set", "neutral")
+
 ])

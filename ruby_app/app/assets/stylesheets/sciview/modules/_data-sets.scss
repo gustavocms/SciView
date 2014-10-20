@@ -3,7 +3,7 @@
 // -- Data Sets
 
 .data-sets {
-  @include span-columns(6);
+  // @include span-columns(6);
   position: fixed;
 }
 
@@ -13,28 +13,53 @@
 }
 
 .data-sets__item {
+  @include rem(width, 8rem);
+  @include rem(height, 3rem);
+  @include rem(font-size, $normal);
+  white-space: nowrap;
+  overflow: hidden;
   float: left;
   display: inline-block;
-  background-color: rgba($interface_color, 0.025);
+  background-color: rgba($background-color, 1);
   color: rgba($font_color, 0.3);
-  padding: $normal $beta;
+  padding: 1.15em 1em;
+  border: 1px solid rgba($white, 0.3);
+  border-bottom: none;
+  border-left: none;
+
+// Gradient for fading long names
+  &::after {
+    content: "";
+    @include linear-gradient(to right, rgba($background-color, 0) 0%, rgba($background-color, 1) 50%, rgba($background-color, 1)100%);
+    width: 2em;
+    height: 100%;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 
   &:hover {
-    background-color: rgba($interface_color, 0.05);
-    color: rgba($font_color, 0.7);
+    background-color: $color-bgLight;
+    &::after {
+      @include linear-gradient(to right, rgba($color-bgLight, 0) 0%, rgba($color-bgLight, 1) 50%, rgba($color-bgLight, 1)100%);
+    }
+    color: rgba($font_color, 1);
     cursor: pointer;
   }
 }
 
 .data-sets__item-title.new {
   @extend %icon-font__add-data-set;
+  text-align: center;
+  font-family: $primary_font_family;
   &::before {
     margin-right: 1em;
   }
 }
 
 .data-set {
-  @include rem(top, 2.8rem);
+  @include rem(top, 3rem);
   height: 100%;
   width: 100%;
   right: 0;
@@ -47,6 +72,7 @@
   position: absolute;
   top: 0;
   bottom: $alpha*3;
+  background-color: $color-bgLight;
 }
 
 .batches {
