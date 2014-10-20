@@ -72,7 +72,14 @@ describe DatasetAdapters::InfluxAdapter do
     end
   end
 
+  let(:add_default_series) { -> { (1..10).each {|n| client.write_point('default_series', { value: n, time: (Time.new(2014, 1, 1) + n).to_i })}}} 
+
   describe :add_tag do
+    before { add_default_series.call }
+    specify do
+      adapter.add_tag('default_series', "TEST")
+      adapter.series_metadata('default_series')['tags'].must_include "TEST"
+    end
   end
 end
 

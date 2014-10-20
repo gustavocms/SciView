@@ -21,8 +21,8 @@ class MetadataDelegate < ActiveRecord::Base
 
   def as_json(*args)
     super(*args).tap do |hash|
-      hash[:tags]       = hash.delete(:meta_tags, []).to_a
-      hash[:attributes] = hash.delete(:meta_attributes, {})
+      hash['tags']       = hash.delete('meta_tags'){ [] }.to_a # convert set to array for serialization
+      hash['attributes'] = hash.delete('meta_attributes'){ {} }
     end
   end
 end

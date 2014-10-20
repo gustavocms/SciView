@@ -3,8 +3,8 @@ module DatasetAdapters
     class << self
 
       def all(options = {})
-        db.query('list series').map do |name, value|
-          series_meta_template(name, value)
+        db.query('list series').map do |key, value|
+          series_meta_template(key, value)
         end
       end
 
@@ -14,7 +14,7 @@ module DatasetAdapters
         new(series_hash, { start: start, stop: stop, count: count }).to_hash
       end
 
-      def update_series
+      def update_series(series_hash = {})
         raise NotImplementedError
       end
 
@@ -26,8 +26,10 @@ module DatasetAdapters
         raise NotImplementedError
       end
 
-      def add_tag
-        raise NotImplementedError
+      def add_tag(key, tag_string)
+        with_series(key) do |series|
+          series.tags << tag_string
+        end
       end
 
       def remove_tag
@@ -38,8 +40,8 @@ module DatasetAdapters
         raise NotImplementedError
       end
 
-      def series_metadata
-        raise NotImplementedError
+      def series_metadata(key)
+        series_meta_template(key)
       end
 
       def multiple_series_metadata
@@ -56,15 +58,18 @@ module DatasetAdapters
       def digest(str)
         Digest::SHA1.hexdigest(str)
       end
+
+      # get-update-save transaction
+      def with_series(key)
+        series_meta_delegate(key).tap { |meta| yield meta }.save
+      end
       
-      def series_meta_template(name, value) # don't yet know what "value" is
-        {
-          "id"         => digest(name),
-          "key"        => name,
-          "name"       => "",
-          "attributes" => {},
-          "tags"       => []
-        }
+      def series_meta_template(key, value = nil) # don't yet know what "value" is
+        series_meta_delegate(key).as_json
+      end
+
+      def series_meta_delegate(key)
+        MetadataDelegate.find_or_initialize_by(key: key)
       end
 
       # SAME IMPLEMENTATION - EXTRACT BASE CLASS
