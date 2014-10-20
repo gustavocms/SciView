@@ -1,8 +1,9 @@
 module DatasetAdapters
   class InfluxAdapter
     class << self
-      def all
-        raise NotImplementedError
+
+      def all(options = {})
+        db.query('list series')
       end
 
       def multiple_series
@@ -39,6 +40,12 @@ module DatasetAdapters
 
       def multiple_series_metadata
         raise NotImplementedError
+      end
+
+      protected
+
+      def db
+        @db ||= InfluxDB::Client.new(INFLUX_DB_NAME)
       end
     end
 
