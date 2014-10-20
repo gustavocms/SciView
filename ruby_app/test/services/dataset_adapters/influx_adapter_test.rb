@@ -123,5 +123,30 @@ describe DatasetAdapters::InfluxAdapter do
       end
     end
   end
+
+  describe :update_series do
+    before do
+      adapter.update_attribute(key, 'test_key', 'test_value_a')
+      adapter.update_attribute(key, 'test_key_b', 'test_value_b')
+      adapter.add_tag(key, 'TAG_A')
+      adapter.add_tag(key, 'TAG_B')
+    end
+
+    let(:update_hash) {
+      HashWithIndifferentAccess.new.merge({ 
+        'key' => key,
+        'tags' => %w[TAG_C TAG_D],
+        'attributes' => { 'test_key' => 'test_value_c' }
+      })
+    }
+
+    specify do
+      adapter.update_series(update_hash)
+      adapter.series_metadata(key).tap do |result|
+        result['attributes'].must_equal({ 'test_key' => 'test_value_c' })
+        result['tags'].must_equal %w[TAG_C TAG_D]
+      end
+    end
+  end
 end
 

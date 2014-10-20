@@ -14,8 +14,12 @@ module DatasetAdapters
         new(series_hash, { start: start, stop: stop, count: count }).to_hash
       end
 
-      def update_series(series_hash = {})
-        raise NotImplementedError
+      def update_series(_series_hash = {})
+        series_hash = HashWithIndifferentAccess.new(_series_hash)
+        with_series(series_hash.fetch(:key)) do |series|
+          series.tags            = series_hash[:tags] if series_hash[:tags]
+          series.meta_attributes = series_hash[:attributes] if series_hash[:attributes]
+        end
       end
 
       def update_attribute(key, attr_key, attr_value)
