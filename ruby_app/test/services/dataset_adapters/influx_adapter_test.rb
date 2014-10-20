@@ -30,5 +30,49 @@ describe DatasetAdapters::InfluxAdapter do
       end
     end
   end
+
+  describe :multiple_series do
+    before do
+      time = Time.new(2014, 1, 1).to_i
+      [[(0...10), 'series_a'], [(100...110), 'series_b']].each do |range, name|
+        range.each do |value|
+          client.write_point(name, { time: time + value, value: value })
+        end
+      end
+    end
+
+    let(:start){ Time.new(2014, 1, 1) }
+    let(:stop){ Time.new(2014, 1, 2) }
+    let(:names){ %w[series_a series_b] }
+    # sanity check
+    specify { adapter.all.map {|series| series["key"] }.must_equal names }
+
+    let(:to_hash){ adapter.multiple_series(start, stop, { series_1: 'series_a', series_2: 'series_b' }) }
+    let(:a_values){ to_hash['series_a'][:values] }
+    let(:b_values){ to_hash['series_b'][:values] }
+
+    specify "returns a hash" do
+      to_hash.tap do |result|
+        result.keys.must_equal names
+        a_values.must_be_instance_of Array
+        a_values[0].tap do |value|
+          value[:ts].must_equal start
+          value[:value].must_equal 0
+        end
+
+        b_values[0].tap do |value|
+          value[:ts].must_equal start + 100
+          value[:value].must_equal 100
+        end
+        
+        a_values.count.must_equal 10
+        b_values.count.must_equal 10
+
+      end
+    end
+  end
+
+  describe :add_tag do
+  end
 end
 
