@@ -24,7 +24,7 @@ end
 class ActionController::TestCase
   include Devise::TestHelpers
 
-  def test_user
-    @test_user ||= User.create!(email: "testuser@sciview.com", password: "password!")
+  def default_user
+    @default_user ||= User.create!(email: "testuser@sciview.com", password: "password!")
   end
 end

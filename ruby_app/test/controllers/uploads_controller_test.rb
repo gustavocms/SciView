@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class UploadsControllerTest < ActionController::TestCase
-  before { sign_in test_user }
+  before { sign_in default_user }
 
   test 'new' do
     get :new
