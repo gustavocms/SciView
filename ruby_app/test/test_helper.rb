@@ -2,6 +2,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'vcr'
+require 'minitest/pride'
 
 VCR.configure do |config|
   config.cassette_library_dir = "fixtures/cassettes"
