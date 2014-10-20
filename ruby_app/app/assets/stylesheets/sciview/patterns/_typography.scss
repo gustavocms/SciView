@@ -129,6 +129,25 @@
   }
 }
 
+.icon {
+  @include rem(font-size, $baby);
+  @include rem(top, (3rem/2)-($baby));
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.data-sets__hide {
+  @extend .icon;
+  @extend %icon-font__x;
+
+}
+
+.data-sets__edit {
+  @extend .icon;
+  @extend %icon-font__power;
+}
 
 
 

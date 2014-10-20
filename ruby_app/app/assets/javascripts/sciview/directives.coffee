@@ -23,12 +23,20 @@ module.directive('hoverIntent', [
 module.directive('tabs', [
     '$timeout'
     '$window'
-    ($timeout, $window) ->
+    '$compile'
+    ($timeout, $window, $compile) ->
         restrict: 'A'
         link: (scope, element, attributes) ->
             $timeout ->
+                dataSetsWidth = element[0].offsetWidth
+                windowWidth = $window.innerWidth
                 console.log(element[0].offsetWidth)
-            , 1
+                if `dataSetsWidth*1.68 >= windowWidth`
+                    element.addClass('shrink')
+                    console.log(scope, element, attributes)
+                    # $compile(element)(scope)            
+            , 200
+
             # console.log(element[0].offsetWidth)
-            console.log("Window", $window.innerWidth)
+            # console.log("Window", $window.innerWidth)
 ])

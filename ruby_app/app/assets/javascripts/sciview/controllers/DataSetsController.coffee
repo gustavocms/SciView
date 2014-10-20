@@ -3,9 +3,10 @@ module = angular.module("sv.ui.controllers")
 module.controller('DataSetsController', [
   '$scope'
   '$q'
+  '$state'
   'ViewState'
   'Alerts'
-  ($scope, $q, ViewState, Alerts) ->
+  ($scope, $q, $state, ViewState, Alerts) ->
 
 #   deferred promise needed for the child state to wait for
     $scope.deferredDatasetsLoading = $q.defer()
@@ -28,8 +29,16 @@ module.controller('DataSetsController', [
         $scope.$state.go('data-sets.single', { dataSetId: dataset.id })
       )
 
+    $scope.mouseEnterTitle = (data_set, scope) ->
+      currentDataSet = parseInt($state.params.dataSetId)
+      selectedDataSetId = data_set.id
+      if `currentDataSet == selectedDataSetId`
+        data_set.hover = true
+
+    $scope.mouseLeaveTitle = (data_set) ->
+      data_set.hover = false
+
     $scope.editDataSet = (data_set) ->
-      data_set.editing = true
-      Alerts.pushMessage("Rename Data Set", "neutral")
+      data_set.edit = true
 
 ])

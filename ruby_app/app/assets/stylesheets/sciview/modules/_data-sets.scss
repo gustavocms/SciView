@@ -12,6 +12,13 @@
   @extend %monospaced-style;
 }
 
+.shrink {
+  .data-sets__item {
+    @include rem(width, 6rem);
+  }
+}
+
+
 .data-sets__item {
   @include rem(width, 8rem);
   @include rem(height, 3rem);
@@ -56,6 +63,18 @@
   &::before {
     margin-right: 1em;
   }
+}
+
+.data-sets__item-options {
+  @include rem(width, 4rem);
+  position: absolute;
+  @include linear-gradient(to right, rgba($background-color, 0) 0%, rgba($background-color, 0.7) 20%, rgba($background-color, 1)100%);
+  right: 0;
+  height: 100%;
+  top: 0;
+  z-index: 3;
+  text-align: right;
+  padding-right: 1em;
 }
 
 .data-set {
