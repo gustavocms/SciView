@@ -4,7 +4,7 @@ module DatasetAdapters
 
       def all(options = {})
         db.query('list series').map do |key, value|
-          series_meta_template(key, value)
+          series_meta_hash(key, value)
         end
       end
 
@@ -34,16 +34,12 @@ module DatasetAdapters
         with_series(key) { |series| series.tags.delete(tag_string) }
       end
 
-      def for_series
-        raise NotImplementedError
-      end
-
       def series_metadata(key)
-        series_meta_template(key)
+        series_meta_hash(key)
       end
 
-      def multiple_series_metadata
-        raise NotImplementedError
+      def multiple_series_metadata(series_hash)
+        series_hash.values.map(&method(:series_metadata))
       end
 
       def db
@@ -62,7 +58,7 @@ module DatasetAdapters
         series_meta_delegate(key).tap { |meta| yield meta }.save
       end
       
-      def series_meta_template(key, value = nil) # don't yet know what "value" is
+      def series_meta_hash(key, value = nil) # don't yet know what "value" is
         series_meta_delegate(key).as_json
       end
 

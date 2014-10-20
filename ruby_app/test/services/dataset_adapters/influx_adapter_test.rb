@@ -103,5 +103,25 @@ describe DatasetAdapters::InfluxAdapter do
       adapter.series_metadata(key)['attributes'].must_equal({ "test_key" => "test_value2" })
     end
   end
+
+  describe :multiple_series_metadata do
+    before do
+      adapter.update_attribute('series_a', 'test_key', 'test_value_a')
+      adapter.update_attribute('series_b', 'test_key', 'test_value_b')
+      adapter.add_tag('series_b', "TAG B")
+      adapter.add_tag('series_a', "TAG A")
+    end
+
+    specify do
+      adapter.multiple_series_metadata({ a: 'series_a', b: 'series_b' }).tap do |result|
+        result[0]['key'].must_equal 'series_a'
+        result[0]['tags'].must_include 'TAG A'
+        result[0]['attributes'].must_equal({ 'test_key' => 'test_value_a' })
+        result[1]['key'].must_equal 'series_b'
+        result[1]['tags'].must_include 'TAG B'
+        result[1]['attributes'].must_equal({ 'test_key' => 'test_value_b' })
+      end
+    end
+  end
 end
 
