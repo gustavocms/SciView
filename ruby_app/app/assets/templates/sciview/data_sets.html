@@ -2,12 +2,11 @@
   <!-- Current Data Set -->
   <!-- Current Data Set Title -->
   <ul class="data-sets__list" tabs>
-    <li class="data-sets__item" ng-repeat="data_set in data_sets" ui-sref="data-sets.single({ dataSetId: data_set.id })" ng-dblclick="editDataSet(data_set)" ui-sref-active="is-current">
+    <li class="data-sets__item" ng-repeat="data_set in data_sets" ui-sref="data-sets.single({ dataSetId: data_set.id })" ui-sref-active="is-current">
       <h3 class="data-sets__item-title" ng-if="!data_set.editing" ng-bind="data_set.title"></h3>
-      <section class="edit-title" ng-if="data_set.editing">
-        <input class="data-sets__item-title-edit" type="text" ng-model="data_set.title">
-        <button class="button-save" ng-click="data_set.editing = false">Save</button>
-        <button class="button-delete" ng-click="data_set.editing = false">Cancel</button>
+      <section class="data-sets__item-options" ng-if="data_set.hover">
+        <i class="icon-edit" ng-click="editDataSet(data_set)"></i>
+        <i class="icon-hide" ng-click="hideDataSet(data_set)"></i>
       </section>
     </li>    
     <li class="data-sets__item">

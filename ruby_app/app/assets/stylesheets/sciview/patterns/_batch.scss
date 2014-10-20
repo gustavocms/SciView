@@ -30,6 +30,8 @@
 }
 
 %batch-rotate-chevron-1 {
-  @include vp(transform, rotate(-90deg));    
-  @include vp(transform-origin, 90% 75%); 
+  @include vp(transform, rotate(-90deg));
+  @include vp(transition, transform ease .05s);
+      
+  // @include vp(transform-origin, 90% 75%); 
 }
