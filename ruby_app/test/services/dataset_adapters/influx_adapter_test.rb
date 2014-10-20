@@ -72,13 +72,35 @@ describe DatasetAdapters::InfluxAdapter do
     end
   end
 
-  let(:add_default_series) { -> { (1..10).each {|n| client.write_point('default_series', { value: n, time: (Time.new(2014, 1, 1) + n).to_i })}}} 
+  let(:key){ 'default_series' }
+  let(:add_default_series) { -> { (1..10).each {|n| client.write_point(key, { value: n, time: (Time.new(2014, 1, 1) + n).to_i })}}} 
 
-  describe :add_tag do
+  describe :tagging do
     before { add_default_series.call }
-    specify do
-      adapter.add_tag('default_series', "TEST")
-      adapter.series_metadata('default_series')['tags'].must_include "TEST"
+    specify :add_tag do
+      adapter.add_tag(key, "TEST")
+      adapter.series_metadata(key)['tags'].must_include "TEST"
+    end
+
+    specify :remove_tag do
+      MetadataDelegate.find_or_initialize_by(:key => key).tap do |md|
+        md.tags << "TEST"
+      end.save
+
+      adapter.series_metadata(key)['tags'].must_include "TEST"
+      adapter.remove_tag(key, "TEST")
+      adapter.series_metadata(key)['tags'].wont_include "TEST"
+    end
+  end
+
+  describe :attributes do
+    before { add_default_series.call }
+
+    specify :update_attribute do
+      adapter.update_attribute(key, "test_key", "test_value")
+      adapter.series_metadata(key)['attributes'].must_equal({ "test_key" => "test_value" })
+      adapter.update_attribute(key, "test_key", "test_value2")
+      adapter.series_metadata(key)['attributes'].must_equal({ "test_key" => "test_value2" })
     end
   end
 end

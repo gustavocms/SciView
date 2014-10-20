@@ -18,22 +18,20 @@ module DatasetAdapters
         raise NotImplementedError
       end
 
-      def update_attribute
-        raise NotImplementedError
+      def update_attribute(key, attr_key, attr_value)
+        with_series(key) { |series| series.meta_attributes[attr_key] = attr_value }
       end
 
-      def remove_attribute
-        raise NotImplementedError
+      def remove_attribute(key, attr_key)
+        with_series(key) { |series| series.delete(attr_key) }
       end
 
       def add_tag(key, tag_string)
-        with_series(key) do |series|
-          series.tags << tag_string
-        end
+        with_series(key) { |series| series.tags << tag_string }
       end
 
-      def remove_tag
-        raise NotImplementedError
+      def remove_tag(key, tag_string)
+        with_series(key) { |series| series.tags.delete(tag_string) }
       end
 
       def for_series
