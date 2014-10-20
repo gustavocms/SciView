@@ -65,6 +65,9 @@
       cursor: pointer;
       background-color: rgba($white, 0.1);
     }
+    .channel__dropdown {
+      @extend %batch-rotate-chevron-1;
+    }
   }
 
 
