@@ -1,9 +1,11 @@
 require 'forwardable'
 
 class Dataset
+  DEFAULT_ADAPTER = DatasetAdapters::TempoDBAdapter
   # CLASS METHODS
   #
   class << self
+
     extend Forwardable
 
     # The following should be implemented as class methods on the 
@@ -99,7 +101,7 @@ class Dataset
 
     def use_adapter(klass)
       @adapter = klass
-    enlac
+    end
 
     def config
       @config ||= {}
@@ -107,7 +109,6 @@ class Dataset
 
     protected
 
-    DEFAULT_ADAPTER = DatasetAdapters::TempoDBAdapter
 
     #def method_missing(name, *args, &block)
       #adapter.send(name, *args, &block)
