@@ -25,6 +25,10 @@
     }
   }
 
+  .data-sets__item-options {
+    @include linear-gradient(to right, rgba($color-bgLight, 0) 0%, rgba($color-bgLight, 1) 30%, rgba($color-bgLight, 1)100%);
+  }
+
   .data-sets__item-title {
     color: $font_color;
   }
@@ -70,8 +74,6 @@
     }
   }
 
-
-
 }
 
 .is-group {
@@ -97,6 +99,14 @@
 .expanded {
 
 }
+
+// .is-hidden {
+//   &.data-sets__edit {
+//     @include vp(animation, editHide .5s ease forwards);
+//     // visibility: hidden;
+//     // display: none;
+//   }
+// }
 
 
 
