@@ -7,4 +7,4 @@ YAML.load(File.read(File.join(Rails.root, *%w[config influx_db.yml]))).tap do |c
   end
 end
 
-Dataset.use_adapter(DatasetAdapters::InfluxAdapter)
+DATASET_ADAPTER = DatasetAdapters::InfluxAdapter

@@ -1,10 +1,11 @@
 module DatasetAdapters
   class InfluxAdapter < Base
-    DEFAULT_PRECISION = "u" # microseconds (smallest supported by InfluxDB)
+    #DEFAULT_PRECISION = "u" # microseconds (smallest supported by InfluxDB)
+    DEFAULT_PRECISION = "ms" # milliseconds (smallest supported by JavaScript)
 
     class << self
-
       def all(options = {})
+        puts "DATASET ALL INFLUX"
         db.query('list series').map do |key, value|
           series_meta_hash(key, value)
         end
@@ -117,7 +118,7 @@ module DatasetAdapters
     # TODO: enable other precisions here
     def map_values(values, precision = DEFAULT_PRECISION)
       values.reverse_each.map do |value|
-        { ts: Time.at(value["time"] / 1000000), value: value["value"] }
+        { ts: Time.at(value["time"] / 1000.0), value: value["value"] }
       end
     end
 

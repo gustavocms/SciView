@@ -100,6 +100,7 @@ class Dataset
 
 
     def use_adapter(klass)
+      puts "using adapter #{klass.name}"
       @adapter = klass
     end
 
@@ -115,7 +116,7 @@ class Dataset
     #end
 
     def adapter
-      @adapter ||= DEFAULT_ADAPTER
+      @adapter ||= (DATASET_ADAPTER || DEFAULT_ADAPTER) # prevent autoreload from wiping out the config
     end
   end
 
