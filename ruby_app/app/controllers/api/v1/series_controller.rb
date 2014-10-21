@@ -1,5 +1,6 @@
 class Api::V1::SeriesController < ApplicationController
   respond_to :json
+  before_filter :authenticate_user!
 
   def index
     render json: Dataset.all(params)

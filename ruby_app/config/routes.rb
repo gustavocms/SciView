@@ -44,7 +44,7 @@ SciView::Application.routes.draw do
 
   # JSON API for the angular app
   # (will eventually replace the datasets resource above)
-  namespace :api do
+  namespace :api, defaults: {format: :json} do
     namespace :v1 do
 
       resources :observations, only: [:index, :show, :create, :destroy] 
@@ -62,6 +62,16 @@ SciView::Application.routes.draw do
       end
 
       resources :series
+
+      devise_scope :user do
+        match '/sessions' => 'sessions#create', :via => :post
+        match '/sessions' => 'sessions#destroy', :via => :delete
+      end
+
+      resources :users, only: [:create]
+      match '/users' => 'users#show', :via => :get
+      match '/users' => 'users#update', :via => :put
+      match '/users' => 'users#destroy', :via => :delete
     end
   end
 end

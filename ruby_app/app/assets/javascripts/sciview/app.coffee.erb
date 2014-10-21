@@ -11,12 +11,14 @@ app = angular.module('sciview', [
   'sv.ui.controllers'
   'sv.ui.services'
   'sv.ui.filters'
+  'sv.ui.directives'
   'ngS3upload'
 ])
 
 # register additional modules
 angular.module("sv.ui.controllers", [])
 angular.module('sv.ui.services', ['ngResource'])
+angular.module("sv.ui.directives", [])
 
 # first thing to run after loading
 app.run(['$rootScope', '$state', '$stateParams',
@@ -31,6 +33,18 @@ app.run(['$rootScope', '$state', '$stateParams',
       (event, toState, toParams, fromState, fromParams, error) ->
         console.log(error)
     )
+    $rootScope.$on('event:unauthorized', (event, rejection) ->
+      if rejection.config.url not in ["/api/v1/sessions","/api/v1/users"]
+        console.log 'unauthorized'
+        $state.go('login')
+    )
+])
+
+#DeviseInterceptor injection
+app.config ([
+  "$httpProvider"
+  ($httpProvider) ->
+    $httpProvider.interceptors.push "DeviseInterceptor"
 ])
 
 #routing configuration
@@ -67,12 +81,12 @@ app.config(['$urlRouterProvider', '$stateProvider',
       .state('signup', {
           url: '/signup',
           templateUrl: '<%= asset_path('sciview/signup.html') %>',
-          controller: 'FormController'
+          controller: 'UserController'
       })      
       .state('login', {
           url: '/login',
           templateUrl: '<%= asset_path('sciview/login.html') %>',
-          controller: 'FormController'
+          controller: 'UserController'
       })
 ])
 
