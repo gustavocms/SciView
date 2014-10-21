@@ -101,13 +101,22 @@
 }
 
 .data-sets__edit {
+  @include vp(animation, editShow .3s ease forwards);
+  @include rem(height, 6.625rem);
+  @include pad(1em);
   position: absolute;
   top: 3rem;
   z-index: $z-index-kilo;
-  background-color: rgba($color-bgLight, 0.9);
+  background-color: rgba($color-bgLight, 0.95);
   width: 100%;
-  @include pad(1em);
   border-bottom: 1px solid ($font-color, 0.1);
+}
+
+.data-sets__edit.ng-leave {
+  @include vp(animation, editHide .2s .05s $cubic-out forwards);
+  .data-sets__edit-options {
+    @include vp(animation, editOptionsHide .1s ease forwards);
+  }
 }
 
 .data-sets__edit-title {

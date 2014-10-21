@@ -15,9 +15,11 @@
   </ul>
 </section>
 <section class="data-sets__edit" ng-if="edit">
-  <label for="renameDataSet" class="data-sets__edit-title-label">Rename Data Set</label>
-  <input id="renameDataSet" class="data-sets__edit-title" ng-model="edit_data_set.title">
-  <span class="data-sets__edit-delete">Delete Data Set</span>
+  <section class="data-sets__edit-options">
+    <label for="renameDataSet" class="data-sets__edit-title-label">Rename Data Set</label>
+    <input id="renameDataSet" class="data-sets__edit-title" ng-model="edit_data_set.title">
+    <span class="data-sets__edit-delete">Delete Data Set</span>
+  </section>
   <section class="data-sets__edit-actions">
     <button class="data-sets__edit-action save" ng-click="saveEdit()">Save</button>
     <button class="data-sets__edit-action cancel" ng-click="hideEdit()">Cancel</button>

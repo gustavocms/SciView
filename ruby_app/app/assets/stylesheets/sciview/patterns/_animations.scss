@@ -49,3 +49,61 @@
     height: auto;
   }
 }
+
+@include keyframes(editShow) {
+  0% {
+    height: 0;
+    opacity: 0;
+    padding-left: 0;
+  }
+  20% {
+    @include rem(height, 6.625rem);
+    opacity: 0;
+    padding-left: 0;
+  }
+  100% {
+    @include rem(height, 6.625rem);
+    opacity: 1;
+    padding-left: 2em;
+  }
+}
+
+@include keyframes(editHide) {
+  0% {
+    @include rem(height, 6.625rem);
+    opacity: 1;
+    padding-left: 2em;
+    margin-left: 0;
+  }  
+  20% {
+    @include rem(height, 6.625rem);
+    opacity: 1;
+    padding-left: 0;
+  }  
+  30% {
+    @include rem(height, 2rem);
+    opacity: 1;
+    padding-left: 0;
+  }
+  100% {
+    height: 0;
+    opacity: 0;
+    padding-left: 0;
+  }
+}
+
+@include keyframes(editOptionsHide) {
+  0% {
+    margin-left: 0;
+    opacity: 1;
+  }  
+  100% {
+    margin-left: -3em;
+    opacity: 0;
+  }
+}
+
+
+
+
+
