@@ -19,7 +19,7 @@
       <th class="navigator__table-heading-length">Length</th>
       <th class="navigator__table-heading-info">Info</th>
       <th class="navigator__table-heading-actions">Actions</th>
-      <tr class="source" ng-repeat="source in sources | filter: navigator.search_query">
+      <tr class="source" ng-repeat="source in data_sets | filter: navigator.search_query">
           <td class="source__title" ng-bind="source.title"></td>
           <td class="source__created" ng-bind="source.created | date:'shortDate'"></td>
           <td class="source__modified" ng-bind="source.modified | date:'shortDate'"></td>
