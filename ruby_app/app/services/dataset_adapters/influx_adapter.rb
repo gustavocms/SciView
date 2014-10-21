@@ -1,5 +1,7 @@
 module DatasetAdapters
   class InfluxAdapter
+    DEFAULT_PRECISION = "u" # microseconds (smallest supported by InfluxDB)
+
     class << self
 
       def all(options = {})
@@ -47,7 +49,7 @@ module DatasetAdapters
       end
 
       def db
-        @db ||= InfluxDB::Client.new(INFLUX_DB_NAME)
+        @db ||= InfluxDB::Client.new(INFLUX_DB_NAME, DEFAULT_PRECISION)
       end
       alias_method :database, :db
 
@@ -113,7 +115,6 @@ module DatasetAdapters
 
     private
 
-    DEFAULT_PRECISION = "u" # microseconds (smallest supported by InfluxDB)
 
     def query(query_string)
       db.query(query_string, DEFAULT_PRECISION)
