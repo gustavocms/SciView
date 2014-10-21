@@ -5,7 +5,8 @@ module.controller "SessionController", [
   "Session"
   ($scope, Session) ->
 
-    $scope.user = Session.requestCurrentUser();
+    Session.requestCurrentUser().then (data)->
+      $scope.user = data
 
     $scope.logout = ->
       Session.logout()
