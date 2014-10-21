@@ -138,13 +138,13 @@
   }
 }
 
-.data-sets__hide {
+.data-sets__icon-hide {
   @extend .icon;
   @extend %icon-font__x;
 
 }
 
-.data-sets__edit {
+.data-sets__icon-edit {
   @extend .icon;
   @extend %icon-font__power;
 }

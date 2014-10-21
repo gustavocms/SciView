@@ -10,8 +10,8 @@ module.controller('DataSetsController', [
 
 #   deferred promise needed for the child state to wait for
     $scope.deferredDatasetsLoading = $q.defer()
-
     $scope.data_sets = []
+    $scope.edit = false
 
     ViewState.index()
       .$promise
@@ -39,6 +39,19 @@ module.controller('DataSetsController', [
       data_set.hover = false
 
     $scope.editDataSet = (data_set) ->
-      data_set.edit = true
+      $scope.edit_data_set = data_set
+      $scope.edit = true
+
+    $scope.hideEdit = ->
+      $scope.edit_data_set = {}
+      $scope.edit = false
+
+    $scope.saveEdit = ->
+      $scope.edit_data_set = {}
+      $scope.edit = false
+
+    $scope.deleteDataSet = ->
+      # Flash modal confirming delete
+      # Delete after confirmation
 
 ])
