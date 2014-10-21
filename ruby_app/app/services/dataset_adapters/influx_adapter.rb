@@ -1,5 +1,5 @@
 module DatasetAdapters
-  class InfluxAdapter
+  class InfluxAdapter < Base
     DEFAULT_PRECISION = "u" # microseconds (smallest supported by InfluxDB)
 
     class << self
@@ -70,21 +70,6 @@ module DatasetAdapters
 
       def series_meta_delegate(key)
         MetadataDelegate.find_or_initialize_by(key: key)
-      end
-
-      # SAME IMPLEMENTATION - EXTRACT BASE CLASS
-      def fix_times(*times)
-        times.map(&method(:fix_time))
-      end
-
-      # SAME IMPLEMENTATION - EXTRACT BASE CLASS
-      def fix_time(time)
-        return if time.blank?
-        if time !~ /\d{4,}\-/ 
-          Time.at(time.to_f)
-        else
-          Time.parse(time)
-        end
       end
     end
 
