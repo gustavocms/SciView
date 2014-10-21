@@ -5,7 +5,6 @@ module DatasetAdapters
 
     class << self
       def all(options = {})
-        puts "DATASET ALL INFLUX"
         db.query('list series').map do |key, value|
           series_meta_hash(key, value)
         end
@@ -49,6 +48,11 @@ module DatasetAdapters
         series_hash.values.map(&method(:series_metadata))
       end
 
+      # NEW API
+      def write_point(key, value, timestamp)
+        db.write_point(key, { value: value, timestamp: timestamp.to_f })
+      end
+
       def db
         @db ||= InfluxDB::Client.new(INFLUX_DB_NAME, DEFAULT_PRECISION)
       end
@@ -89,7 +93,7 @@ module DatasetAdapters
     end
 
     def to_hash
-      query("SELECT * FROM #{series_names.join(", ")}").each_with_object({}) do |(key, values), hash|
+      query("SELECT * FROM #{sanitized_series_names}").each_with_object({}) do |(key, values), hash|
         hash[key] = series_hash(key, values)
       end
     end
@@ -124,6 +128,10 @@ module DatasetAdapters
 
     def db
       self.class.db
+    end
+
+    def sanitized_series_names
+      series_names.map(&:inspect).join(", ")
     end
   end
 end

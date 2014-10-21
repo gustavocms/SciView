@@ -6,7 +6,6 @@ module DatasetAdapters
     class << self
 
       def all(options = {})
-        puts "DATASET ALL TEMPO"
         tempodb_client.list_series options
       end
 
