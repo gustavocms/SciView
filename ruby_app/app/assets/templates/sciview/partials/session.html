@@ -1,11 +1,2 @@
-<div>
-  <ul>
-    <li>
-      <i class='fa fa-user'></i>Welcome, {{user.email}}
-    </li>
-    <!--<li class="divider-vertical"></li>-->
-    <li ng-click="logout()">
-      <i class='fa fa-sign-out'></i> Sign Out
-    </li>
-  </ul>
-</div>
+<span class="session__name"><i class='fa fa-user'></i>Welcome, {{user.email}}</span>
+<span class="session__logout" ng-click="logout()"><i class='fa fa-sign-out'></i> Sign Out</span>
