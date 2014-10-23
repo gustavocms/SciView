@@ -115,8 +115,7 @@ module DatasetAdapters
     end
 
     def to_hash
-      #query("SELECT * FROM #{sanitized_series_names} group by time(100000u)").each_with_object({}) do |(key, values), hash|
-      query(InfluxSupport::QueryBuilder.new(keys: series_names)).each_with_object({}) do |(key, values), hash|
+      query(InfluxSupport::QueryBuilder.new(query_params)).each_with_object({}) do |(key, values), hash|
         hash[key] = series_hash(key, values)
       end
     end
@@ -132,13 +131,19 @@ module DatasetAdapters
 
     private
 
+    def query_params
+      {
+        keys: series_names,
+        start: options[:start],
+        stop: options[:stop]
+      }.compact
+    end
+
     def series_hash(key, values)
       {
         key: key,
-        values: map_values(values),
-        tags: [],
-        attributes: {}
-      }
+        values: map_values(values)
+      }.merge(InfluxAdapter.series_metadata(key).as_json)
     end
 
     # TODO: enable other precisions here

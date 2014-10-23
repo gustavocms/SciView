@@ -22,7 +22,6 @@ describe InfluxSupport::QueryBuilder do
   end
 
   describe :target_counts do
-
   end
 end
 
@@ -92,6 +91,24 @@ describe InfluxSupport::Summary do
       specify("stop a")    { t_offset[0, summary_a.stop].must_equal  t_offset[0.009] }
       specify("stop b")    { t_offset[0, summary_b.stop].must_equal  t_offset[0.012] }
       specify("stop both") { t_offset[0, summary.stop  ].must_equal  t_offset[0.012] }
+
+      specify("time_extents") do
+        extents = summary.time_extents
+        t_offset[0, extents[0]].must_equal t_offset[0]
+        t_offset[0, extents[1]].must_equal t_offset[0.012]
+      end
+    end
+
+    describe :count do
+    end
+
+    describe :max_count do
+    end
+
+    describe :max do
+    end
+
+    describe :min do
     end
   end
 end

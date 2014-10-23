@@ -90,19 +90,19 @@ module InfluxSupport
     end
 
     def count
-      _attr(:count).inject(:+)
+      raise NotImplementedError
     end
 
     def max_count
-      _max(:count)
+      raise NotImplementedError
     end
 
     def max
-      _max(:max)
+      raise NotImplementedError
     end
 
     def min
-      _min(:min)
+      raise NotImplementedError
     end
 
     private
