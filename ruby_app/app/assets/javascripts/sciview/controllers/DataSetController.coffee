@@ -15,12 +15,6 @@ module.controller('DataSetController', [
 
     $scope.viewStateLoading = $q.defer()
 
-    $scope._setViewState(data_set)
-
-    # used to manage changes that may be reverted
-    $scope.tempViewState =
-      title: $scope.viewState.title
-
     # OBSERVATION STUFF
     # 
     #
@@ -121,6 +115,11 @@ module.controller('DataSetController', [
       for seriesName in $scope.viewState.seriesKeys()
         mySocket.subscribe('series', seriesName)
 
+    $scope._setViewState(data_set)
+
+    # used to manage changes that may be reverted
+    $scope.tempViewState =
+      title: $scope.viewState.title
 
 #   as seen here:
 #   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
