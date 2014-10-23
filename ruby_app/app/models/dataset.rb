@@ -108,9 +108,6 @@ class Dataset
       @config ||= {}
     end
 
-    protected
-
-
     #def method_missing(name, *args, &block)
       #adapter.send(name, *args, &block)
     #end

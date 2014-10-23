@@ -100,8 +100,9 @@ module DatasetAdapters
 
     # Series hash can be a hash (in which case the values are taken)
     # or an array 
+    # or a single string
     def initialize(series_hash, options = {})
-      @series_names = (series_hash.values rescue series_hash)
+      @series_names = (series_hash.values rescue Array(series_hash))
       @options      = options
     end
 
@@ -139,7 +140,7 @@ module DatasetAdapters
     # TODO: enable other precisions here
     def map_values(values, precision = DEFAULT_PRECISION)
       values.reverse_each.map do |value|
-        { ts: Time.at(value["time"] / 1000.0), value: value["value"] }
+        { ts: InfluxSupport::UTC.at(value["time"] / 1000.0), value: value["value"] }
       end
     end
 

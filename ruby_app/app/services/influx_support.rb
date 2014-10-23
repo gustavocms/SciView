@@ -1,4 +1,6 @@
 module InfluxSupport
+  UTC = ActiveSupport::TimeZone.new("UTC")
+
   # Hash of options:
   # REQUIRED
   #   :keys => [array of strings] or :key => str
@@ -108,7 +110,7 @@ module InfluxSupport
     def stops
       @stops ||= query("#{QueryBuilder.new(options)} limit 1").map do |key, points|
         (points[0] || {}).fetch("timestamp", nil)
-      end.compact.map { |float| Time.at(float) }
+      end.compact.map { |float| UTC.at(float) }
     end
 
     def query(qstr)
