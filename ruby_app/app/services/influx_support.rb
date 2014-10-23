@@ -108,17 +108,30 @@ module InfluxSupport
     private
 
     def stops
-      @stops ||= query("#{QueryBuilder.new(options)} limit 1").map do |key, points|
-        p points
-        (points[0] || {}).fetch("time", nil)
-      end.compact.map { |float| UTC.at(float/precision_denominator) }.tap(&method(:p))
+      @stops ||= extents_query(stops_query)
+    end
+
+    def stops_query
+      "#{QueryBuilder.new(options)} limit 1"
+    end
+
+    def starts_query
+      "#{stops_query} order asc"
     end
 
     def starts
-      [UTC.at(0)]
+      puts "starts"
+      @starts ||= extents_query(starts_query)
+    end
+
+    def extents_query(str)
+      query(str).tap(&method(:p)).map do |key, points|
+        (points[0] || {}).fetch("time", nil)
+      end.compact.map {|float| UTC.at(float / precision_denominator) }
     end
 
     def query(qstr)
+      puts qstr
       DatasetAdapters::InfluxAdapter.query(qstr, precision)
     end
 
