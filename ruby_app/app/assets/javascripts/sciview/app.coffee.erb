@@ -58,11 +58,23 @@ app.config(['$urlRouterProvider', '$stateProvider',
           url: '/data-sets',
           templateUrl: '<%= asset_path('sciview/data_sets.html') %>',
           controller: 'DataSetsController'
+          resolve:
+            data_sets: ['ViewState', (ViewState)->
+              ViewState.index().$promise.then (data) ->
+                return (SciView.Models.ViewState.deserialize(raw) for raw in data)
+              ]
+
       })
       .state('data-sets.single', {
           url: '/:dataSetId',
           templateUrl: '<%= asset_path('sciview/data_set.html') %>',
           controller: 'DataSetController'
+          resolve:
+            data_set: ['data_sets', '$stateParams', (data_sets, $stateParams)->
+              filteredDS = data_sets.filter (ds) ->
+                ds.id.toString() == $stateParams.dataSetId
+              return filteredDS[0]
+              ]
       })
       .state('data-sets.single.discuss', {
           url: '/discuss',

@@ -2,21 +2,11 @@ module = angular.module("sv.ui.controllers")
 
 module.controller('DataSetsController', [
   '$scope'
-  '$q'
   'ViewState'
-  ($scope, $q, ViewState) ->
+  'data_sets'
+  ($scope, ViewState, data_sets) ->
 
-#   deferred promise needed for the child state to wait for
-    $scope.deferredDatasetsLoading = $q.defer()
-
-    $scope.data_sets = []
-
-    ViewState.index()
-      .$promise
-      .then((data) ->
-        $scope.data_sets = (SciView.Models.ViewState.deserialize(raw) for raw in data)
-        $scope.deferredDatasetsLoading.resolve()
-      )
+    $scope.data_sets = data_sets
 
     $scope.newDataSet = ->
       ViewState.save({})

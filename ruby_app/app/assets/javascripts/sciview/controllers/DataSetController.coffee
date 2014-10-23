@@ -10,19 +10,16 @@ module.controller('DataSetController', [
   'SeriesService'
   'Observation'
   'mySocket'
-  ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, mySocket) ->
+  'data_set'
+  ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, mySocket, data_set) ->
 
     $scope.viewStateLoading = $q.defer()
-    # waits for the parent loading to finish
-    $scope.deferredDatasetsLoading.promise.then ->
-      filteredDS = $scope.$parent.data_sets.filter (ds) ->
-        ds.id.toString() == $stateParams.dataSetId
-      $scope._setViewState(filteredDS[0])
 
-      # used to manage changes that may be reverted
-      $scope.tempViewState =
-        title: $scope.viewState.title
+    $scope._setViewState(data_set)
 
+    # used to manage changes that may be reverted
+    $scope.tempViewState =
+      title: $scope.viewState.title
 
     # OBSERVATION STUFF
     # 
