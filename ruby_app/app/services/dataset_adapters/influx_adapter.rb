@@ -18,8 +18,8 @@ module DatasetAdapters
 
       # SAME IMPLEMENTATION - EXTRACT BASE CLASS
       def multiple_series(start, stop, series_hash, count = nil)
-        start, stop = fix_times(start, stop)
-        new(series_hash, { start: start, stop: stop, count: count }).to_hash
+        start, stop = fix_times(start, stop).map {|v| v.utc if v.present? }
+        new(series_hash, { start: start, stop: stop, count: count }).to_hash.tap(&method(:p))
       end
 
       def update_series(_series_hash = {})
@@ -143,7 +143,7 @@ module DatasetAdapters
       {
         key: key,
         values: map_values(values)
-      }.merge(InfluxAdapter.series_metadata(key).as_json)
+      }.merge(DatasetAdapters::InfluxAdapter.series_metadata(key).as_json)
     end
 
     # TODO: enable other precisions here

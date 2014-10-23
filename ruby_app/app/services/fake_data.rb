@@ -73,7 +73,7 @@ module FakeData
     end
 
     default :time_interval, 0.001
-    default :start_time, Time.new(2014, 1, 1)
+    default :start_time, Time.utc(2014, 1, 1)
     default :count, 1000
     default :generator, Generators::VolatilityGenerator
 

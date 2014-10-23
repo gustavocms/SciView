@@ -4,7 +4,7 @@ namespace :influx do
     name = "influx_#{SecureRandom.hex(3)}"
     client = DatasetAdapters::InfluxAdapter.send(:db)
     FakeData.generate.each do |ts, value|
-      client.write_point(name, { time: (ts.to_f * 1000).to_i, value: value }, false, 'ms')
+      DatasetAdapters::InfluxAdapter.write_point(name, value, ts, 'ms')
     end
 
     puts name
