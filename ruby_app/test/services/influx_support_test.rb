@@ -67,9 +67,7 @@ describe InfluxSupport::Summary do
       # series a |--------------------------|
       #         series b |-----------------------------|
       before do
-        puts "\n\n\nBEFORE:::"
-        [(0...10), (3...13)].zip(%w[series_a, series_b]).each do |range, key|
-          puts "#{range} #{key}"
+        [(3...13), (0...10)].zip(%w[series_b series_a]).each do |range, key|
           range.each {|ms| DatasetAdapters::InfluxAdapter.write_point(key, ms, start + (ms / 1000.0)) }
         end
       end
@@ -77,18 +75,23 @@ describe InfluxSupport::Summary do
       let(:summary_a){ InfluxSupport::Summary.new(key: 'series_a') }
       let(:summary_b){ InfluxSupport::Summary.new(key: 'series_b') }
       let(:summary)  { InfluxSupport::Summary.new(keys: %w[series_a series_b]) }
+      let(:t_offset){ -> (n, t = start) { (t.to_f + n).round(3) }}
 
-      specify "sanity check" do
+      specify "sanity check b" do
         Dataset.multiple_series(Time.utc(2013), Time.utc(2015), s0: 'series_b').to_hash.wont_be_empty
+      end
+
+      specify "sanity check a" do
         Dataset.multiple_series(Time.utc(2013), Time.utc(2015), s0: 'series_a').to_hash.wont_be_empty
       end
 
-      specify { summary_a.start.to_f.must_equal start.to_f         }
-      specify { summary_a.stop.to_f.must_equal  start.to_f + 0.009 }
-      specify { summary_b.start.to_f.must_equal start.to_f + 0.003 }
-      specify { summary_b.stop.to_f.must_equal  start.to_f + 0.012 }
-      specify { summary.start.to_f.must_equal   start.to_f         }
-      specify { summary.stop.to_f.must_equal    start.to_f + 0.012 }
+      specify("start a")    { t_offset[0,summary_a.start].must_equal t_offset[0]     }
+      specify("start b")    { t_offset[0,summary_b.start].must_equal t_offset[0.003] }
+      specify("start both") { t_offset[0,summary.start  ].must_equal t_offset[0]     }
+
+      specify("stop a")    { t_offset[0, summary_a.stop].must_equal  t_offset[0.009] }
+      specify("stop b")    { t_offset[0, summary_b.stop].must_equal  t_offset[0.012] }
+      specify("stop both") { t_offset[0, summary.stop  ].must_equal  t_offset[0.012] }
     end
   end
 end
