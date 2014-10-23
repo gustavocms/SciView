@@ -148,5 +148,13 @@ describe DatasetAdapters::InfluxAdapter do
       end
     end
   end
-end
 
+  describe "writing" do
+    before do
+      t = (Time.now.to_f * 1000).to_i # milliseconds
+      (1..1000).each do |n|
+
+      end
+    end
+  end
+end

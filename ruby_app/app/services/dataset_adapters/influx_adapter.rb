@@ -1,5 +1,11 @@
 module DatasetAdapters
   class InfluxAdapter < Base
+    PRECISION = {
+      "s"  => 1,      # seconds
+      "ms" => 1000,   # microseconds
+      "u"  => 1000000 # microseconds
+    }
+
     #DEFAULT_PRECISION = "u" # microseconds (smallest supported by InfluxDB)
     DEFAULT_PRECISION = "ms" # milliseconds (smallest supported by JavaScript)
 
@@ -53,12 +59,21 @@ module DatasetAdapters
         db.write_point(key, { value: value, timestamp: timestamp.to_f })
       end
 
+      def query(query_string, precision = DEFAULT_PRECISION)
+        db.query(query_string.to_s, precision)
+      end
+
+      private
+
+      # There appears to be an issue where instantiating the
+      # client with a defined precision does not carry it into queries
+      # as suggested by the documentation. Instead of accessing this
+      # directly, use the public `query` method that automatically appends
+      # the precision indicator to all queries.
       def db
         @db ||= InfluxDB::Client.new(INFLUX_DB_NAME, DEFAULT_PRECISION)
       end
       alias_method :database, :db
-
-      private
 
       def digest(str)
         Digest::SHA1.hexdigest(str)
@@ -83,8 +98,10 @@ module DatasetAdapters
     attr_reader :client, :options, :count, :function,
                 :query_start, :query_stop, :series_names
 
+    # Series hash can be a hash (in which case the values are taken)
+    # or an array 
     def initialize(series_hash, options = {})
-      @series_names = series_hash.values
+      @series_names = (series_hash.values rescue series_hash)
       @options      = options
     end
 
@@ -93,7 +110,8 @@ module DatasetAdapters
     end
 
     def to_hash
-      query("SELECT * FROM #{sanitized_series_names}").each_with_object({}) do |(key, values), hash|
+      #query("SELECT * FROM #{sanitized_series_names} group by time(100000u)").each_with_object({}) do |(key, values), hash|
+      query(InfluxSupport::QueryBuilder.new(keys: series_names)).each_with_object({}) do |(key, values), hash|
         hash[key] = series_hash(key, values)
       end
     end
@@ -103,12 +121,11 @@ module DatasetAdapters
       raise NotImplementedError
     end
 
-    private
-
-
     def query(query_string)
-      db.query(query_string, DEFAULT_PRECISION)
+      self.class.query(query_string)
     end
+
+    private
 
     def series_hash(key, values)
       {

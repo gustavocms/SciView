@@ -143,3 +143,8 @@ ViewState.create(
 ```
 
 This will be available in the angular app at `/ng#/data-sets/:id`.
+
+### InfluxDB
+
+Install according to the instructions here: [http://influxdb.com/download/](http://influxdb.com/download/)
+
