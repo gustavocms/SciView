@@ -1,13 +1,14 @@
 module = angular.module('sv.ui.services')
 
 module.factory "Session", [
-  "$location", "$http", "$q",
-  ($location, $http, $q) ->
+  "$window", "$http", "$q",
+  ($window, $http, $q) ->
 
     # Redirect to the given url (defaults to '/')
-    redirect = (url) ->
-      url = url or "/"
-      $location.path url
+    reloadingRedirect = (destination) ->
+      $window.location.href = destination
+      $window.location.reload()
+
     service =
       login: (email, password) ->
         $http.post("/api/v1/sessions",
@@ -16,16 +17,13 @@ module.factory "Session", [
             password: password
         ).then (response) ->
           service.currentUser = response.data.user
+          reloadingRedirect('/ng#/data-sets') if service.isAuthenticated()
 
-          #$location.path(response.data.redirect);
-          $location.path "/record"  if service.isAuthenticated()
-
-
-      logout: (redirectTo) ->
+      logout: () ->
         $http.delete('/api/v1/sessions').then (response) ->
           $http.defaults.headers.common['X-CSRF-Token'] = response.data.csrfToken
           service.currentUser = null
-          redirect(redirectTo)
+          reloadingRedirect('/ng#/login')
 
       register: (email, password, confirm_password) ->
         $http.post("/api/v1/users",
@@ -35,8 +33,7 @@ module.factory "Session", [
             password_confirmation: confirm_password
         ).then (response) ->
           service.currentUser = response.data
-          $location.path "/record"  if service.isAuthenticated()
-
+          reloadingRedirect('/ng#/data-sets') if service.isAuthenticated()
 
       requestCurrentUser: ->
         if service.isAuthenticated()
