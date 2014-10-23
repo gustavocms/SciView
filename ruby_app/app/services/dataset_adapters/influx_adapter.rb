@@ -93,7 +93,7 @@ module DatasetAdapters
       end
 
       def precise_float(timestamp, precision = DEFAULT_PRECISION)
-        (timestamp.to_f * PRECISION[precision]).round(0) 
+        (timestamp.to_f * PRECISION[precision]).round(0)
       end
     end
 

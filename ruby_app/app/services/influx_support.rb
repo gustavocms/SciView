@@ -120,18 +120,16 @@ module InfluxSupport
     end
 
     def starts
-      puts "starts"
       @starts ||= extents_query(starts_query)
     end
 
     def extents_query(str)
-      query(str).tap(&method(:p)).map do |key, points|
+      query(str).map do |key, points|
         (points[0] || {}).fetch("time", nil)
       end.compact.map {|float| UTC.at(float / precision_denominator) }
     end
 
     def query(qstr)
-      puts qstr
       DatasetAdapters::InfluxAdapter.query(qstr, precision)
     end
 
