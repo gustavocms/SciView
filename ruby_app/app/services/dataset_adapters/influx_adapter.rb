@@ -55,8 +55,8 @@ module DatasetAdapters
       end
 
       # NEW API
-      def write_point(key, value, timestamp)
-        db.write_point(key, { value: value, timestamp: timestamp.to_f })
+      def write_point(key, value, timestamp, precision = DEFAULT_PRECISION)
+        db.write_point(key, { value: value, time: precise_float(timestamp, precision) }, false, precision)
       end
 
       def query(query_string, precision = DEFAULT_PRECISION)
@@ -91,6 +91,10 @@ module DatasetAdapters
       def series_meta_delegate(key)
         MetadataDelegate.find_or_initialize_by(key: key)
       end
+
+      def precise_float(timestamp, precision = DEFAULT_PRECISION)
+        (timestamp.to_f * PRECISION[precision]).round(0) 
+      end
     end
 
     # INSTANCE METHODS
@@ -107,7 +111,7 @@ module DatasetAdapters
     end
 
     def summary
-      raise NotImplementedError
+      InfluxSupport::Summary.new(keys: series_names)
     end
 
     def to_hash
@@ -122,8 +126,8 @@ module DatasetAdapters
       raise NotImplementedError
     end
 
-    def query(query_string)
-      self.class.query(query_string)
+    def query(query_string, precision = DEFAULT_PRECISION)
+      self.class.query(query_string, precision)
     end
 
     private
@@ -140,7 +144,10 @@ module DatasetAdapters
     # TODO: enable other precisions here
     def map_values(values, precision = DEFAULT_PRECISION)
       values.reverse_each.map do |value|
-        { ts: InfluxSupport::UTC.at(value["time"] / 1000.0), value: value["value"] }
+        { 
+          ts: InfluxSupport::UTC.at(value["time"] / (PRECISION[precision].to_f)), 
+          value: value["value"] 
+        }
       end
     end
 

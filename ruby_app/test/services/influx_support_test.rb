@@ -29,11 +29,11 @@ end
 describe InfluxSupport::Summary do
   let(:key){ 'inf_test' }
   let(:start){ Time.utc(2014) }
+  let(:tolerance){ 0.0001 }
   describe "start and stop" do
     before do
-      t = start.to_f
       (0...10).each do |ms|
-        DatasetAdapters::InfluxAdapter.write_point(key, ms, t + (ms / 1000.0))
+        DatasetAdapters::InfluxAdapter.write_point(key, ms, start + (ms / 1000.0))
       end
     end
 
@@ -41,17 +41,17 @@ describe InfluxSupport::Summary do
 
     specify do 
       s = summary.stop
-      s.to_f.must_equal Time.at(start + 0.009).to_f
+      s.to_f.must_be_within_delta(InfluxSupport::UTC.at(start + 0.009).to_f, tolerance)
     end
 
     specify do
       s = summary.start
-      s.to_f.must_equal Time.at(start).to_f
+      s.to_f.must_equal InfluxSupport::UTC.at(start).to_f
     end
 
     it "doesn't exceed the extents of the query, if given" do
       InfluxSupport::Summary.new(key: key, start: start, stop: start + 0.005).tap do |summary|
-        summary.stop.must_equal(start.to_f + 0.005)
+        summary.stop.to_f.must_be_within_delta(start.to_f + 0.005, tolerance)
       end
     end
   end

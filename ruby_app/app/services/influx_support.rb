@@ -109,13 +109,17 @@ module InfluxSupport
 
     def stops
       @stops ||= query("#{QueryBuilder.new(options)} limit 1").map do |key, points|
-        (points[0] || {}).fetch("timestamp", nil)
-      end.compact.map { |float| UTC.at(float) }
+        p points
+        (points[0] || {}).fetch("time", nil)
+      end.compact.map { |float| UTC.at(float/precision_denominator) }.tap(&method(:p))
+    end
+
+    def starts
+      [UTC.at(0)]
     end
 
     def query(qstr)
-      p qstr
-      DatasetAdapters::InfluxAdapter.query(qstr)
+      DatasetAdapters::InfluxAdapter.query(qstr, precision)
     end
 
     def query_start
@@ -124,6 +128,14 @@ module InfluxSupport
 
     def query_stop
       options[:stop]
+    end
+
+    def precision
+      @precision ||= options.fetch(:precision, DatasetAdapters::InfluxAdapter::DEFAULT_PRECISION)
+    end
+
+    def precision_denominator
+      DatasetAdapters::InfluxAdapter::PRECISION[precision].to_f
     end
   end
 end
