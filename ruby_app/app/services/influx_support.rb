@@ -69,7 +69,7 @@ module InfluxSupport
     end
 
     def format(time)
-      time.strftime("%Y-%m-%d %H:%M:%S.%3N %z")
+      time.strftime("%Y-%m-%d %H:%M:%S.%3N")
     end
   end
 
@@ -106,13 +106,22 @@ module InfluxSupport
     private
 
     def stops
-      @stops ||= query("#{QueryBuilder.new(keys: keys)} limit 1").map do |key, points|
+      @stops ||= query("#{QueryBuilder.new(options)} limit 1").map do |key, points|
         (points[0] || {}).fetch("timestamp", nil)
       end.compact.map { |float| Time.at(float) }
     end
 
     def query(qstr)
+      p qstr
       DatasetAdapters::InfluxAdapter.query(qstr)
+    end
+
+    def query_start
+      options[:start]
+    end
+
+    def query_stop
+      options[:stop]
     end
   end
 end
