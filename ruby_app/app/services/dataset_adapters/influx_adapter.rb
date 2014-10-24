@@ -71,7 +71,7 @@ module DatasetAdapters
       # directly, use the public `query` method that automatically appends
       # the precision indicator to all queries.
       def db
-        @db ||= InfluxDB::Client.new(INFLUX_DB_NAME, DEFAULT_PRECISION)
+        @db ||= InfluxDB::Client.new(::INFLUX_DB_NAME, DEFAULT_PRECISION)
       end
       alias_method :database, :db
 

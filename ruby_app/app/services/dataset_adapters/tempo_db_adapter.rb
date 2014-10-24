@@ -1,6 +1,5 @@
 module DatasetAdapters
   class TempoDBAdapter < Base
-
     include Concerns::Tempo
 
     class << self

@@ -2,6 +2,15 @@ require 'forwardable'
 
 class Dataset
   DEFAULT_ADAPTER = DatasetAdapters::TempoDBAdapter
+  DATASET_ADAPTERS = {
+    tempo_db:  DatasetAdapters::TempoDBAdapter,
+    tempodb:   DatasetAdapters::TempoDBAdapter,
+    tempo:     DatasetAdapters::TempoDBAdapter,
+    influx:    DatasetAdapters::InfluxAdapter,
+    influx_db: DatasetAdapters::InfluxAdapter,
+    influxdb:  DatasetAdapters::InfluxAdapter
+  }
+
   # CLASS METHODS
   #
   class << self
@@ -100,20 +109,18 @@ class Dataset
 
 
     def use_adapter(klass)
-      puts "using adapter #{klass.name}"
+      puts "Using adapter #{klass.name}."
       @adapter = klass
     end
 
-    def config
-      @config ||= {}
+    def adapter
+      @adapter ||= (config_adapter || DEFAULT_ADAPTER) # prevent autoreload from wiping out the config
     end
 
-    #def method_missing(name, *args, &block)
-      #adapter.send(name, *args, &block)
-    #end
+    private
 
-    def adapter
-      @adapter ||= (DATASET_ADAPTER || DEFAULT_ADAPTER) # prevent autoreload from wiping out the config
+    def config_adapter
+      DATASET_ADAPTERS[Rails.application.config.try(:dataset_store)]
     end
   end
 
