@@ -19,7 +19,7 @@ module DatasetAdapters
       # ** move to base (slight difference in utc coercion)
       def multiple_series(start, stop, series_hash, count = nil)
         start, stop = fix_times(start, stop).map {|v| v.utc if v.present? }
-        new(series_hash, { start: start, stop: stop, count: count }).to_hash.tap
+        new(series_hash, { start: start, stop: stop, count: count }).to_hash
       end
 
       # ** move to base (??) does not have [:name] param like the tempo db version.
