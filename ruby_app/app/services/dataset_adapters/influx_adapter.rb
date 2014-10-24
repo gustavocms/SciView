@@ -16,16 +16,17 @@ module DatasetAdapters
         end
       end
 
-      # SAME IMPLEMENTATION - EXTRACT BASE CLASS
+      # ** move to base (slight difference in utc coercion)
       def multiple_series(start, stop, series_hash, count = nil)
         start, stop = fix_times(start, stop).map {|v| v.utc if v.present? }
-        new(series_hash, { start: start, stop: stop, count: count }).to_hash.tap(&method(:p))
+        new(series_hash, { start: start, stop: stop, count: count }).to_hash.tap
       end
 
+      # ** move to base (??) does not have [:name] param like the tempo db version.
       def update_series(_series_hash = {})
         series_hash = HashWithIndifferentAccess.new(_series_hash)
         with_series(series_hash.fetch(:key)) do |series|
-          series.tags            = series_hash[:tags] if series_hash[:tags]
+          series.tags            = series_hash[:tags]       if series_hash[:tags]
           series.meta_attributes = series_hash[:attributes] if series_hash[:attributes]
         end
       end
@@ -35,13 +36,15 @@ module DatasetAdapters
       end
 
       def remove_attribute(key, attr_key)
-        with_series(key) { |series| series.delete(attr_key) }
+        with_series(key) { |series| series.meta_attributes.delete(attr_key) }
       end
 
+      # ** move to base
       def add_tag(key, tag_string)
         with_series(key) { |series| series.tags << tag_string }
       end
 
+      # ** move to base
       def remove_tag(key, tag_string)
         with_series(key) { |series| series.tags.delete(tag_string) }
       end
@@ -50,6 +53,7 @@ module DatasetAdapters
         series_meta_hash(key)
       end
 
+      # ** move to base
       def multiple_series_metadata(series_hash)
         series_hash.values.map(&method(:series_metadata))
       end
