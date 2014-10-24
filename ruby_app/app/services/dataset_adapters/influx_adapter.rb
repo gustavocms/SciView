@@ -85,7 +85,7 @@ module DatasetAdapters
 
       # get-update-save transaction
       def with_series(key)
-        series_meta_delegate(key).tap { |meta| yield meta }.save
+        series_meta_delegate(key).tap { |meta| yield meta }.tap(&:save)
       end
       
       def series_meta_hash(key, value = nil) # don't yet know what "value" is
