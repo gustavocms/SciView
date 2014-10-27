@@ -37,6 +37,4 @@ module.directive('tabs', [
                     # $compile(element)(scope)            
             , 200
 
-            # console.log(element[0].offsetWidth)
-            # console.log("Window", $window.innerWidth)
 ])

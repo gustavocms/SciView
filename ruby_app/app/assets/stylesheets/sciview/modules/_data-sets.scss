@@ -56,6 +56,42 @@
   }
 }
 
+.data-sets__item-new {
+  @extend .data-sets__item;
+  color: $white;  
+}
+
+.data-sets__item-overflow {
+  @extend .data-sets__item;
+  color: $white;
+  text-align: center;
+  -webkit-user-select: none;  
+}
+
+.data-sets__overflow-items {
+  @extend .data-sets__edit;
+  margin: 0;
+  min-height: 10rem;
+  height: auto;
+}
+
+.data-sets__overflow-item {
+  list-style: none;
+  @extend %monospaced-style;
+  @include pad(1em);
+  @extend %icon-font__data-set;
+
+  &:nth-child {
+    background-color: rgba($white, 0.02);
+  }
+
+  &:hover {
+    background-color: $highlight_color;
+    cursor: pointer;
+  }
+
+}
+
 .data-sets__item-title.new {
   @extend %icon-font__add-data-set;
   text-align: center;
@@ -121,7 +157,6 @@
 
 .data-sets__edit-title {
   margin: 0;
-  margin-top: -.5em;
   padding: .2em 1em;
   background-color: transparent;
   border: 1px solid $highlight_color;
@@ -130,6 +165,8 @@
   @include rem(font-size, $normal);
   color: $white;
   margin-bottom: 1em;
+  display: inline-block;
+  float: left;
 }
 
 .data-sets__edit-title-label {
@@ -139,11 +176,16 @@
   margin-bottom: 1em;
 }
 
-.data-sets__edit-delete {
+.data-sets__edit-options {
+  float: left;
+  width: 100%;
   display: block;
+}
+
+.data-sets__edit-delete {
   @include rem(font-size, $baby);
-  opacity: 0.5;
   @extend %icon-font__x;
+  opacity: 0.5;
   &::before {
     @include rem(font-size, 0.4rem);
     margin-right: 1em;
@@ -154,26 +196,21 @@
   }
 }
 
-.data-sets__edit-actions {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 50%;
-}
-
 .data-sets__edit-action {
   @include rem(font-size, $baby);
-  background-color: rgba($background-color, 0.3);
-  padding: 0 6em;
-  color: $font-color;
-  border: none;
-  outline: 0;
-  display: inline;
-  height: 100%;
-  width: 50%;
-  margin: 0;
+  @extend %button-reset;
+  display: inline-block;
+  margin-left: .5em;
+  padding: .65em 2em;
+  // background-color: rgba($background-color, 0.3);
+  // padding: 0 6em;
+  // color: $font-color;
+  // border: none;
+  // outline: 0;
+  // display: inline;
+  // height: 100%;
+  // width: 50%;
+  // margin: 0;
   float: left;
   &:before {
     @include rem(font-size, .4rem);
