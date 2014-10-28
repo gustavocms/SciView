@@ -59,10 +59,15 @@ module.run([
   'mySocket'
   'SeriesService'
   'Observation'
-  (mySocket, SeriesService, Observation) ->
+  'ViewState'
+  (mySocket, SeriesService, Observation, ViewState) ->
 
     mySocket.onUpdateEvent('series', (key) ->
       SeriesService.refresh(key)
+    )
+
+    mySocket.onUpdateEvent('viewState', (id) ->
+      ViewState.refresh(id)
     )
 
     _acceptable_observation_actions =

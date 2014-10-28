@@ -110,11 +110,20 @@ module.controller('DataSetController', [
 
     $scope.registerSocketWatchers = -> # noOp pending fix
       mySocket.emit('resetSubscriptions')
+      mySocket.subscribe('viewState', $scope.viewState.id)
       mySocket.subscribe('viewStateObservations', $scope.viewState.id)
       for seriesName in $scope.viewState.seriesKeys()
         mySocket.subscribe('series', seriesName)
 
     $scope._setViewState(data_set)
+
+    $scope.$watch(
+      ->
+        ViewState.lastModified $stateParams.dataSetId
+      ->
+        data = ViewState.get($stateParams.dataSetId)
+        $scope.viewState = SciView.Models.ViewState.deserialize(data)
+    )
 
     # used to manage changes that may be reverted
     $scope.tempViewState =

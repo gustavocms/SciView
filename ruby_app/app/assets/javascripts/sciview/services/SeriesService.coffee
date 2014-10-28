@@ -10,7 +10,7 @@ module.factory "SeriesService", [ "DS", "mySocket", (DS, mySocket) ->
       mySocket.updateEvent(resourceName, attrs.key)
       # proceed with the lifecycle
       cb(null, attrs)
-    afterInject: (resourceName, attrs) ->
-      mySocket.subscribe(resourceName, attrs.key)
+#    afterInject: (resourceName, attrs) ->
+#      mySocket.subscribe(resourceName, attrs.key)
   )
 ]
