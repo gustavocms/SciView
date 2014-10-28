@@ -77,15 +77,14 @@ module.controller('DataSetController', [
 
     $scope.saveDataset = ->
       ViewState.update(
-        { id: $scope.viewState.id },
+        $scope.viewState.id,
         $scope.viewState.serialize()
       )
       console.log('saving')
 
     $scope.deleteDataset = ->
       viewStateId = $scope.viewState.id
-      ViewState.delete({ id: viewStateId })
-        .$promise
+      ViewState.destroy(viewStateId)
         .then(->
           $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt viewStateId)
           $scope.$state.go('data-sets')

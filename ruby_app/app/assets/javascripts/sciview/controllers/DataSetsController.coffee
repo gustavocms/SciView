@@ -9,8 +9,7 @@ module.controller('DataSetsController', [
     $scope.data_sets = data_sets
 
     $scope.newDataSet = ->
-      ViewState.save({})
-      .$promise
+      ViewState.create({})
       .then((raw) ->
         dataset = SciView.Models.ViewState.deserialize(raw)
         $scope.data_sets.push(dataset)
