@@ -44,7 +44,11 @@
         deferred.promise
 
       @queueFileForProcessing = (item)->
-        $http.post('/api/v1/queue_uploads.json', { filepath: item.key }).success((response, status) ->
+        $http.post('/api/v1/queue_uploads.json', {
+          filepath: item.key
+          filename: item.file.name
+          filetype: item.file.type
+        }).success((response, status) ->
           return
         ).error (error, status) ->
           return        
