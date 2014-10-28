@@ -20,20 +20,20 @@ module.factory('mySocket', (ngSocket) ->
       autoApply: autoApply
     )
 
-  mySocket.updateEvent = (resource, id, data) ->
+  mySocket.updateEvent = (resource, id, params = {}) ->
     mySocket.send(
       event: "update"
       resource: resource
       id: id
-      data: data)
+      params: params)
 
   mySocket.onUpdateEvent = (resource, callBack, autoApply = false) ->
     mySocket.onMessage(
       (message) ->
         msg = JSON.parse(message.data).message
         if msg.event == "update" and msg.resource == resource
-          console.info(resource + ' updateEvent -> ', msg.data)
-          callBack(msg.data)
+          console.info(resource + ' updateEvent -> ', msg.id)
+          callBack(msg.id, msg.params)
       autoApply: autoApply
     )
 
@@ -61,15 +61,15 @@ module.run([
   'Observation'
   (mySocket, SeriesService, Observation) ->
 
-    mySocket.onUpdateEvent('series', (series) ->
-      SeriesService.refresh(series.key)
+    mySocket.onUpdateEvent('series', (key) ->
+      SeriesService.refresh(key)
     )
 
     _acceptable_observation_actions =
       find: Observation.find
       eject: Observation.eject
 
-    mySocket.onUpdateEvent('viewStateObservations', (params) ->
+    mySocket.onUpdateEvent('viewStateObservations', (id, params) ->
       _acceptable_observation_actions[params.action](params.id)
     )
 
