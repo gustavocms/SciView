@@ -76,7 +76,6 @@ app.config(['$urlRouterProvider', '$stateProvider',
               ]
       })
       .state('data-sets.single.discuss', {
-#          url: '/discuss',
           templateUrl: '<%= asset_path('sciview/discuss.html') %>',
           controller: 'DiscussController',
           params: ['dataSetId', 'chart_uuid', 'observed_at', 'message'],
