@@ -13,44 +13,43 @@ module.controller('DataSetController', [
   'data_set'
   ($scope, $state, $stateParams, $timeout, $q, ViewState, SeriesService, Observation, mySocket, data_set) ->
 
-    $scope.viewStateLoading = $q.defer()
+#    $scope.viewStateLoading = $q.defer()
 
     # OBSERVATION STUFF
     # 
     #
-    openObservationsPanel = -> $state.go('data-sets.single.discuss')
+#    openObservationsPanel = -> $state.go('data-sets.single.discuss')
 
-    $scope.setObservationsOnViewState = ->
-      try
-        $scope.viewState.observations($scope.observations)
+#    $scope.setObservationsOnViewState = ->
+#      try
+#        $scope.viewState.observations($scope.observations)
 
-    $scope.observationsLoading = $q.defer()
-    obs_params = view_state_id: $stateParams.dataSetId
-    Observation.findAll(obs_params)
-    Observation.bindAll($scope, 'observations', obs_params, ->
-      $scope.setObservationsOnViewState()
-    )
+#    obs_params = view_state_id: $stateParams.dataSetId
+#    Observation.findAll(obs_params)
+#    Observation.bindAll($scope, 'observations', obs_params, ->
+#      $scope.setObservationsOnViewState()
+#    )
 
-    _newObservation = (params = {}) ->
-      $scope.obs_saving     = false
-      $scope.newObservation =
-        message: ''
-        view_state_id: $stateParams.dataSetId
-      $scope.newObservation[key] = value for key, value of params
-      try
-        $scope.$digest()
+#    _newObservation = (params = {}) ->
+#      $scope.obs_saving     = false
+#      $scope.newObservation =
+#        message: ''
+#        view_state_id: $stateParams.dataSetId
+#      $scope.newObservation[key] = value for key, value of params
+#      try
+#        $scope.$digest()
 
-    $scope.viewStateLoading.promise.then ->
-      $scope.setObservationsOnViewState()
-      $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
-        (params = {}) ->
-          openObservationsPanel()
-          params.chart_uuid = ui_chart.uuid
-          cb(params)
-      )
+#    $scope.viewStateLoading.promise.then ->
+#      $scope.setObservationsOnViewState()
+#    $scope.viewState.registerCallback('_observationCallback', _newObservation, (ui_chart, cb) ->
+#      (params = {}) ->
+#        openObservationsPanel()
+#        params.chart_uuid = ui_chart.uuid
+#        cb(params)
+#    )
 
-    _newObservation()
-    $scope._newObservation = _newObservation # must be made available to DiscussController
+#    _newObservation()
+#    $scope._newObservation = _newObservation # must be made available to DiscussController
     #
     #
     # END OF OBSERVATION STUFF
@@ -92,7 +91,7 @@ module.controller('DataSetController', [
 
     $scope._setViewState = (viewState) ->
       $scope.viewState = viewState
-      $scope.viewStateLoading.resolve()
+#      $scope.viewStateLoading.resolve()
       $scope.registerSocketWatchers()
 
       viewState.registerCallback("_cursorCallback", (data) ->
