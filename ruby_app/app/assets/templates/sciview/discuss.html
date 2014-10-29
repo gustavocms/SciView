@@ -19,10 +19,12 @@
       </button>
       <label>
         Applies to:
-        <select ng-model="newObservation.chart_uuid">
+
+        <select ng-model="newObservation.chart_uuid"
+                ng-options="title for (uuid, title) in chartUuids()">
           <option value="">Entire Dataset</option>
-          <option ng-repeat="(uuid, title) in chartUuids()" value="{{uuid}}">{{title}}</option>
         </select>
+
       </label>
       <span ng-if="newObservation.observed_at">{{newObservation.observed_at}}</span>
     </form>

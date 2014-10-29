@@ -12,18 +12,6 @@ module.controller "DiscussController", [
       func(obj)
       obj
 
-    Observation.bindAll($scope, 'observations', view_state_id: $stateParams.dataSetId)
-
-    # sets the newObservation model and associated state variables
-    $scope.obs_saving     = false
-    $scope.newObservation =
-      message: ''
-      view_state_id: $stateParams.dataSetId
-    $scope.newObservation[key] = value for key, value of $stateParams
-#    try
-#      $scope.$digest()
-
-
     $scope.chartUuids = ->
       try
         # TODO: need to be able to update this variable when the parent scope changes
@@ -47,10 +35,20 @@ module.controller "DiscussController", [
       $scope.obs_saving = true
       Observation.create(observation).then (data) ->
         emitUpdateObservations({ id: data.id, action: 'find' })
-        $scope.$parent._newObservation()
+        _newObservation()
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->
       emitUpdateObservations({ id: observation.id, action: 'eject' })
 
+    # sets the newObservation model and associated state variables
+    _newObservation = ->
+      $scope.obs_saving     = false
+      $scope.newObservation =
+        message: ''
+        view_state_id: $stateParams.dataSetId
+      $scope.newObservation[key] = value for key, value of $stateParams
+
+    Observation.bindAll($scope, 'observations', view_state_id: $stateParams.dataSetId)
+    _newObservation()
 ]
