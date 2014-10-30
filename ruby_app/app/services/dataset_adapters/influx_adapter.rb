@@ -58,6 +58,12 @@ module DatasetAdapters
         db.write_point(key, { value: value, time: precise_float(timestamp, precision) }, false, precision)
       end
 
+      def write_data(key, data)
+        data.each do |timestamp, amplitude|
+          write_point(key, amplitude, Time.parse(timestamp))
+        end
+      end
+
       def query(query_string, precision = DEFAULT_PRECISION)
         db.query(query_string.to_s, precision)
       end
