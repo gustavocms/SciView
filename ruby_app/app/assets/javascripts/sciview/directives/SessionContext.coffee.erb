@@ -1,0 +1,7 @@
+module = angular.module("sv.ui.directives")
+
+module.directive "svSessionContext", [ ->
+  restrict: "E"
+  controller: "SessionController"
+  templateUrl: '<%= asset_path('sciview/partials/session.html') %>'
+]

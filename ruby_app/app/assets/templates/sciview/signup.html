@@ -1,17 +1,20 @@
 <section class="form">
-  <i class="form-exit"></i>
+  <!--<i class="form-exit"></i>-->
   <section class="form-container">
     <h2 class="form-heading">Sign Up</h2>
     <aside class="form-alternate">If you have an account you can <a class="form-option--link" ui-sref="login">Log In here</a></aside>
-    <form class="form-element">
+      <div class="alert alert-error" ng-show="authError" ng-repeat="error in authError">
+          {{error}}
+      </div>
+    <form name="registrationForm" class="form-element">
       <label for="email" class="form-label">Email</label>
-      <input id="email"  type="email" class="form-input">
+      <input id="email"  type="email" class="form-input" ng-model="user.email" required autofocus>
       <label for="password" class="form-label">Password</label>
-      <input id="password" type="password" class="form-input">
+      <input id="password" type="password" class="form-input" ng-model="user.password" required>
       <span class="form-message">Please use at least one special character ($, !, etc).</span>
       <label for="passwordConfirm" class="form-label">Confirm Password</label>
-      <input id="passwordConfirm" type="password" class="form-input">
-      <input type="submit" class="form-input--submit" value="Submit">
+      <input id="passwordConfirm" type="password" class="form-input" ng-model="user.confirm_password" required>
+      <input type="submit" class="form-input--submit" value="Submit" ng-click="register(user)" ng-disabled="registrationForm.$invalid">
     </form>
   </section>
 </section>

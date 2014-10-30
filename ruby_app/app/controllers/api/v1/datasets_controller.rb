@@ -5,6 +5,7 @@
 # In this early stage, the response from `multiple` is as follows:
 class Api::V1::DatasetsController < ::DatasetsController
   respond_to :json
+  before_filter :authenticate_user!
 
   # we need the `multiple` route to remain fairly similar to its counterpart in the original
   # DatasetsController.

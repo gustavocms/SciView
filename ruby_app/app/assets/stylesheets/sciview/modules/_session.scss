@@ -1,0 +1,36 @@
+.session {
+  // @include span-columns(6 of 12);
+  float: right;
+  text-align: right;
+  padding-top: $gamma;
+  padding-right: $gamma;
+}
+
+.session__name {
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 1;
+  }  
+
+  .fa-user {
+    margin-right: .4em;
+    opacity: 0.3;
+  }
+}
+
+.session__logout {
+  @include rem(font-size, $normal);
+  display: block;
+  padding-top: 1em;
+  .fa-logout {
+    margin-right: .4em;
+    opacity: 0.3;
+  }
+  opacity: 0.3;
+
+  &:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+}
