@@ -58,7 +58,7 @@ module DatasetAdapters
         db.write_point(key, { value: value, time: precise_float(timestamp, precision) }, false, precision)
       end
 
-      def write_data(key, data)
+      def write_series(key, data)
         data.each do |timestamp, amplitude|
           write_point(key, amplitude, Time.parse(timestamp))
         end
