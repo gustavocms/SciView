@@ -105,7 +105,14 @@ class Dataset
       # Args: series - hash of the form: 
       # { series_1: 'test' }
       # Returns an array of series objects.
-      :multiple_series_metadata
+      :multiple_series_metadata,
+
+      # Args:
+      #   key: (string)
+      #   array of datapoints. [<timestamp>, <amplitude>]
+      #   Can also be hash of form { timestamp => amplitude }.
+      #
+      :write_series 
 
 
     def use_adapter(klass)

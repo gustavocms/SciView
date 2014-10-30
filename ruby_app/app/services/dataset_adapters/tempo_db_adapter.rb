@@ -55,6 +55,17 @@ module DatasetAdapters
         end
       end
 
+      def write_series(key, data)
+        tempodb_client.write_multi do |multi|
+          multi.add(
+            series_name, 
+            Array(data).map do |time, amplitude|
+              TempoDB::DataPoint.new(Time.parse(time), amplitude.to_i)
+            end
+          )
+        end
+      end
+
       private
 
       # Performs a get-update-save transaction
