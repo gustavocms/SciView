@@ -14,10 +14,9 @@
   </head>
   <body>
     <!-- navigation -->
-    <nav class="nav" ng-controller="NavController" ng-include="'assets/sciview/partials/nav.html'"></nav>
+    <sv-nav-bar class="nav"></sv-nav-bar>
     <!-- session context -->
     <sv-session-context class="session"></sv-session-context>
-    <!--<div ng-controller="SessionController" ng-include="'assets/sciview/partials/session.html'"></div>-->
     <!-- main view -->
     <section class="main" ui-view>
     </section>

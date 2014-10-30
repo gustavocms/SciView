@@ -1,0 +1,7 @@
+module = angular.module("sv.ui.directives")
+
+module.directive "svNavBar", [ ->
+  restrict: "E"
+  controller: "NavBarController"
+  templateUrl: '<%= asset_path('sciview/partials/nav.html') %>'
+]
