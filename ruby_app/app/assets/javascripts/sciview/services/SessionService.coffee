@@ -1,13 +1,8 @@
 module = angular.module('sv.ui.services')
 
 module.factory "Session", [
-  "$window", "$http", "$q",
-  ($window, $http, $q) ->
-
-    # Redirect to the given url (defaults to '/')
-    reloadingRedirect = (destination) ->
-      $window.location.href = destination
-      $window.location.reload()
+  "$state", "$http", "$q", "$rootScope"
+  ($state, $http, $q, $rootScope) ->
 
     service =
       login: (email, password) ->
@@ -17,13 +12,15 @@ module.factory "Session", [
             password: password
         ).then (response) ->
           service.currentUser = response.data.user
-          reloadingRedirect('/ng#/data-sets') if service.isAuthenticated()
+          if service.isAuthenticated()
+            $rootScope.$broadcast "event:authorized", service.currentUser
+            $state.go('data-sets')
 
       logout: () ->
         $http.delete('/api/v1/sessions').then (response) ->
           $http.defaults.headers.common['X-CSRF-Token'] = response.data.csrfToken
           service.currentUser = null
-          reloadingRedirect('/ng#/login')
+          $state.go('login')
 
       register: (email, password, confirm_password) ->
         $http.post("/api/v1/users",
@@ -33,7 +30,9 @@ module.factory "Session", [
             password_confirmation: confirm_password
         ).then (response) ->
           service.currentUser = response.data
-          reloadingRedirect('/ng#/data-sets') if service.isAuthenticated()
+          if service.isAuthenticated()
+            $rootScope.$broadcast "event:authorized", service.currentUser
+            $state.go('data-sets')
 
       requestCurrentUser: ->
         if service.isAuthenticated()
