@@ -1,0 +1,25 @@
+<!--TODO: remove dependency of new_series_title and addSeriesRemoveWindow to increase decoupling-->
+
+<input  type="text"
+        id="add_series_input"
+        class="batch__add-series-input"
+        ng-model="new_series_title"
+        ng-keypress="adding($event, chart, new_series_title.key)"
+        typeahead="series as series.key for series in querySeriesList($viewValue) | limitTo:8"
+        typeahead-loading="Loading"
+        typeahead-on-select="addSeriesRemoveWindow($item, $model, $label, chart)"
+        placeholder="Search a key, tag or attribute..."
+        autofocus>
+
+<!-- Override typeahead template -->
+<script id="template/typeahead/typeahead-popup.html" type="text/ng-template">
+  <ul class="batch__search-results" ng-style="{ display: isOpen()&&'block' }" >
+    <li ng-repeat="match in matches" class="batch__search-result" ng-mouseenter="selectActive($index)" ng-class="{'is-active': isActive($index) || hover }" ng-click="selectMatch($index)">
+      <span class="batch__search-result-text" bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+      <aside ng-if="match.model.hasTags" class="batch__search-result-tags"><span class="small-caps">Tags</span> <span class="batch__search-result-tag" ng-repeat="tag in match.model.tags" bind-html-unsafe="tag | typeaheadHighlight:query"></span>
+      </aside>
+      <aside ng-if="match.model.hasAttributes" class="batch__search-result-tags"><span class="small-caps">Attrs</span> <span class="batch__search-result-tag" ng-repeat="(key, value) in match.model.attributes" bind-html-unsafe="key +': '+ value | typeaheadHighlight:query"></span>
+      </aside>
+    </li>
+  </ul>
+</script>
