@@ -97,17 +97,5 @@ describe Dataset do
     ].each do |attr, expectation|
       specify("dataset #{attr}") { dataset_summary.public_send(attr).must_equal expectation }
     end
-
-    describe 'rollup options' do
-      let(:rollup){ -> (count){ 
-        dataset.tap do |d| 
-          d.instance_variable_set(:@count, count) 
-        end.send(:rollup_options) }
-      }
-      specify("count is greater than number of datapoints") { rollup.(400000).must_equal({}) }
-      specify("count is less than number of datapoints") do
-        rollup.(100000).must_equal({ rollup_function: 'mean', rollup_period: 'PT2.592S' })
-      end
-    end
   end
 end
