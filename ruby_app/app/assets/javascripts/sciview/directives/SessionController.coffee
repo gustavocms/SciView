@@ -9,12 +9,15 @@ module.controller "SessionController", [
 
     Session.requestCurrentUser().then (data)->
       $scope.user = data
+      $scope.isAuthenticated = Session.isAuthenticated()
 
     $rootScope.$on('event:authorized', (event, currentUser) ->
       $scope.user = currentUser
+      $scope.isAuthenticated = true
     )
 
     $scope.logout = ->
       Session.logout()
+      $scope.isAuthenticated = false
       $state.go('login')
 ]
