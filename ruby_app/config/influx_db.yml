@@ -1,0 +1,11 @@
+development:
+  name: __sciview_dev
+
+test:
+  name: __sciview_test
+
+production:
+  name: __sciview_prod
+
+staging:
+  name: __sciview_staging

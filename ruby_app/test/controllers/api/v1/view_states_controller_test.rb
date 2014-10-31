@@ -2,7 +2,7 @@ require 'test_helper'
 
 
 class Api::V1::ViewStatesControllerTest < ActionController::TestCase
-  before { sign_in test_user }
+  before { sign_in default_user }
 
   def view_state
     @view_state ||= ViewState.create(title: "TestViewState", charts: [])

@@ -4,6 +4,8 @@ require 'csv'
 require 'time' # for IS0-8601
 # "%FT%T.%L%z" strftime string for ISO-8601 date, time with milliseconds, and utc offset
 
+# This class is deprecated.
+# Use the more abstract CsvToDataset instead!
 class CsvToTempoDb
   include Concerns::Tempo
   extend Forwardable
@@ -14,6 +16,7 @@ class CsvToTempoDb
   def_delegators :data_store, :create_series, :write_multi
 
   def initialize(filepath, tags_and_attributes = {}, data_store = tempodb_client)
+    ::Rails.logger.warn('DEPRECATION WARNING: CsvToTempoDb is deprecated. Use CsvToDataset instead.') if defined?(::Rails)
     @filepath            = filepath
     @series_name         = filepath.pathmap('%n')
     @tags_and_attributes = tags_and_attributes

@@ -143,3 +143,15 @@ ViewState.create(
 ```
 
 This will be available in the angular app at `/ng#/data-sets/:id`.
+
+### InfluxDB
+
+Install according to the instructions here: [http://influxdb.com/download/](http://influxdb.com/download/)
+
+The Rails app includes an initializer that sets the appropriate adapters to use InfluxDB- there should
+be no additional configuration necessary.
+
+The tests also work, but you must have an instance of InfluxDB running (the easiest way is to just
+run foreman).
+
+
