@@ -76,25 +76,22 @@ module.controller('DataSetController', [
         ViewState.lastModified $stateParams.dataSetId
       ->
         data = ViewState.get($stateParams.dataSetId)
-        $scope.viewState = SciView.Models.ViewState.deserialize(data)
+        $scope._setViewState (SciView.Models.ViewState.deserialize(data))
     )
 
     # used to manage changes that may be reverted
     $scope.tempViewState =
       title: $scope.viewState.title
 
-#   as seen here:
-#   http://stackoverflow.com/questions/16947771/how-do-i-ignore-the-initial-load-when-watching-model-changes-in-angularjs
-    initializing = true
-    afterInitialization = (callback) ->
-      if initializing
-        $timeout(()-> initializing = false)
-      else
-        callback()
-
     $scope.$watch(
       'viewState.serialize()'
-      () -> afterInitialization($scope.saveDataset)
+      () ->
+        # before saving, confirm that the model is distinct from the cache, to restrict saving to user actions
+        cachedData = ViewState.get($stateParams.dataSetId)
+        cachedData = SciView.Models.ViewState.deserialize(cachedData)
+        cachedData = angular.toJson(cachedData.serialize())
+        viewData = angular.toJson($scope.viewState.serialize())
+        $scope.saveDataset() if viewData != cachedData
       true
     )
 
