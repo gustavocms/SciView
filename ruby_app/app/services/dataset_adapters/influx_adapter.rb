@@ -11,8 +11,8 @@ module DatasetAdapters
 
     class << self
       def all(options = {})
-        db.query('list series').map do |key, value|
-          series_meta_hash(key, value)
+        db.query('list series').fetch("list_series_result", []).map do |result|
+          series_meta_hash(result["name"])
         end
       end
 
