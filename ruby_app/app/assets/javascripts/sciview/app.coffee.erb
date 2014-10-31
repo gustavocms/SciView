@@ -74,14 +74,17 @@ app.config(['$urlRouterProvider', '$stateProvider',
               ViewState.find($stateParams.dataSetId).then (data) ->
                 return SciView.Models.ViewState.deserialize(data)
               ]
+            observations: ['data_sets', 'Observation', '$stateParams', (data_sets, Observation, $stateParams)->
+              Observation.findAll(view_state_id: $stateParams.dataSetId)
+              ]
       })
       .state('data-sets.single.discuss', {
           templateUrl: '<%= asset_path('sciview/discuss.html') %>',
           controller: 'DiscussController',
           params: ['dataSetId', 'chart_uuid', 'observed_at', 'message'],
           resolve:
-            observations: ['data_set', 'Observation', '$stateParams', (data_set, Observation, $stateParams)->
-              Observation.findAll(view_state_id: $stateParams.dataSetId)
+            observations: ['observations', (observations)->
+              observations
               ]
       })
       .state('navigator', {

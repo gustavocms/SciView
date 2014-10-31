@@ -6,7 +6,9 @@ module.controller("UIChartController", [
   '$element'
   '$window'
   '$state'
-  ($scope, $rootScope, $element, $window, $state) ->
+  '$stateParams'
+  'Observation'
+  ($scope, $rootScope, $element, $window, $state, $stateParams, Observation) ->
     
     $scope.is_adding = false
 
@@ -57,4 +59,7 @@ module.controller("UIChartController", [
 
     $scope.chart.registerCallback('_observationCallback', openObservationsPanel)
 
+    Observation.bindAll($scope, 'observations', view_state_id: $stateParams.dataSetId, ->
+      $scope.chart.observations($scope.observations)
+    )
 ])
