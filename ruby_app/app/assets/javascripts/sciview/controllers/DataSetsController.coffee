@@ -3,12 +3,18 @@ module = angular.module("sv.ui.controllers")
 module.controller('DataSetsController', [
   '$scope'
   'ViewState'
-  'data_sets'
-  ($scope, ViewState, data_sets) ->
+  ($scope, ViewState) ->
 
-    $scope.edit = false
+    $scope.states =
+      is_editing: false
 
-    $scope.data_sets = data_sets
+    $scope.$watch(
+      ->
+        ViewState.lastModified
+      ->
+        ViewState.findAll().then (data) ->
+          $scope.data_sets = (SciView.Models.ViewState.deserialize(raw) for raw in data)
+    )
 
     $scope.newDataSet = ->
       ViewState.create({})
@@ -28,19 +34,30 @@ module.controller('DataSetsController', [
       data_set.hover = false
 
     $scope.editDataSet = (data_set) ->
-      $scope.edit_data_set = data_set
-      $scope.edit = true
+      $scope.edit_data_set =
+        title: data_set.title
+        data_set: data_set
+      $scope.states.is_editing = true
 
     $scope.hideEdit = ->
       $scope.edit_data_set = {}
-      $scope.edit = false
+      $scope.states.is_editing = false
 
     $scope.saveEdit = ->
+      $scope.edit_data_set.data_set.title = $scope.edit_data_set.title
+      saveDataset($scope.edit_data_set.data_set)
       $scope.edit_data_set = {}
-      $scope.edit = false
+      $scope.states.is_editing = false
 
-    $scope.deleteDataSet = ->
+    $scope.deleteDataSet = (data_set) ->
       # Flash modal confirming delete
       # Delete after confirmation
+
+    saveDataset = (data_set) ->
+      ViewState.update(
+        data_set.id,
+        data_set.serialize()
+      )
+      console.log('saving')
 
 ])

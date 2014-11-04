@@ -7,8 +7,7 @@ module.controller('DataSetController', [
   '$timeout'
   'ViewState'
   'mySocket'
-  'data_set'
-  ($scope, $state, $stateParams, $timeout, ViewState, mySocket, data_set) ->
+  ($scope, $state, $stateParams, $timeout, ViewState, mySocket) ->
 
     $scope.tooltip =
       time: "00:00:00:00"
@@ -17,7 +16,6 @@ module.controller('DataSetController', [
     $scope.obsTime = "000"
 
     $scope.states =
-      is_renaming: false
       is_discussing: false
 
     # Expand and retract group channels
@@ -54,22 +52,12 @@ module.controller('DataSetController', [
         $scope.$digest()
       )
 
-    $scope.saveRenaming = ->
-      $scope.viewState.title = $scope.tempViewState.title
-      $scope.states.is_renaming = false
-
-    $scope.cancelRenaming = ->
-      $scope.tempViewState.title = $scope.viewState.title
-      $scope.states.is_renaming = false
-
     $scope.registerSocketWatchers = -> # noOp pending fix
       mySocket.emit('resetSubscriptions')
       mySocket.subscribe('viewState', $scope.viewState.id)
       mySocket.subscribe('viewStateObservations', $scope.viewState.id)
       for seriesName in $scope.viewState.seriesKeys()
         mySocket.subscribe('series', seriesName)
-
-    $scope._setViewState(data_set)
 
     $scope.$watch(
       ->
@@ -78,10 +66,6 @@ module.controller('DataSetController', [
         data = ViewState.get($stateParams.dataSetId)
         $scope._setViewState (SciView.Models.ViewState.deserialize(data))
     )
-
-    # used to manage changes that may be reverted
-    $scope.tempViewState =
-      title: $scope.viewState.title
 
     $scope.$watch(
       'viewState.serialize()'
