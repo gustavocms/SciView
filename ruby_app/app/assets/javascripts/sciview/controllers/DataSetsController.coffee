@@ -18,10 +18,10 @@ module.controller('DataSetsController', [
         $scope.$state.go('data-sets.single', { dataSetId: dataset.id })
       )
 
-    $scope.mouseEnterTitle = (data_set, scope) ->
-      currentDataSet = parseInt($state.params.dataSetId)
+    $scope.mouseEnterTitle = (data_set) ->
+      currentDataSet = parseInt($scope.$state.params.dataSetId)
       selectedDataSetId = data_set.id
-      if `currentDataSet == selectedDataSetId`
+      if currentDataSet == selectedDataSetId
         data_set.hover = true
 
     $scope.mouseLeaveTitle = (data_set) ->
