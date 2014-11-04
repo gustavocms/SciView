@@ -1,3 +1,6 @@
+# DEPRECATED:
+# This controller does not use the abstract Dataset class and should be removed.
+# 
 class DataController < ApplicationController
   def show
     client = get_tempodb_client

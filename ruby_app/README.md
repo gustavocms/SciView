@@ -143,3 +143,26 @@ ViewState.create(
 ```
 
 This will be available in the angular app at `/ng#/data-sets/:id`.
+
+### InfluxDB
+
+Install according to the instructions here: [http://influxdb.com/download/](http://influxdb.com/download/)
+
+The Rails app includes an initializer that sets the appropriate adapters to use InfluxDB- there should
+be no additional configuration necessary.
+
+The tests also work, but you must have an instance of InfluxDB running (the easiest way is to just
+run foreman).
+
+To create new random series:
+
+    rake influx:create_series
+
+UBUNTU Additional steps (as the setup is done using SUDO which restricts some foreman / influx permissions):
+
+    1 - manually create /usr/local/var/influxdb
+    2 - sudo chmod 777 /usr/local/var/influxdb
+
+TODO: Fix the 777 security vulnerability
+
+

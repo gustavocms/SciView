@@ -22,5 +22,9 @@ module SciView
     # config.i18n.default_locale = :de
 
     config.assets.paths << Rails.root.join("vendor","assets","bower_components")
+
+    # one of [:influx_db, :tempo_db (deprecated)]. See
+    # Dataset class for information on creating new adapters.
+    config.dataset_store = :influx_db
   end
 end

@@ -2,7 +2,7 @@ require 'test_helper'
 require 'json'
 
 class Api::V1::ObservationsControllerTest < ActionController::TestCase
-  before { sign_in test_user }
+  before { sign_in default_user }
 
   def view_state
     @view_state ||= ViewState.create(title: "TestViewState", charts: [])
@@ -48,6 +48,6 @@ class Api::V1::ObservationsControllerTest < ActionController::TestCase
 
   test 'create' do
     create_request 
-    json_response { |json| json["user_id"].must_equal test_user.id }
+    json_response { |json| json["user_id"].must_equal default_user.id }
   end
 end

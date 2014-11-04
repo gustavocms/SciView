@@ -136,6 +136,8 @@ GEM
     httpclient_link_header (0.0.1)
       httpclient
     i18n (0.6.11)
+    influxdb (0.1.8)
+      json
     jasmine-core (2.0.1)
     jbuilder (1.5.3)
       activesupport (>= 3.0.0)
@@ -330,6 +332,7 @@ DEPENDENCIES
   guard-minitest
   guard-rails
   guard-rubocop
+  influxdb
   jasmine!
   jbuilder (~> 1.2)
   jquery-rails

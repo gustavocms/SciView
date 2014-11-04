@@ -1,3 +1,4 @@
 web: bundle exec puma -C config/puma.rb -p $PORT
 redis: redis-server
+influx: influxdb -config=config/influxdb.conf
 worker: bundle exec sidekiq -c 5 -v
