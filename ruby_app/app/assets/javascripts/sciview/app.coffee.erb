@@ -59,7 +59,7 @@ app.config(['$urlRouterProvider', '$stateProvider',
       .state('data-sets', {
           url: '/data-sets',
           templateUrl: '<%= asset_path('sciview/data_sets.html') %>',
-          controller: 'DataSetsController'
+          controller: 'DataSetsController',
           resolve:
             data_sets: ['ViewState', (ViewState)->
               ViewState.findAll().then (data) ->
@@ -92,7 +92,12 @@ app.config(['$urlRouterProvider', '$stateProvider',
       .state('navigator', {
           url: '/navigator',
           templateUrl: '<%= asset_path('sciview/navigator.html') %>',
-          controller: 'NavigatorController'
+          controller: 'NavigatorController',
+          resolve:
+            data_sets: ['ViewState', (ViewState)->
+              ViewState.findAll().then (data) ->
+                return (SciView.Models.ViewState.deserialize(raw) for raw in data)
+              ]
       })
       .state('navigator.upload', {
           url: '/upload',

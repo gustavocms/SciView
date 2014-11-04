@@ -2,20 +2,10 @@ module = angular.module("sv.ui.controllers")
 
 module.controller "NavigatorController", [
   "$scope"
-  "$q"
-  "Sources"
-  "ViewState"
-  ($scope, $q, Sources, ViewState) ->
+  "data_sets"
+  ($scope, data_sets) ->
     $scope.navigator = search_query: ""
 
-    $scope.deferredDatasetsLoading = $q.defer()
-    $scope.data_sets = []
-
-    ViewState.index()
-      .$promise
-      .then((data) ->
-        $scope.data_sets = (SciView.Models.ViewState.deserialize(raw) for raw in data)
-        $scope.deferredDatasetsLoading.resolve()
-        console.log($scope.data_sets)
-      )
+    $scope.data_sets = data_sets
+    console.log($scope.data_sets)
 ]
