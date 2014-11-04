@@ -5,8 +5,11 @@ module.controller("UIChartController", [
   '$rootScope'
   '$element'
   '$window'
+  '$state'
+  '$stateParams'
   'Alerts'
-  ($scope, $rootScope, $element, $window, Alerts) ->
+  'Observation'
+  ($scope, $rootScope, $element, $window, $state, $stateParams, Alerts, Observation) ->
     
     $scope.is_adding = false
 
@@ -49,5 +52,18 @@ module.controller("UIChartController", [
 #   unbinds the resize event
     $scope.$on("$destroy", () ->
       angular.element($window).off('resize', $scope.chartResize);
+    )
+
+    openObservationsPanel = (params = {}) ->
+      $state.go('data-sets.single.discuss',
+        chart_uuid: $scope.chart.uuid
+        observed_at: params.observed_at
+        message: params.message
+      )
+
+    $scope.chart.registerCallback('_observationCallback', openObservationsPanel)
+
+    Observation.bindAll($scope, 'observations', view_state_id: $stateParams.dataSetId, ->
+      $scope.chart.observations($scope.observations)
     )
 ])

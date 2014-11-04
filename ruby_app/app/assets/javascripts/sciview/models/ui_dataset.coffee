@@ -117,6 +117,13 @@ class SciView.Models.UIChart extends SciView.Models.UIBase
     if @chart
       @chart.registerCallback(name, callback)
 
+  # Expects an array of observation objects.
+  observations: (observations) ->
+    @chart.observations(filterObservations(observations, @uuid))
+
+  filterObservations = (observations, chart_uuid) ->
+    observations.filter((obs) -> (obs.chart_uuid == chart_uuid) and obs.observed_at)
+
   addChannel: (channel) ->
     if channel
       @channels.push(channel)

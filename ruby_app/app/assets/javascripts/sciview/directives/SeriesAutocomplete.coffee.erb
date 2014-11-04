@@ -1,0 +1,7 @@
+module = angular.module("sv.ui.directives")
+
+module.directive "svSeriesAutocomplete", [ ->
+  restrict: "E"
+  controller: "SeriesAutocompleteController"
+  templateUrl: '<%= asset_path('sciview/partials/autocomplete.html') %>'
+]

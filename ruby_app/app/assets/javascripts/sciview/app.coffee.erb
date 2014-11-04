@@ -60,16 +60,34 @@ app.config(['$urlRouterProvider', '$stateProvider',
           url: '/data-sets',
           templateUrl: '<%= asset_path('sciview/data_sets.html') %>',
           controller: 'DataSetsController'
+          resolve:
+            data_sets: ['ViewState', (ViewState)->
+              ViewState.findAll().then (data) ->
+                return (SciView.Models.ViewState.deserialize(raw) for raw in data)
+              ]
+
       })
       .state('data-sets.single', {
           url: '/:dataSetId',
           templateUrl: '<%= asset_path('sciview/data_set.html') %>',
           controller: 'DataSetController'
+          resolve:
+            data_set: ['data_sets', 'ViewState', '$stateParams', (data_sets, ViewState, $stateParams)->
+              ViewState.find($stateParams.dataSetId).then (data) ->
+                return SciView.Models.ViewState.deserialize(data)
+              ]
+            observations: ['data_sets', 'Observation', '$stateParams', (data_sets, Observation, $stateParams)->
+              Observation.findAll(view_state_id: $stateParams.dataSetId)
+              ]
       })
       .state('data-sets.single.discuss', {
-          url: '/discuss',
           templateUrl: '<%= asset_path('sciview/discuss.html') %>',
-          controller: 'DiscussController'
+          controller: 'DiscussController',
+          params: ['dataSetId', 'chart_uuid', 'observed_at', 'message'],
+          resolve:
+            observations: ['observations', (observations)->
+              observations
+              ]
       })
       .state('navigator', {
           url: '/navigator',
@@ -92,55 +110,4 @@ app.config(['$urlRouterProvider', '$stateProvider',
       })
 ])
 
-#sockets configuration
-app.factory('mySocket', (ngSocket) ->
-  mySocket = ngSocket("ws://#{window.location.host}") 
-
-  mySocket.emit = (event, data) ->
-    mySocket.send
-      event: event
-      data: data
-
-  # receive messages
-  mySocket.onEvent = (event, callBack, autoApply = false) ->
-    mySocket.onMessage(
-      (message) ->
-        msg = JSON.parse(message.data).message
-        if msg.event == event
-          console.info(event + ' event -> ', msg.data)
-          callBack(msg.data)
-      autoApply: autoApply
-    )
-
-  mySocket.updateEvent = (resource, id, data) ->
-    mySocket.send(
-      event: "update"
-      resource: resource
-      id: id
-      data: data)
-
-  mySocket.onUpdateEvent = (resource, callBack, autoApply = false) ->
-    mySocket.onMessage(
-      (message) ->
-        msg = JSON.parse(message.data).message
-        if msg.event == "update" and msg.resource == resource
-          console.info(resource + ' updateEvent -> ', msg.data)
-          callBack(msg.data)
-      autoApply: autoApply
-    )
-
-  mySocket.subscribe = (resource, id) ->
-    mySocket.send(
-      event: "subscribe"
-      resource: resource
-      id: id)
-
-  mySocket.unsubscribe = (resource, id) ->
-    mySocket.send(
-      event: "unsubscribe"
-      resource: resource
-      id: id)
-
-  mySocket
-)
 

@@ -1,12 +1,15 @@
 module = angular.module('sv.ui.services')
 
-module.factory('ViewState', ['$resource',
-  ($resource) -> return $resource(
-    '/api/v1/view_states/:id.json',
-    { id: '@id' }, {
-      index: { method: 'GET', isArray: true }
-      update: { method: 'PUT' }
-      delete: { method: 'DELETE' }
-    }
+module.factory "ViewState", [ "DS", "mySocket", (DS, mySocket) ->
+  DS.defineResource(
+    name:        'viewState'
+    endpoint:    'view_states'
+    baseUrl:     '/api/v1'
+    afterUpdate: (resourceName, attrs, cb) ->
+      mySocket.updateEvent(resourceName, attrs.id)
+      # proceed with the lifecycle
+      cb(null, attrs)
+#    afterInject: (resourceName, attrs) ->
+#      mySocket.subscribe(resourceName, attrs.id)
   )
-])
+]

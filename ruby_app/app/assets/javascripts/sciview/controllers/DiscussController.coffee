@@ -5,15 +5,12 @@ module.controller "DiscussController", [
   "$stateParams"
   "Observation"
   "mySocket"
-  "timeAgoFilter"
-  ($scope, $stateParams, Observation, mySocket, timeAgoFilter) ->
+  ($scope, $stateParams, Observation, mySocket) ->
 
     # TODO: put this somewhere useful
     tap = (obj, func) ->
       func(obj)
       obj
-
-    # sets the newObservation model and associated state variables
 
     $scope.chartUuids = ->
       try
@@ -35,13 +32,23 @@ module.controller "DiscussController", [
       #mySocket.emit('updateObservations', "viewState_#{$stateParams.dataSetId}", params)
 
     $scope.createObservation = (observation) ->
-      $scope.$parent.obs_saving = true
+      $scope.obs_saving = true
       Observation.create(observation).then (data) ->
         emitUpdateObservations({ id: data.id, action: 'find' })
-        $scope.$parent._newObservation()
+        _newObservation()
 
     $scope.deleteObservation = (observation) ->
       Observation.destroy(observation.id).then (data) ->
       emitUpdateObservations({ id: observation.id, action: 'eject' })
 
+    # sets the newObservation model and associated state variables
+    _newObservation = ->
+      $scope.obs_saving     = false
+      $scope.newObservation =
+        message: ''
+        view_state_id: $stateParams.dataSetId
+      $scope.newObservation[key] = value for key, value of $stateParams
+
+    Observation.bindAll($scope, 'observations', view_state_id: $stateParams.dataSetId)
+    _newObservation()
 ]
