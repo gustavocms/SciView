@@ -35,14 +35,6 @@ module.controller('DataSetController', [
       )
       console.log('saving')
 
-    $scope.deleteDataset = ->
-      viewStateId = $scope.viewState.id
-      ViewState.destroy(viewStateId)
-        .then(->
-          $scope.$parent.data_sets = $scope.$parent.data_sets.filter((ds) -> ds.id isnt viewStateId)
-          $scope.$state.go('data-sets')
-        )
-
     $scope._setViewState = (viewState) ->
       $scope.viewState = viewState
       $scope.registerSocketWatchers()

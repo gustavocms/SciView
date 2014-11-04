@@ -27,7 +27,7 @@
     <button class="data-sets__edit-action save" ng-click="saveEdit()">Save</button>
     <button class="data-sets__edit-action cancel" ng-click="hideEdit()">Cancel</button>
   </section>
-  <span class="data-sets__edit-delete">Delete Data Set</span>
+  <span class="data-sets__edit-delete" ng-click="deleteDataSet()">Delete Data Set</span>
 </section>
 <section class="notifications" ng-controller="AlertController" ng-include="'assets/sciview/partials/notifications.html'"></section>
 <section class="discussion" ng-include="'assets/sciview/partials/discussion-tab.html'"></section>

@@ -49,9 +49,16 @@ module.controller('DataSetsController', [
       $scope.edit_data_set = {}
       $scope.states.is_editing = false
 
-    $scope.deleteDataSet = (data_set) ->
-      # Flash modal confirming delete
-      # Delete after confirmation
+    $scope.deleteDataSet = ->
+      # TODO: Flash modal confirming delete, Delete after confirmation
+      viewStateId = $scope.edit_data_set.data_set.id
+      ViewState.destroy(viewStateId)
+      .then(->
+        $scope.data_sets = $scope.data_sets.filter((ds) -> ds.id isnt viewStateId)
+        $scope.edit_data_set = {}
+        $scope.states.is_editing = false
+        $scope.$state.go('data-sets')
+      )
 
     saveDataset = (data_set) ->
       ViewState.update(
