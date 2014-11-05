@@ -120,7 +120,7 @@ module DatasetAdapters
     end
 
     def to_hash
-      query(InfluxSupport::QueryBuilder.new(query_params)).each_with_object({}) do |(key, values), hash|
+      query(InfluxSupport::QueryBuilder.new(query_params.merge(actual_time_extents))).each_with_object({}) do |(key, values), hash|
         hash[key] = series_hash(key, values)
       end
     end
@@ -144,6 +144,39 @@ module DatasetAdapters
       }.compact
     end
 
+    def actual_time_extents
+      { start: actual_start, stop: actual_stop, time_interval: time_interval, select: "MEAN(value)" }
+    end
+
+    def summary
+      @summary ||= InfluxSupport::Summary.new(query_params)
+    end
+
+    # Influx doesn't support <= or >= operators, so these are offset
+    # by 1 millisecond to ensure all data falls between the query start
+    # and stop times (must be GT or LT)
+    def actual_start
+      (summary.start - 0.001)
+    end
+
+    def actual_stop
+      summary.stop + 0.001
+    end
+
+    def time_interval
+      "#{time_interval_n}s"
+    end
+
+    def time_interval_n
+      ((actual_stop - actual_start) / count).round(3).tap do |x|
+        return 0.001 if x < 0.001
+      end
+    end
+
+    def count
+      (options[:count] || 1000).to_f.tap {|x| puts "COUNT #{x}" }
+    end
+
     def series_hash(key, values)
       {
         key: key,
@@ -156,7 +189,7 @@ module DatasetAdapters
       values.reverse_each.map do |value|
         { 
           ts: InfluxSupport::UTC.at(value["time"] / (PRECISION[precision].to_f)), 
-          value: value["value"] 
+          value: (value["value"] || value["mean"])
         }
       end
     end

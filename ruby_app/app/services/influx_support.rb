@@ -28,7 +28,7 @@ module InfluxSupport
         sanitized_keys, 
         group_by_function, 
         time_extents
-      ].compact.join(" ")
+      ].compact.join(" ").tap(&method(:p))
     end
 
     alias_method :to_str, :to_s
@@ -45,7 +45,13 @@ module InfluxSupport
       options.fetch(:select){ "*" }
     end
 
+    # The grouping is determined by
+    #  the actual time offsets (start and stop) of the grouped set of series, or
+    #  the start and stop of the query (if given)
+    #  divided by the desired number of points.
+    # The resulting time interval is given for the mashup.
     def group_by_function
+      ("group by time(#{time_interval})" if time_interval)
     end
 
     def time_extents
@@ -73,6 +79,21 @@ module InfluxSupport
     def format(time)
       time.strftime("%Y-%m-%d %H:%M:%S.%3N")
     end
+
+    # actual start and stop are either:
+    #  a) the extents of the query, if given or
+    #  b) the real extents of the series
+    def actual_start
+      start || summary.start
+    end
+
+    def actual_stop
+      stop || summary.stop
+    end
+
+    def time_interval
+      options[:time_interval]
+    end
   end
 
   # Get counts and time extents of multiple-series groups.
@@ -82,7 +103,7 @@ module InfluxSupport
     end
 
     def start
-      starts.min
+      starts.min.tap {|s|  puts "summary start: #{s}" }
     end
 
     def stop
@@ -106,6 +127,14 @@ module InfluxSupport
     end
 
     private
+
+    EXCLUDE_OPTIONS = Set.new #([:start, :stop])
+
+    def options
+      @sanitized_options ||= @options.select do |k,_|
+        !EXCLUDE_OPTIONS.include?(k)
+      end
+    end
 
     def stops
       @stops ||= extents_query(stops_query)
