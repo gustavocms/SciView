@@ -28,7 +28,7 @@ module InfluxSupport
         sanitized_keys, 
         group_by_function, 
         time_extents
-      ].compact.join(" ").tap(&method(:p))
+      ].compact.join(" ")
     end
 
     alias_method :to_str, :to_s
@@ -103,7 +103,7 @@ module InfluxSupport
     end
 
     def start
-      starts.min.tap {|s|  puts "summary start: #{s}" }
+      starts.min
     end
 
     def stop
@@ -127,14 +127,6 @@ module InfluxSupport
     end
 
     private
-
-    EXCLUDE_OPTIONS = Set.new #([:start, :stop])
-
-    def options
-      @sanitized_options ||= @options.select do |k,_|
-        !EXCLUDE_OPTIONS.include?(k)
-      end
-    end
 
     def stops
       @stops ||= extents_query(stops_query)
